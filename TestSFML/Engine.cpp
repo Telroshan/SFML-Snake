@@ -3,7 +3,7 @@
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
-	_playerDirection(1.f, 0.f),
+	_playerDirection(1, 0),
 	_score(0)
 {
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
@@ -15,7 +15,7 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_scoreText.setFont(_font);
 	_scoreText.setString("000");
 	_scoreText.setFillColor(sf::Color::White);
-	_scoreText.setPosition(windowSize.x - 75, windowSize.y - 60);
+	_scoreText.setPosition(windowSize.x - 75.f, windowSize.y - 60.f);
 }
 
 Engine::~Engine()
@@ -28,23 +28,23 @@ void Engine::UpdateInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 	{
-		_playerDirection.x = 0.f;
-		_playerDirection.y = -1.f;
+		_playerDirection.x = 0;
+		_playerDirection.y = -1;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		_playerDirection.x = 0.f;
-		_playerDirection.y = 1.f;
+		_playerDirection.x = 0;
+		_playerDirection.y = 1;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		_playerDirection.x = 1.f;
-		_playerDirection.y = 0.f;
+		_playerDirection.x = 1;
+		_playerDirection.y = 0;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 	{
-		_playerDirection.x = -1.f;
-		_playerDirection.y = 0.f;
+		_playerDirection.x = -1;
+		_playerDirection.y = 0;
 	}
 }
 
@@ -62,9 +62,9 @@ void Engine::Update(float deltaTime)
 
 	_moveTimestamp += deltaTime;
 	if (_moveTimestamp > _moveInterval) {
-		sf::Vector2f nextPosition = _player->getPosition() + sf::Vector2f(_playerDirection.x * _cellSize.x, _playerDirection.y * _cellSize.y);
+		sf::Vector2f nextPosition = _player->getPosition() + sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius);
 		CheckCollisions(nextPosition);
-		_player->move(sf::Vector2f(_playerDirection.x * _cellSize.x, _playerDirection.y * _cellSize.y));
+		_player->move(sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius));
 		_moveTimestamp = 0.f;
 	}
 }
@@ -90,7 +90,7 @@ bool Engine::IsRunning() const
 	return _window->isOpen();
 }
 
-void Engine::BuildBorder(sf::Vector2f cellSize)
+void Engine::BuildBorder(float cellRadius)
 {
 	_border.empty();
 
@@ -101,9 +101,9 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	// Top left => top right
 	for (int x = 0; x < _rectanglesCount.x - 1; ++x)
 	{
-		sf::RectangleShape cell(cellSize);
+		sf::RectangleShape cell(sf::Vector2f(cellRadius, cellRadius));
 		cell.setFillColor(colors[colorIndex]);
-		cell.setPosition(x * cellSize.x, 0);
+		cell.setPosition(x * cellRadius, 0);
 		_border.push_back(cell);
 
 		++colorIndex;
@@ -113,9 +113,9 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	// Top right => bottom right
 	for (int y = 0; y < _rectanglesCount.y - 1; ++y)
 	{
-		sf::RectangleShape cell(cellSize);
+		sf::RectangleShape cell(sf::Vector2f(cellRadius, cellRadius));
 		cell.setFillColor(colors[colorIndex]);
-		cell.setPosition(_windowSize.x - cellSize.x, y * cellSize.y);
+		cell.setPosition(_windowSize.x - cellRadius, y * cellRadius);
 		_border.push_back(cell);
 
 		++colorIndex;
@@ -125,9 +125,9 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	// Bottom right => bottom left
 	for (int x = _rectanglesCount.x - 1; x > 0; --x)
 	{
-		sf::RectangleShape cell(cellSize);
+		sf::RectangleShape cell(sf::Vector2f(cellRadius, cellRadius));
 		cell.setFillColor(colors[colorIndex]);
-		cell.setPosition(x * cellSize.x, _windowSize.y - cellSize.y);
+		cell.setPosition(x * cellRadius, _windowSize.y - cellRadius);
 		_border.push_back(cell);
 
 		++colorIndex;
@@ -137,9 +137,9 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	// Bottom left => top left
 	for (int y = 1; y < _rectanglesCount.y; ++y)
 	{
-		sf::RectangleShape cell(cellSize);
+		sf::RectangleShape cell(sf::Vector2f(cellRadius, cellRadius));
 		cell.setFillColor(colors[colorIndex]);
-		cell.setPosition(0, y * cellSize.y);
+		cell.setPosition(0, y * cellRadius);
 		_border.push_back(cell);
 
 		++colorIndex;
@@ -153,18 +153,18 @@ void Engine::CheckCollisions(sf::Vector2f nextPosition)
 	std::cout << playerGridPosition.x << ", " << playerGridPosition.y << " | " << _rectanglesCount.x << ", " << _rectanglesCount.y << std::endl;
 	if (playerGridPosition.x <= 1 || playerGridPosition.x >= _rectanglesCount.x - 2)
 	{
-		_playerDirection.x *= -1.f;
+		_playerDirection.x *= -1;
 	}
 	else if (playerGridPosition.y <= 1 || playerGridPosition.y >= _rectanglesCount.y - 2)
 	{
-		_playerDirection.y *= -1.f;
+		_playerDirection.y *= -1;
 	}
 }
 
 sf::Vector2i Engine::GetPlayerGridPosition() const
 {
 	sf::Vector2f playerPosition = _player->getPosition();
-	sf::Vector2i gridPosition(playerPosition.x / _cellSize.x, playerPosition.y / _cellSize.y);
+	sf::Vector2i gridPosition((int) (playerPosition.x / _cellRadius), (int) (playerPosition.y / _cellRadius));
 	return gridPosition;
 }
 
@@ -178,17 +178,17 @@ void Engine::DisplayScore()
 	_window->draw(_scoreText);
 }
 
-void Engine::SetCellSize(sf::Vector2f cellSize)
+void Engine::SetCellSize(float cellRadius)
 {
-	_cellSize = cellSize;
+	_cellRadius = cellRadius;
 
-	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize.x, _windowSize.y / (int)cellSize.y);
+	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellRadius, _windowSize.y / (int)cellRadius);
 
-	_player = new sf::RectangleShape(cellSize);
-	_player->setPosition((_rectanglesCount.x / 2) * cellSize.x, (_rectanglesCount.y / 2) * cellSize.y);
+	_player = new sf::CircleShape(cellRadius / 2.f);
+	_player->setPosition((_rectanglesCount.x / 2) * cellRadius, (_rectanglesCount.y / 2) * cellRadius);
 	_player->setFillColor(sf::Color::Green);
 
-	BuildBorder(cellSize);
+	BuildBorder(cellRadius);
 }
 
 void Engine::SetMoveSpeed(float speed)

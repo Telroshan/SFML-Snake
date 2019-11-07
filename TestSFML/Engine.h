@@ -18,25 +18,25 @@ public:
 	bool IsRunning() const;
 
 private:
-	void BuildBorder(sf::Vector2f cellSize);
+	void BuildBorder(float cellSize);
 	void CheckCollisions(sf::Vector2f nextPosition);
 	sf::Vector2i GetPlayerGridPosition() const;
 	void DisplayScore();
 
 public:
-	void SetCellSize(sf::Vector2f cellSize);
+	void SetCellSize(float cellSize);
 	void SetMoveSpeed(float speed);
 
 private:
 	sf::RenderWindow* _window;
 	sf::Vector2i _windowSize;
 
-	sf::Vector2f _cellSize;
+	float _cellRadius;
 	sf::Vector2i _rectanglesCount;
 
 	std::vector<sf::RectangleShape> _border;
 
-	sf::RectangleShape* _player;
+	sf::CircleShape* _player;
 
 	sf::Vector2i _playerDirection;
 

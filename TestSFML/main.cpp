@@ -6,9 +6,7 @@ int main()
 
 	Engine snakeGame("Snake", windowSize);
 
-	sf::Vector2f cellSize(20, 20);
-
-	snakeGame.SetCellSize(cellSize);
+	snakeGame.SetCellSize(20);
 	snakeGame.SetMoveSpeed(2.f);
 
 	sf::Clock clock;
