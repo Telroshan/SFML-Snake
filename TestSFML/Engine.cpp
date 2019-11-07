@@ -3,9 +3,19 @@
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
-	_playerDirection(1.f, 0.f)
+	_playerDirection(1.f, 0.f),
+	_score(0)
 {
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
+
+	if (!_font.loadFromFile("Fonts\\arial.ttf"))
+	{
+		std::cerr << "Couldn't load score font" << std::endl;
+	}
+	_scoreText.setFont(_font);
+	_scoreText.setString("000");
+	_scoreText.setFillColor(sf::Color::White);
+	_scoreText.setPosition(windowSize.x - 75, windowSize.y - 60);
 }
 
 Engine::~Engine()
@@ -69,6 +79,8 @@ void Engine::Render()
 	}
 
 	_window->draw(*_player);
+
+	DisplayScore();
 
 	_window->display();
 }
@@ -154,6 +166,16 @@ sf::Vector2i Engine::GetPlayerGridPosition() const
 	sf::Vector2f playerPosition = _player->getPosition();
 	sf::Vector2i gridPosition(playerPosition.x / _cellSize.x, playerPosition.y / _cellSize.y);
 	return gridPosition;
+}
+
+void Engine::DisplayScore()
+{
+	std::string text = std::to_string(_score);
+	while (text.length() < 3) {
+		text = "0" + text;
+	}
+	_scoreText.setString(text);
+	_window->draw(_scoreText);
 }
 
 void Engine::SetCellSize(sf::Vector2f cellSize)

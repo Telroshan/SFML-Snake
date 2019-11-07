@@ -13,6 +13,7 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
+	//void Init();
 
 	bool IsRunning() const;
 
@@ -20,6 +21,7 @@ private:
 	void BuildBorder(sf::Vector2f cellSize);
 	void CheckCollisions(sf::Vector2f nextPosition);
 	sf::Vector2i GetPlayerGridPosition() const;
+	void DisplayScore();
 
 public:
 	void SetCellSize(sf::Vector2f cellSize);
@@ -41,4 +43,8 @@ private:
 	float _moveInterval;
 
 	float _moveTimestamp;
+
+	int _score;
+	sf::Text _scoreText;
+	sf::Font _font;
 };
