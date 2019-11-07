@@ -58,7 +58,7 @@ void Engine::Update(float deltaTime)
 	_moveTimestamp += deltaTime;
 	if (_moveTimestamp > _moveInterval) {
 		sf::Vector2i direction = _player->GetDirection();
-		sf::Vector2f nextPosition = _player->GetPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
+		sf::Vector2f nextPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
 		CheckCollisions(nextPosition);
 		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
 		_moveTimestamp = 0.f;
@@ -159,7 +159,7 @@ void Engine::CheckCollisions(sf::Vector2f nextPosition)
 
 sf::Vector2i Engine::GetPlayerGridPosition() const
 {
-	sf::Vector2f playerPosition = _player->GetPosition();
+	sf::Vector2f playerPosition = _player->GetHeadPosition();
 	sf::Vector2i gridPosition((int)(playerPosition.x / _cellRadius), (int)(playerPosition.y / _cellRadius));
 	return gridPosition;
 }
