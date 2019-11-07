@@ -14,8 +14,7 @@ public:
 	const sf::Vector2i& GetDirection() const;
 
 	void SetDirection(const sf::Vector2i& direction);
-	void InvertDirectionX();
-	void InvertDirectionY();
+	void InvertDirection();
 
 private:
 	std::vector<sf::CircleShape> _body;

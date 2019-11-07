@@ -51,12 +51,7 @@ void Snake::SetDirection(const sf::Vector2i& direction)
 	_direction = direction;
 }
 
-void Snake::InvertDirectionX()
+void Snake::InvertDirection()
 {
-	_direction.x *= -1;
-}
-
-void Snake::InvertDirectionY()
-{
-	_direction.y *= -1;
+	_direction *= -1;
 }

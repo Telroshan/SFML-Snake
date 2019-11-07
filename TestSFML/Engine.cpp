@@ -60,6 +60,7 @@ void Engine::Update(float deltaTime)
 		sf::Vector2i direction = _player->GetDirection();
 		sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
 		CheckCollisions(nextHeadPosition);
+		direction = _player->GetDirection();
 		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
 		_moveTimestamp = 0.f;
 	}
@@ -147,16 +148,14 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 {
 	sf::Vector2i playerGridPosition = WorldPositionToGridPosition(nextHeadPosition);
 
-	std::cout << playerGridPosition.x << ", " << playerGridPosition.y << " | " << _rectanglesCount.x << ", " << _rectanglesCount.y
-		<< " | " << nextHeadPosition.x << ", " << nextHeadPosition.y << std::endl;
+	std::cout << "Grid pos : " << playerGridPosition.x << ", " << playerGridPosition.y
+		<< " \tGrid size : " << _rectanglesCount.x << ", " << _rectanglesCount.y
+		<< " \tWorld pos : " << nextHeadPosition.x << ", " << nextHeadPosition.y
+		<< " \tDirection : " << _player->GetDirection().x << ", " << _player->GetDirection().y << std::endl;
 
-	if (playerGridPosition.x <= 1 || playerGridPosition.x >= _rectanglesCount.x - 2)
+	if (IsPositionInBorder(playerGridPosition))
 	{
-		_player->InvertDirectionX();
-	}
-	else if (playerGridPosition.y <= 1 || playerGridPosition.y >= _rectanglesCount.y - 2)
-	{
-		_player->InvertDirectionY();
+		_player->InvertDirection();
 	}
 }
 
@@ -164,6 +163,12 @@ sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
 {
 	sf::Vector2i gridPosition((int)(position.x / _cellRadius), (int)(position.y / _cellRadius));
 	return gridPosition;
+}
+
+bool Engine::IsPositionInBorder(sf::Vector2i gridPosition) const
+{
+	return gridPosition.x == 0 || gridPosition.x == _rectanglesCount.x - 1
+		|| gridPosition.y == 0 || gridPosition.y == _rectanglesCount.y - 1;
 }
 
 void Engine::DisplayScore()
