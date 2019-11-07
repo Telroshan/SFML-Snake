@@ -16,6 +16,10 @@ public:
 	void SetDirection(const sf::Vector2i& direction);
 	void InvertDirection();
 
+	const std::vector<sf::Vector2f> GetMiddleBodypartPositions() const;
+
+	void Die();
+
 private:
 	std::vector<sf::CircleShape> _body;
 	sf::Vector2i _direction;

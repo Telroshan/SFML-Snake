@@ -1,4 +1,5 @@
 #include "Snake.h"
+#include <iostream>
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
 	_body(length),
@@ -15,7 +16,7 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 
 void Snake::Render(sf::RenderWindow* window) const
 {
-	for (int i = (int) _body.size() - 1; i >= 0; --i)
+	for (int i = (int)_body.size() - 1; i >= 0; --i)
 	{
 		window->draw(_body[i]);
 	}
@@ -28,7 +29,7 @@ const sf::Vector2f& Snake::GetHeadPosition() const
 
 void Snake::Move(sf::Vector2f movement)
 {
-	for (int i = (int) _body.size() - 1; i >= 0; --i)
+	for (int i = (int)_body.size() - 1; i >= 0; --i)
 	{
 		if (i > 0)
 		{
@@ -54,4 +55,20 @@ void Snake::SetDirection(const sf::Vector2i& direction)
 void Snake::InvertDirection()
 {
 	_direction *= -1;
+}
+
+const std::vector<sf::Vector2f> Snake::GetMiddleBodypartPositions() const
+{
+	std::vector<sf::Vector2f> positions(_body.size());
+	// Exclude first and last positions
+	for (int i = 1; i < (int)_body.size() - 1; ++i)
+	{
+		positions.push_back(_body[i].getPosition());
+	}
+	return positions;
+}
+
+void Snake::Die()
+{
+	std::cout << "DIE" << std::endl;
 }

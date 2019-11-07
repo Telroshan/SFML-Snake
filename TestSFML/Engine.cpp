@@ -146,16 +146,25 @@ void Engine::BuildBorder(float cellRadius)
 
 void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 {
-	sf::Vector2i playerGridPosition = WorldPositionToGridPosition(nextHeadPosition);
+	sf::Vector2i nextHeadGridPosition = WorldPositionToGridPosition(nextHeadPosition);
 
-	std::cout << "Grid pos : " << playerGridPosition.x << ", " << playerGridPosition.y
+	std::cout << "Grid pos : " << nextHeadGridPosition.x << ", " << nextHeadGridPosition.y
 		<< " \tGrid size : " << _rectanglesCount.x << ", " << _rectanglesCount.y
 		<< " \tWorld pos : " << nextHeadPosition.x << ", " << nextHeadPosition.y
 		<< " \tDirection : " << _player->GetDirection().x << ", " << _player->GetDirection().y << std::endl;
 
-	if (IsPositionInBorder(playerGridPosition))
+	if (IsPositionInBorder(nextHeadGridPosition))
 	{
 		_player->InvertDirection();
+	}
+
+	std::vector<sf::Vector2f> bodypartPositions = _player->GetMiddleBodypartPositions();
+	for (int i = 0; i < (int)bodypartPositions.size(); ++i)
+	{
+		sf::Vector2i gridPosition = WorldPositionToGridPosition(bodypartPositions[i]);
+		if (nextHeadGridPosition.x == gridPosition.x && nextHeadGridPosition.y == gridPosition.y) {
+			_player->Die();
+		}
 	}
 }
 
