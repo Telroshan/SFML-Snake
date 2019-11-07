@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <iostream>
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
@@ -51,6 +52,8 @@ void Engine::Update(float deltaTime)
 
 	_moveTimestamp += deltaTime;
 	if (_moveTimestamp > _moveInterval) {
+		sf::Vector2f nextPosition = _player->getPosition() + sf::Vector2f(_playerDirection.x * _cellSize.x, _playerDirection.y * _cellSize.y);
+		CheckCollisions(nextPosition);
 		_player->move(sf::Vector2f(_playerDirection.x * _cellSize.x, _playerDirection.y * _cellSize.y));
 		_moveTimestamp = 0.f;
 	}
@@ -130,6 +133,27 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 		++colorIndex;
 		if (colorIndex >= colorsLength) colorIndex = 0;
 	}
+}
+
+void Engine::CheckCollisions(sf::Vector2f nextPosition)
+{
+	sf::Vector2i playerGridPosition = GetPlayerGridPosition();
+	std::cout << playerGridPosition.x << ", " << playerGridPosition.y << " | " << _rectanglesCount.x << ", " << _rectanglesCount.y << std::endl;
+	if (playerGridPosition.x <= 1 || playerGridPosition.x >= _rectanglesCount.x - 2)
+	{
+		_playerDirection.x *= -1.f;
+	}
+	else if (playerGridPosition.y <= 1 || playerGridPosition.y >= _rectanglesCount.y - 2)
+	{
+		_playerDirection.y *= -1.f;
+	}
+}
+
+sf::Vector2i Engine::GetPlayerGridPosition() const
+{
+	sf::Vector2f playerPosition = _player->getPosition();
+	sf::Vector2i gridPosition(playerPosition.x / _cellSize.x, playerPosition.y / _cellSize.y);
+	return gridPosition;
 }
 
 void Engine::SetCellSize(sf::Vector2f cellSize)

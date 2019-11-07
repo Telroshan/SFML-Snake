@@ -18,6 +18,8 @@ public:
 
 private:
 	void BuildBorder(sf::Vector2f cellSize);
+	void CheckCollisions(sf::Vector2f nextPosition);
+	sf::Vector2i GetPlayerGridPosition() const;
 
 public:
 	void SetCellSize(sf::Vector2f cellSize);
