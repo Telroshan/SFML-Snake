@@ -16,6 +16,8 @@ public:
 	void SetDirection(const sf::Vector2i& direction);
 	void InvertDirection();
 
+	void Grow();
+
 	void Die();
 
 	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;

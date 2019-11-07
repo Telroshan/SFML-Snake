@@ -58,6 +58,28 @@ void Snake::InvertDirection()
 	_direction *= -1;
 }
 
+void Snake::Grow()
+{
+	float radius = _body[0].getRadius();
+	float size = radius * 2.f;
+	int bodyLength = (int)_body.size();
+
+	sf::CircleShape bodypart = sf::CircleShape(radius);
+	sf::CircleShape previous = _body[bodyLength - 1];
+	sf::Vector2f position = previous.getPosition();
+	sf::Vector2i gridPosition = Engine::GetInstance()->WorldPositionToGridPosition(position);
+
+	sf::Vector2i direction = bodyLength > 1
+		// If there's more than 2 parts, take the opposite of the direction between the 2 last parts
+		? gridPosition - Engine::GetInstance()->WorldPositionToGridPosition(_body[bodyLength - 2].getPosition())
+		// If there's only the head, take the opposite of the movement direction
+		: _direction * -1;
+
+	bodypart.setPosition(position - sf::Vector2f(direction.x * size, direction.y * size));
+	bodypart.setFillColor(sf::Color::Green);
+	_body.push_back(bodypart);
+}
+
 void Snake::Die()
 {
 	std::cout << "DIE" << std::endl;

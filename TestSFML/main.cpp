@@ -7,7 +7,7 @@ int main()
 	Engine snakeGame("Snake", windowSize);
 
 	snakeGame.SetCellSize(20);
-	snakeGame.SetMoveSpeed(2.f);
+	snakeGame.SetMoveSpeed(5.f);
 
 	snakeGame.Init();
 

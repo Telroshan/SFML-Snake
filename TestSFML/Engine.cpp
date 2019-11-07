@@ -192,6 +192,12 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 
 	sf::Vector2f fruitPosition = _fruit.getPosition();
 	sf::Vector2i fruitGridPosition = WorldPositionToGridPosition(fruitPosition);
+	if (nextHeadGridPosition.x == fruitGridPosition.x && nextHeadGridPosition.y == fruitGridPosition.y)
+	{
+		_player->Grow();
+		++_score;
+		PlaceFruit();
+	}
 }
 
 sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
