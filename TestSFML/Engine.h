@@ -16,7 +16,7 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	//void Init();
+	void Init();
 
 	bool IsRunning() const;
 

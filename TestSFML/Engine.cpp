@@ -16,7 +16,6 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 		std::cerr << "Couldn't load score font" << std::endl;
 	}
 	_scoreText.setFont(_font);
-	_scoreText.setString("000");
 	_scoreText.setFillColor(sf::Color::White);
 	_scoreText.setPosition(windowSize.x - 75.f, windowSize.y - 60.f);
 }
@@ -89,6 +88,15 @@ void Engine::Render()
 	DisplayScore();
 
 	_window->display();
+}
+
+void Engine::Init()
+{
+	_score = 0;
+
+	_scoreText.setString("000");
+
+	_player = new Snake(3, _cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius), sf::Vector2i(1, 0));
 }
 
 bool Engine::IsRunning() const
@@ -200,8 +208,6 @@ void Engine::SetCellSize(float cellRadius)
 	_cellRadius = cellRadius;
 
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellRadius, _windowSize.y / (int)cellRadius);
-
-	_player = new Snake(3, cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * cellRadius, (_rectanglesCount.y / 2) * cellRadius), sf::Vector2i(1, 0));
 
 	BuildBorder(cellRadius);
 }

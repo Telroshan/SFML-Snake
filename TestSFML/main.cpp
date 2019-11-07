@@ -9,6 +9,8 @@ int main()
 	snakeGame.SetCellSize(20);
 	snakeGame.SetMoveSpeed(2.f);
 
+	snakeGame.Init();
+
 	sf::Clock clock;
 	while (snakeGame.IsRunning())
 	{
