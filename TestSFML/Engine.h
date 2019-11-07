@@ -39,7 +39,6 @@ private:
 
 	void UpdateInputMenu();
 	void UpdateInputGame();
-	void UpdateInputEndscreen();
 
 	void UpdateGame(float deltaTime);
 
@@ -52,6 +51,8 @@ private:
 	void SetMode(Mode mode);
 
 	void SetScore(int score);
+
+	void InitText(sf::Text& text);
 
 public:
 	void SetCellSize(float cellSize);
@@ -74,15 +75,22 @@ private:
 
 	float _moveTimer;
 
+	sf::Text _gameTitle;
+
 	int _score;
 	sf::Text _scoreText;
 	sf::Font _font;
 
 	sf::RectangleShape _fruit;
 	sf::Text _playText;
+	sf::Text _exitText;
 
 	Mode _mode;
 
 	float _gameOverDelay;
 	float _gameOverTimer;
+
+	sf::Text _gameOverText;
+	sf::Text _beatScoreText;
+	sf::Text _finalScoreText;
 };

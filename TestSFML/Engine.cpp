@@ -19,14 +19,34 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	{
 		std::cerr << "Couldn't load score font" << std::endl;
 	}
-	_scoreText.setFont(_font);
-	_scoreText.setFillColor(sf::Color::White);
+
+	InitText(_gameTitle);
+	_gameTitle.setString("Snake");
+	_gameTitle.setCharacterSize(60);
+
+	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
+
+	InitText(_scoreText);
 	_scoreText.setPosition(windowSize.x - 75.f, windowSize.y - 60.f);
 
-	_playText.setFont(_font);
+	InitText(_playText);
 	_playText.setString("Press space to play");
-	_playText.setFillColor(sf::Color::White);
-	_playText.setPosition(windowSize.x / 2 - _playText.getLocalBounds().width / 2, windowSize.y - 60.f);
+	_playText.setPosition(_windowSize.x / 2 - _playText.getLocalBounds().width / 2, _windowSize.y - 120.f);
+
+	InitText(_exitText);
+	_exitText.setString("Press escape to exit");
+	_exitText.setPosition(_windowSize.x / 2 - _exitText.getLocalBounds().width / 2, _windowSize.y - 60.f);
+
+	InitText(_gameOverText);
+	_gameOverText.setString("GAME OVER");
+	_gameOverText.setCharacterSize(60);
+	_gameOverText.setPosition(_windowSize.x / 2 - _gameOverText.getLocalBounds().width / 2, _windowSize.y / 2 - _gameOverText.getLocalBounds().height / 2);
+
+	InitText(_beatScoreText);
+	_beatScoreText.setString("You beat the high score !");
+	_beatScoreText.setCharacterSize(45);
+
+	InitText(_finalScoreText);
 }
 
 Engine::~Engine()
@@ -45,13 +65,11 @@ void Engine::UpdateInput()
 	switch (_mode)
 	{
 	case Menu:
+	case Endscreen:
 		UpdateInputMenu();
 		break;
 	case Game:
 		UpdateInputGame();
-		break;
-	case Endscreen:
-		UpdateInputEndscreen();
 		break;
 	}
 }
@@ -239,6 +257,10 @@ void Engine::UpdateInputMenu()
 	{
 		SetMode(Mode::Game);
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		_window->close();
+	}
 }
 
 void Engine::UpdateInputGame()
@@ -258,14 +280,6 @@ void Engine::UpdateInputGame()
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 	{
 		_player->SetDirection(sf::Vector2i(-1, 0));
-	}
-}
-
-void Engine::UpdateInputEndscreen()
-{
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-	{
-		SetMode(Mode::Game);
 	}
 }
 
@@ -298,7 +312,9 @@ void Engine::UpdateGame(float deltaTime)
 
 void Engine::RenderMenu()
 {
+	_window->draw(_gameTitle);
 	_window->draw(_playText);
+	_window->draw(_exitText);
 }
 
 void Engine::RenderGame()
@@ -317,7 +333,9 @@ void Engine::RenderGame()
 
 void Engine::RenderEndScreen()
 {
+	_window->draw(_gameOverText);
 	_window->draw(_playText);
+	_window->draw(_exitText);
 }
 
 void Engine::InitGame()
@@ -362,6 +380,12 @@ void Engine::SetScore(int score)
 		text = "0" + text;
 	}
 	_scoreText.setString(text);
+}
+
+void Engine::InitText(sf::Text& text)
+{
+	text.setFont(_font);
+	text.setFillColor(sf::Color::White);
 }
 
 void Engine::SetCellSize(float cellRadius)
