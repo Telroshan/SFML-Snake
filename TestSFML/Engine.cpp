@@ -8,7 +8,8 @@ Engine* Engine::_instance{ nullptr };
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
 	_score(0),
-	_mode(Mode::Menu)
+	_mode(Mode::Menu),
+	_gameOverDelay(1.f)
 {
 	_instance = this;
 
@@ -70,7 +71,7 @@ void Engine::Update(float deltaTime)
 	case Menu:
 		break;
 	case Game:
-		UpdatePlayer(deltaTime);
+		UpdateGame(deltaTime);
 		break;
 	case GameOver:
 		break;
@@ -259,26 +260,30 @@ void Engine::UpdateInputGame()
 	}
 }
 
-void Engine::UpdatePlayer(float deltaTime)
+void Engine::UpdateGame(float deltaTime)
 {
-	if (_player->IsDead())
+	if (!_player->IsDead())
 	{
-		return;
-	}
-
-	_moveTimestamp += deltaTime;
-	if (_moveTimestamp > _moveInterval) {
-		sf::Vector2i direction = _player->GetDirection();
-		sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
-		CheckCollisions(nextHeadPosition);
-		if (_player->IsDead())
-		{
-			return;
+		_moveTimestamp += deltaTime;
+		if (_moveTimestamp > _moveInterval) {
+			sf::Vector2i direction = _player->GetDirection();
+			sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
+			CheckCollisions(nextHeadPosition);
+			if (!_player->IsDead())
+			{
+				direction = _player->GetDirection();
+				_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
+				_moveTimestamp = 0.f;
+			}
 		}
-
-		direction = _player->GetDirection();
-		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
-		_moveTimestamp = 0.f;
+	}
+	else
+	{
+		_gameOverElapsed += deltaTime;
+		if (_gameOverElapsed >= _gameOverDelay)
+		{
+			_mode = Mode::GameOver;
+		}
 	}
 }
 

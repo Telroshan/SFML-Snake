@@ -41,7 +41,7 @@ private:
 	void UpdateInputMenu();
 	void UpdateInputGame();
 
-	void UpdatePlayer(float deltaTime);
+	void UpdateGame(float deltaTime);
 
 	void RenderMenu();
 	void RenderGame();
@@ -77,4 +77,7 @@ private:
 	Mode _mode;
 
 	sf::Text _playText;
+
+	float _gameOverDelay;
+	float _gameOverElapsed;
 };
