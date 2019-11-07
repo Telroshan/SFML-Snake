@@ -65,15 +65,7 @@ void Engine::Update(float deltaTime)
 		}
 	}
 
-	_moveTimestamp += deltaTime;
-	if (_moveTimestamp > _moveInterval) {
-		sf::Vector2i direction = _player->GetDirection();
-		sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
-		CheckCollisions(nextHeadPosition);
-		direction = _player->GetDirection();
-		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
-		_moveTimestamp = 0.f;
-	}
+	UpdatePlayer(deltaTime);
 }
 
 void Engine::Render()
@@ -182,12 +174,14 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 
 	if (IsPositionInBorder(nextHeadGridPosition))
 	{
-		_player->InvertDirection();
+		_player->Die();
+		return;
 	}
 
 	if (_player->IsPositionInSnake(nextHeadGridPosition, true))
 	{
 		_player->Die();
+		return;
 	}
 
 	sf::Vector2f fruitPosition = _fruit.getPosition();
@@ -224,6 +218,29 @@ void Engine::PlaceFruit()
 	_fruit.setPosition(sf::Vector2f(position.x * _cellRadius, position.y * _cellRadius));
 
 	std::cout << _fruit.getPosition().x << ", " << _fruit.getPosition().y << std::endl;
+}
+
+void Engine::UpdatePlayer(float deltaTime)
+{
+	if (_player->IsDead())
+	{
+		return;
+	}
+
+	_moveTimestamp += deltaTime;
+	if (_moveTimestamp > _moveInterval) {
+		sf::Vector2i direction = _player->GetDirection();
+		sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
+		CheckCollisions(nextHeadPosition);
+		if (_player->IsDead())
+		{
+			return;
+		}
+
+		direction = _player->GetDirection();
+		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
+		_moveTimestamp = 0.f;
+	}
 }
 
 void Engine::DisplayScore()

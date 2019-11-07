@@ -22,7 +22,11 @@ public:
 
 	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
 
+	bool IsDead() const;
+
 private:
 	std::vector<sf::CircleShape> _body;
 	sf::Vector2i _direction;
+
+	bool _dead;
 };

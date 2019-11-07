@@ -12,7 +12,7 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 		_body[i].setPosition(position - sf::Vector2f(i * direction.x * bodypartWidth, i * direction.y * bodypartWidth));
 		_body[i].setFillColor(sf::Color::Green);
 	}
-	_body[0].setFillColor(sf::Color::Red);
+	_body[0].setFillColor(sf::Color::Cyan);
 }
 
 void Snake::Render(sf::RenderWindow* window) const
@@ -83,6 +83,11 @@ void Snake::Grow()
 void Snake::Die()
 {
 	std::cout << "DIE" << std::endl;
+	_dead = true;
+	for (int i = 0; i < _body.size(); ++i)
+	{
+		_body[i].setFillColor(sf::Color::Red);
+	}
 }
 
 bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const
@@ -99,4 +104,9 @@ bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) co
 	}
 
 	return false;
+}
+
+bool Snake::IsDead() const
+{
+	return _dead;
 }

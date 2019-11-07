@@ -31,6 +31,8 @@ private:
 
 	void PlaceFruit();
 
+	void UpdatePlayer(float deltaTime);
+
 public:
 	void SetCellSize(float cellSize);
 	void SetMoveSpeed(float speed);
