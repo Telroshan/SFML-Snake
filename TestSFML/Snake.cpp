@@ -10,6 +10,7 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 		_body[i].setPosition(position - sf::Vector2f(i * direction.x * bodypartWidth, i * direction.y * bodypartWidth));
 		_body[i].setFillColor(sf::Color::Green);
 	}
+	_body[0].setFillColor(sf::Color::Red);
 }
 
 void Snake::Render(sf::RenderWindow* window) const

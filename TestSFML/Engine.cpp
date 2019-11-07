@@ -58,8 +58,8 @@ void Engine::Update(float deltaTime)
 	_moveTimestamp += deltaTime;
 	if (_moveTimestamp > _moveInterval) {
 		sf::Vector2i direction = _player->GetDirection();
-		sf::Vector2f nextPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
-		CheckCollisions(nextPosition);
+		sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
+		CheckCollisions(nextHeadPosition);
 		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
 		_moveTimestamp = 0.f;
 	}
@@ -143,10 +143,13 @@ void Engine::BuildBorder(float cellRadius)
 	}
 }
 
-void Engine::CheckCollisions(sf::Vector2f nextPosition)
+void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 {
-	sf::Vector2i playerGridPosition = GetPlayerGridPosition();
-	std::cout << playerGridPosition.x << ", " << playerGridPosition.y << " | " << _rectanglesCount.x << ", " << _rectanglesCount.y << std::endl;
+	sf::Vector2i playerGridPosition = WorldPositionToGridPosition(nextHeadPosition);
+
+	std::cout << playerGridPosition.x << ", " << playerGridPosition.y << " | " << _rectanglesCount.x << ", " << _rectanglesCount.y
+		<< " | " << nextHeadPosition.x << ", " << nextHeadPosition.y << std::endl;
+
 	if (playerGridPosition.x <= 1 || playerGridPosition.x >= _rectanglesCount.x - 2)
 	{
 		_player->InvertDirectionX();
@@ -157,10 +160,9 @@ void Engine::CheckCollisions(sf::Vector2f nextPosition)
 	}
 }
 
-sf::Vector2i Engine::GetPlayerGridPosition() const
+sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
 {
-	sf::Vector2f playerPosition = _player->GetHeadPosition();
-	sf::Vector2i gridPosition((int)(playerPosition.x / _cellRadius), (int)(playerPosition.y / _cellRadius));
+	sf::Vector2i gridPosition((int)(position.x / _cellRadius), (int)(position.y / _cellRadius));
 	return gridPosition;
 }
 

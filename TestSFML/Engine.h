@@ -21,7 +21,7 @@ public:
 private:
 	void BuildBorder(float cellSize);
 	void CheckCollisions(sf::Vector2f nextPosition);
-	sf::Vector2i GetPlayerGridPosition() const;
+	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 	void DisplayScore();
 
 public:
