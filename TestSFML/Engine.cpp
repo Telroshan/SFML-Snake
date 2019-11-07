@@ -1,6 +1,7 @@
 #include "Engine.h"
 
-Engine::Engine(std::string title, sf::Vector2i windowSize) : _windowSize(windowSize)
+Engine::Engine(std::string title, sf::Vector2i windowSize) :
+	_windowSize(windowSize)
 {
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
 }
@@ -8,16 +9,20 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) : _windowSize(windowS
 Engine::~Engine()
 {
 	delete _window;
+	delete _player;
 }
 
-void Engine::Init(sf::Vector2f borderCellSize)
+void Engine::Init(sf::Vector2f cellSize)
 {
-	BuildBorder(borderCellSize);
+	_player = new sf::RectangleShape(cellSize);
+	_player->setPosition((_windowSize.x - cellSize.x) / 2, (_windowSize.y - cellSize.y) / 2);
+	_player->setFillColor(sf::Color::Green);
+
+	BuildBorder(cellSize);
 }
 
 void Engine::UpdateInput()
 {
-
 }
 
 void Engine::Update()
@@ -41,6 +46,8 @@ void Engine::Render()
 	{
 		_window->draw(_border.at(i));
 	}
+
+	_window->draw(*_player);
 
 	_window->display();
 }

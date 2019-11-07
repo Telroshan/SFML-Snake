@@ -10,7 +10,7 @@ public:
 	~Engine();
 
 public:
-	void Init(sf::Vector2f borderCellSize);
+	void Init(sf::Vector2f cellSize);
 	void UpdateInput();
 	void Update();
 	void Render();
@@ -25,4 +25,6 @@ private:
 	sf::Vector2i _windowSize;
 
 	std::vector<sf::RectangleShape> _border;
+
+	sf::RectangleShape* _player;
 };
