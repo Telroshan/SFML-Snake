@@ -2,9 +2,14 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
+	int width = 600;
+	int height = 400;
+
+	sf::RenderWindow window(sf::VideoMode(width, height), "Snake");
+
+	sf::RectangleShape shape(sf::Vector2f(20.f, 20.f));
 	shape.setFillColor(sf::Color::Green);
+	shape.setPosition(0, 0);
 
 	while (window.isOpen())
 	{
@@ -16,7 +21,9 @@ int main()
 		}
 
 		window.clear();
+		
 		window.draw(shape);
+
 		window.display();
 	}
 
