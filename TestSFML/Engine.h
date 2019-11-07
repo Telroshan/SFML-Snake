@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Snake.h"
 
 class Engine
 {
@@ -36,7 +37,7 @@ private:
 
 	std::vector<sf::RectangleShape> _border;
 
-	sf::CircleShape* _player;
+	Snake* _player;
 
 	sf::Vector2i _playerDirection;
 

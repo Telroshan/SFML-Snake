@@ -62,9 +62,9 @@ void Engine::Update(float deltaTime)
 
 	_moveTimestamp += deltaTime;
 	if (_moveTimestamp > _moveInterval) {
-		sf::Vector2f nextPosition = _player->getPosition() + sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius);
+		sf::Vector2f nextPosition = _player->GetPosition() + sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius);
 		CheckCollisions(nextPosition);
-		_player->move(sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius));
+		_player->Move(sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius));
 		_moveTimestamp = 0.f;
 	}
 }
@@ -78,7 +78,7 @@ void Engine::Render()
 		_window->draw(_border.at(i));
 	}
 
-	_window->draw(*_player);
+	_player->Render(_window);
 
 	DisplayScore();
 
@@ -163,8 +163,8 @@ void Engine::CheckCollisions(sf::Vector2f nextPosition)
 
 sf::Vector2i Engine::GetPlayerGridPosition() const
 {
-	sf::Vector2f playerPosition = _player->getPosition();
-	sf::Vector2i gridPosition((int) (playerPosition.x / _cellRadius), (int) (playerPosition.y / _cellRadius));
+	sf::Vector2f playerPosition = _player->GetPosition();
+	sf::Vector2i gridPosition((int)(playerPosition.x / _cellRadius), (int)(playerPosition.y / _cellRadius));
 	return gridPosition;
 }
 
@@ -184,9 +184,7 @@ void Engine::SetCellSize(float cellRadius)
 
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellRadius, _windowSize.y / (int)cellRadius);
 
-	_player = new sf::CircleShape(cellRadius / 2.f);
-	_player->setPosition((_rectanglesCount.x / 2) * cellRadius, (_rectanglesCount.y / 2) * cellRadius);
-	_player->setFillColor(sf::Color::Green);
+	_player = new Snake(cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * cellRadius, (_rectanglesCount.y / 2) * cellRadius));
 
 	BuildBorder(cellRadius);
 }
