@@ -3,6 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include "Snake.h"
 
+enum Mode
+{
+	Menu = 0,
+	Game = 1,
+	GameOver = 2,
+};
+
 class Engine
 {
 public:
@@ -31,7 +38,14 @@ private:
 
 	void PlaceFruit();
 
+	void UpdateInputMenu();
+	void UpdateInputGame();
+
 	void UpdatePlayer(float deltaTime);
+
+	void RenderMenu();
+	void RenderGame();
+	void RenderEndScreen();
 
 public:
 	void SetCellSize(float cellSize);
@@ -59,4 +73,8 @@ private:
 	sf::Font _font;
 
 	sf::RectangleShape _fruit;
+
+	Mode _mode;
+
+	sf::Text _playText;
 };

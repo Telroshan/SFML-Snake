@@ -7,7 +7,8 @@ Engine* Engine::_instance{ nullptr };
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
-	_score(0)
+	_score(0),
+	_mode(Mode::Menu)
 {
 	_instance = this;
 
@@ -20,6 +21,11 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_scoreText.setFont(_font);
 	_scoreText.setFillColor(sf::Color::White);
 	_scoreText.setPosition(windowSize.x - 75.f, windowSize.y - 60.f);
+
+	_playText.setFont(_font);
+	_playText.setString("Press space to play");
+	_playText.setFillColor(sf::Color::White);
+	_playText.setPosition(windowSize.x / 2 - _playText.getLocalBounds().width / 2, windowSize.y - 60.f);
 }
 
 Engine::~Engine()
@@ -35,21 +41,15 @@ const Engine* Engine::GetInstance()
 
 void Engine::UpdateInput()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	switch (_mode)
 	{
-		_player->SetDirection(sf::Vector2i(0, -1));
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		_player->SetDirection(sf::Vector2i(0, 1));
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		_player->SetDirection(sf::Vector2i(1, 0));
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-	{
-		_player->SetDirection(sf::Vector2i(-1, 0));
+	case Menu:
+	case GameOver:
+		UpdateInputMenu();
+		break;
+	case Game:
+		UpdateInputGame();
+		break;
 	}
 }
 
@@ -65,23 +65,34 @@ void Engine::Update(float deltaTime)
 		}
 	}
 
-	UpdatePlayer(deltaTime);
+	switch (_mode)
+	{
+	case Menu:
+		break;
+	case Game:
+		UpdatePlayer(deltaTime);
+		break;
+	case GameOver:
+		break;
+	}
 }
 
 void Engine::Render()
 {
 	_window->clear();
 
-	for (int i = 0; i < _border.size(); ++i)
+	switch (_mode)
 	{
-		_window->draw(_border.at(i));
+	case Menu:
+		RenderMenu();
+		break;
+	case Game:
+		RenderGame();
+		break;
+	case GameOver:
+		RenderEndScreen();
+		break;
 	}
-
-	_player->Render(_window);
-
-	_window->draw(_fruit);
-
-	DisplayScore();
 
 	_window->display();
 }
@@ -220,6 +231,34 @@ void Engine::PlaceFruit()
 	std::cout << _fruit.getPosition().x << ", " << _fruit.getPosition().y << std::endl;
 }
 
+void Engine::UpdateInputMenu()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		_mode = Mode::Game;
+	}
+}
+
+void Engine::UpdateInputGame()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	{
+		_player->SetDirection(sf::Vector2i(0, -1));
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		_player->SetDirection(sf::Vector2i(0, 1));
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		_player->SetDirection(sf::Vector2i(1, 0));
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		_player->SetDirection(sf::Vector2i(-1, 0));
+	}
+}
+
 void Engine::UpdatePlayer(float deltaTime)
 {
 	if (_player->IsDead())
@@ -241,6 +280,29 @@ void Engine::UpdatePlayer(float deltaTime)
 		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
 		_moveTimestamp = 0.f;
 	}
+}
+
+void Engine::RenderMenu()
+{
+	_window->draw(_playText);
+}
+
+void Engine::RenderGame()
+{
+	for (int i = 0; i < _border.size(); ++i)
+	{
+		_window->draw(_border.at(i));
+	}
+
+	_player->Render(_window);
+
+	_window->draw(_fruit);
+
+	DisplayScore();
+}
+
+void Engine::RenderEndScreen()
+{
 }
 
 void Engine::DisplayScore()
