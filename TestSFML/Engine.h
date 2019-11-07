@@ -39,8 +39,6 @@ private:
 
 	Snake* _player;
 
-	sf::Vector2i _playerDirection;
-
 	float _moveInterval;
 
 	float _moveTimestamp;

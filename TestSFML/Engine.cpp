@@ -3,7 +3,6 @@
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
-	_playerDirection(1, 0),
 	_score(0)
 {
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
@@ -28,23 +27,19 @@ void Engine::UpdateInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 	{
-		_playerDirection.x = 0;
-		_playerDirection.y = -1;
+		_player->SetDirection(sf::Vector2i(0, -1));
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		_playerDirection.x = 0;
-		_playerDirection.y = 1;
+		_player->SetDirection(sf::Vector2i(0, 1));
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		_playerDirection.x = 1;
-		_playerDirection.y = 0;
+		_player->SetDirection(sf::Vector2i(1, 0));
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 	{
-		_playerDirection.x = -1;
-		_playerDirection.y = 0;
+		_player->SetDirection(sf::Vector2i(-1, 0));
 	}
 }
 
@@ -62,9 +57,10 @@ void Engine::Update(float deltaTime)
 
 	_moveTimestamp += deltaTime;
 	if (_moveTimestamp > _moveInterval) {
-		sf::Vector2f nextPosition = _player->GetPosition() + sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius);
+		sf::Vector2i direction = _player->GetDirection();
+		sf::Vector2f nextPosition = _player->GetPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
 		CheckCollisions(nextPosition);
-		_player->Move(sf::Vector2f(_playerDirection.x * _cellRadius, _playerDirection.y * _cellRadius));
+		_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
 		_moveTimestamp = 0.f;
 	}
 }
@@ -153,11 +149,11 @@ void Engine::CheckCollisions(sf::Vector2f nextPosition)
 	std::cout << playerGridPosition.x << ", " << playerGridPosition.y << " | " << _rectanglesCount.x << ", " << _rectanglesCount.y << std::endl;
 	if (playerGridPosition.x <= 1 || playerGridPosition.x >= _rectanglesCount.x - 2)
 	{
-		_playerDirection.x *= -1;
+		_player->InvertDirectionX();
 	}
 	else if (playerGridPosition.y <= 1 || playerGridPosition.y >= _rectanglesCount.y - 2)
 	{
-		_playerDirection.y *= -1;
+		_player->InvertDirectionY();
 	}
 }
 
@@ -184,7 +180,7 @@ void Engine::SetCellSize(float cellRadius)
 
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellRadius, _windowSize.y / (int)cellRadius);
 
-	_player = new Snake(cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * cellRadius, (_rectanglesCount.y / 2) * cellRadius));
+	_player = new Snake(3, cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * cellRadius, (_rectanglesCount.y / 2) * cellRadius), sf::Vector2i(1, 0));
 
 	BuildBorder(cellRadius);
 }
