@@ -13,7 +13,7 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 {
 	_instance = this;
 
-	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
+	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
 
 	if (!_font.loadFromFile("Fonts\\arial.ttf"))
 	{
