@@ -2,7 +2,7 @@
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
-	_playerDirection(0.f, 0.f)
+	_playerDirection(1.f, 0.f)
 {
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
 }
@@ -13,41 +13,27 @@ Engine::~Engine()
 	delete _player;
 }
 
-void Engine::Init(sf::Vector2f cellSize)
-{
-	_player = new sf::RectangleShape(cellSize);
-	_player->setPosition((_windowSize.x - cellSize.x) / 2, (_windowSize.y - cellSize.y) / 2);
-	_player->setFillColor(sf::Color::Green);
-
-	BuildBorder(cellSize);
-}
-
 void Engine::UpdateInput()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 	{
+		_playerDirection.x = 0.f;
 		_playerDirection.y = -1.f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
+		_playerDirection.x = 0.f;
 		_playerDirection.y = 1.f;
 	}
-	else
-	{
-		_playerDirection.y = 0.f;
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		_playerDirection.x = 1.f;
+		_playerDirection.y = 0.f;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 	{
 		_playerDirection.x = -1.f;
-	}
-	else
-	{
-		_playerDirection.x = 0.f;
+		_playerDirection.y = 0.f;
 	}
 }
 
@@ -63,7 +49,11 @@ void Engine::Update(float deltaTime)
 		}
 	}
 
-	_player->move(_playerDirection * deltaTime);
+	_moveTimestamp += deltaTime;
+	if (_moveTimestamp > _moveInterval) {
+		_player->move(sf::Vector2f(_playerDirection.x * _cellSize.x, _playerDirection.y * _cellSize.y));
+		_moveTimestamp = 0.f;
+	}
 }
 
 void Engine::Render()
@@ -87,14 +77,14 @@ bool Engine::IsRunning() const
 
 void Engine::BuildBorder(sf::Vector2f cellSize)
 {
-	sf::Vector2i rectanglesCount(_windowSize.x / (int)cellSize.x, _windowSize.y / (int)cellSize.y);
+	_border.empty();
 
 	const int colorsLength = 2;
 	sf::Color colors[colorsLength] = { sf::Color::Cyan, sf::Color::Blue };
 	int colorIndex = 0;
 
 	// Top left => top right
-	for (int x = 0; x < rectanglesCount.x - 1; ++x)
+	for (int x = 0; x < _rectanglesCount.x - 1; ++x)
 	{
 		sf::RectangleShape cell(cellSize);
 		cell.setFillColor(colors[colorIndex]);
@@ -106,7 +96,7 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	}
 
 	// Top right => bottom right
-	for (int y = 0; y < rectanglesCount.y - 1; ++y)
+	for (int y = 0; y < _rectanglesCount.y - 1; ++y)
 	{
 		sf::RectangleShape cell(cellSize);
 		cell.setFillColor(colors[colorIndex]);
@@ -118,7 +108,7 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	}
 
 	// Bottom right => bottom left
-	for (int x = rectanglesCount.x - 1; x > 0; --x)
+	for (int x = _rectanglesCount.x - 1; x > 0; --x)
 	{
 		sf::RectangleShape cell(cellSize);
 		cell.setFillColor(colors[colorIndex]);
@@ -130,7 +120,7 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 	}
 
 	// Bottom left => top left
-	for (int y = 1; y < rectanglesCount.y; ++y)
+	for (int y = 1; y < _rectanglesCount.y; ++y)
 	{
 		sf::RectangleShape cell(cellSize);
 		cell.setFillColor(colors[colorIndex]);
@@ -140,4 +130,22 @@ void Engine::BuildBorder(sf::Vector2f cellSize)
 		++colorIndex;
 		if (colorIndex >= colorsLength) colorIndex = 0;
 	}
+}
+
+void Engine::SetCellSize(sf::Vector2f cellSize)
+{
+	_cellSize = cellSize;
+
+	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize.x, _windowSize.y / (int)cellSize.y);
+
+	_player = new sf::RectangleShape(cellSize);
+	_player->setPosition((_rectanglesCount.x / 2) * cellSize.x, (_rectanglesCount.y / 2) * cellSize.y);
+	_player->setFillColor(sf::Color::Green);
+
+	BuildBorder(cellSize);
+}
+
+void Engine::SetMoveSpeed(float speed)
+{
+	_moveInterval = 1.f / speed;
 }

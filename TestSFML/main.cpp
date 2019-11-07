@@ -4,22 +4,23 @@ int main()
 {
 	sf::Vector2i windowSize(600, 400);
 
-	Engine engine("Snake", windowSize);
-	
-	sf::Vector2f rectangleSize(20, 20);
-	
-	engine.Init(rectangleSize);
+	Engine snakeGame("Snake", windowSize);
+
+	sf::Vector2f cellSize(20, 20);
+
+	snakeGame.SetCellSize(cellSize);
+	snakeGame.SetMoveSpeed(2.f);
 
 	sf::Clock clock;
-	while (engine.IsRunning())
+	while (snakeGame.IsRunning())
 	{
 		sf::Time deltaTime = clock.restart();
 
-		engine.UpdateInput();
+		snakeGame.UpdateInput();
 
-		engine.Update(deltaTime.asMilliseconds());
+		snakeGame.Update(deltaTime.asSeconds());
 
-		engine.Render();
+		snakeGame.Render();
 	}
 
 	return 0;

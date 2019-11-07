@@ -10,7 +10,6 @@ public:
 	~Engine();
 
 public:
-	void Init(sf::Vector2f cellSize);
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
@@ -20,13 +19,24 @@ public:
 private:
 	void BuildBorder(sf::Vector2f cellSize);
 
+public:
+	void SetCellSize(sf::Vector2f cellSize);
+	void SetMoveSpeed(float speed);
+
 private:
 	sf::RenderWindow* _window;
 	sf::Vector2i _windowSize;
+
+	sf::Vector2f _cellSize;
+	sf::Vector2i _rectanglesCount;
 
 	std::vector<sf::RectangleShape> _border;
 
 	sf::RectangleShape* _player;
 
-	sf::Vector2f _playerDirection;
+	sf::Vector2i _playerDirection;
+
+	float _moveInterval;
+
+	float _moveTimestamp;
 };
