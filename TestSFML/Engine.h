@@ -10,6 +10,8 @@ public:
 
 	~Engine();
 
+	static const Engine* GetInstance();
+
 public:
 	void UpdateInput();
 	void Update(float deltaTime);
@@ -18,12 +20,13 @@ public:
 
 	bool IsRunning() const;
 
+	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
+
 private:
 	void BuildBorder(float cellSize);
 	void CheckCollisions(sf::Vector2f nextPosition);
 	void DisplayScore();
 
-	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
 
 public:
@@ -31,6 +34,8 @@ public:
 	void SetMoveSpeed(float speed);
 
 private:
+	static Engine* _instance;
+
 	sf::RenderWindow* _window;
 	sf::Vector2i _windowSize;
 

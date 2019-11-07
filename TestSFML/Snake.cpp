@@ -1,5 +1,6 @@
 #include "Snake.h"
 #include <iostream>
+#include "Engine.h"
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
 	_body(length),
@@ -57,18 +58,23 @@ void Snake::InvertDirection()
 	_direction *= -1;
 }
 
-const std::vector<sf::Vector2f> Snake::GetMiddleBodypartPositions() const
-{
-	std::vector<sf::Vector2f> positions(_body.size());
-	// Exclude first and last positions
-	for (int i = 1; i < (int)_body.size() - 1; ++i)
-	{
-		positions.push_back(_body[i].getPosition());
-	}
-	return positions;
-}
-
 void Snake::Die()
 {
 	std::cout << "DIE" << std::endl;
+}
+
+bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const
+{
+	int max = (int)_body.size();
+	if (ignoreLastPart) --max;
+	for (int i = 0; i < max; ++i)
+	{
+		sf::Vector2i bodyPartPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[i].getPosition());
+		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

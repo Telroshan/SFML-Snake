@@ -1,10 +1,14 @@
 #include "Engine.h"
 #include <iostream>
 
+Engine* Engine::_instance{ nullptr };
+
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_windowSize(windowSize),
 	_score(0)
 {
+	_instance = this;
+
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
 
 	if (!_font.loadFromFile("Fonts\\arial.ttf"))
@@ -21,6 +25,11 @@ Engine::~Engine()
 {
 	delete _window;
 	delete _player;
+}
+
+const Engine* Engine::GetInstance()
+{
+	return Engine::_instance;
 }
 
 void Engine::UpdateInput()
@@ -158,13 +167,9 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 		_player->InvertDirection();
 	}
 
-	std::vector<sf::Vector2f> bodypartPositions = _player->GetMiddleBodypartPositions();
-	for (int i = 0; i < (int)bodypartPositions.size(); ++i)
+	if (_player->IsPositionInSnake(nextHeadGridPosition, true))
 	{
-		sf::Vector2i gridPosition = WorldPositionToGridPosition(bodypartPositions[i]);
-		if (nextHeadGridPosition.x == gridPosition.x && nextHeadGridPosition.y == gridPosition.y) {
-			_player->Die();
-		}
+		_player->Die();
 	}
 }
 

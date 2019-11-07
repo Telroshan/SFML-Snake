@@ -16,9 +16,9 @@ public:
 	void SetDirection(const sf::Vector2i& direction);
 	void InvertDirection();
 
-	const std::vector<sf::Vector2f> GetMiddleBodypartPositions() const;
-
 	void Die();
+
+	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
 
 private:
 	std::vector<sf::CircleShape> _body;
