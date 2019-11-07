@@ -7,7 +7,7 @@ enum Mode
 {
 	Menu = 0,
 	Game = 1,
-	GameOver = 2,
+	Endscreen = 2,
 };
 
 class Engine
@@ -32,7 +32,6 @@ public:
 private:
 	void BuildBorder(float cellSize);
 	void CheckCollisions(sf::Vector2f nextPosition);
-	void DisplayScore();
 
 	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
 
@@ -40,12 +39,19 @@ private:
 
 	void UpdateInputMenu();
 	void UpdateInputGame();
+	void UpdateInputEndscreen();
 
 	void UpdateGame(float deltaTime);
 
 	void RenderMenu();
 	void RenderGame();
 	void RenderEndScreen();
+	
+	void InitGame();
+
+	void SetMode(Mode mode);
+
+	void SetScore(int score);
 
 public:
 	void SetCellSize(float cellSize);
@@ -66,18 +72,17 @@ private:
 
 	float _moveInterval;
 
-	float _moveTimestamp;
+	float _moveTimer;
 
 	int _score;
 	sf::Text _scoreText;
 	sf::Font _font;
 
 	sf::RectangleShape _fruit;
+	sf::Text _playText;
 
 	Mode _mode;
 
-	sf::Text _playText;
-
 	float _gameOverDelay;
-	float _gameOverElapsed;
+	float _gameOverTimer;
 };

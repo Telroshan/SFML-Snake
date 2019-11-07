@@ -45,11 +45,13 @@ void Engine::UpdateInput()
 	switch (_mode)
 	{
 	case Menu:
-	case GameOver:
 		UpdateInputMenu();
 		break;
 	case Game:
 		UpdateInputGame();
+		break;
+	case Endscreen:
+		UpdateInputEndscreen();
 		break;
 	}
 }
@@ -73,7 +75,7 @@ void Engine::Update(float deltaTime)
 	case Game:
 		UpdateGame(deltaTime);
 		break;
-	case GameOver:
+	case Endscreen:
 		break;
 	}
 }
@@ -90,7 +92,7 @@ void Engine::Render()
 	case Game:
 		RenderGame();
 		break;
-	case GameOver:
+	case Endscreen:
 		RenderEndScreen();
 		break;
 	}
@@ -100,17 +102,16 @@ void Engine::Render()
 
 void Engine::Init()
 {
-	srand((unsigned int)time(NULL));
-
-	_score = 0;
-
-	_scoreText.setString("000");
-
-	_player = new Snake(3, _cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius), sf::Vector2i(1, 0));
-
-	_fruit = sf::RectangleShape(sf::Vector2f(_cellRadius, _cellRadius));
-	_fruit.setFillColor(sf::Color::White);
-	PlaceFruit();
+	switch (_mode)
+	{
+	case Menu:
+		break;
+	case Game:
+		InitGame();
+		break;
+	case Endscreen:
+		break;
+	}
 }
 
 bool Engine::IsRunning() const
@@ -201,7 +202,7 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 	if (nextHeadGridPosition.x == fruitGridPosition.x && nextHeadGridPosition.y == fruitGridPosition.y)
 	{
 		_player->Grow();
-		++_score;
+		SetScore(_score + 1);
 		PlaceFruit();
 	}
 }
@@ -236,7 +237,7 @@ void Engine::UpdateInputMenu()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		_mode = Mode::Game;
+		SetMode(Mode::Game);
 	}
 }
 
@@ -260,12 +261,20 @@ void Engine::UpdateInputGame()
 	}
 }
 
+void Engine::UpdateInputEndscreen()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		SetMode(Mode::Game);
+	}
+}
+
 void Engine::UpdateGame(float deltaTime)
 {
 	if (!_player->IsDead())
 	{
-		_moveTimestamp += deltaTime;
-		if (_moveTimestamp > _moveInterval) {
+		_moveTimer += deltaTime;
+		if (_moveTimer > _moveInterval) {
 			sf::Vector2i direction = _player->GetDirection();
 			sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
 			CheckCollisions(nextHeadPosition);
@@ -273,16 +282,16 @@ void Engine::UpdateGame(float deltaTime)
 			{
 				direction = _player->GetDirection();
 				_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
-				_moveTimestamp = 0.f;
+				_moveTimer = 0.f;
 			}
 		}
 	}
 	else
 	{
-		_gameOverElapsed += deltaTime;
-		if (_gameOverElapsed >= _gameOverDelay)
+		_gameOverTimer += deltaTime;
+		if (_gameOverTimer >= _gameOverDelay)
 		{
-			_mode = Mode::GameOver;
+			SetMode(Mode::Endscreen);
 		}
 	}
 }
@@ -303,21 +312,56 @@ void Engine::RenderGame()
 
 	_window->draw(_fruit);
 
-	DisplayScore();
+	_window->draw(_scoreText);
 }
 
 void Engine::RenderEndScreen()
 {
+	_window->draw(_playText);
 }
 
-void Engine::DisplayScore()
+void Engine::InitGame()
 {
+	srand((unsigned int)time(NULL));
+
+	SetScore(0);
+
+	_moveTimer = 0;
+
+	_player = new Snake(3, _cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius), sf::Vector2i(1, 0));
+
+	_fruit = sf::RectangleShape(sf::Vector2f(_cellRadius, _cellRadius));
+	_fruit.setFillColor(sf::Color::White);
+	PlaceFruit();
+
+	_gameOverTimer = 0;
+}
+
+void Engine::SetMode(Mode mode)
+{
+	_mode = mode;
+	switch (_mode)
+	{
+	case Menu:
+		break;
+	case Game:
+		InitGame();
+		break;
+	case Endscreen:
+		break;
+	default:
+		break;
+	}
+}
+
+void Engine::SetScore(int score)
+{
+	_score = score;
 	std::string text = std::to_string(_score);
 	while (text.length() < 3) {
 		text = "0" + text;
 	}
 	_scoreText.setString(text);
-	_window->draw(_scoreText);
 }
 
 void Engine::SetCellSize(float cellRadius)
