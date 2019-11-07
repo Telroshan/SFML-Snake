@@ -7,9 +7,10 @@ int main()
 
 	sf::RenderWindow window(sf::VideoMode(width, height), "Snake");
 
-	sf::RectangleShape shape(sf::Vector2f(20.f, 20.f));
+	sf::Vector2f rectangleSize(20.f, 20.f);
+	sf::RectangleShape shape(rectangleSize);
 	shape.setFillColor(sf::Color::Green);
-	shape.setPosition(0, 0);
+	shape.setPosition((width - rectangleSize.x) / 2.f, (height - rectangleSize.y) / 2.f);
 
 	while (window.isOpen())
 	{
