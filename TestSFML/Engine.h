@@ -29,6 +29,8 @@ private:
 
 	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
 
+	void PlaceFruit();
+
 public:
 	void SetCellSize(float cellSize);
 	void SetMoveSpeed(float speed);
@@ -53,4 +55,6 @@ private:
 	int _score;
 	sf::Text _scoreText;
 	sf::Font _font;
+
+	sf::RectangleShape _fruit;
 };

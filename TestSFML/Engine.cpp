@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 Engine* Engine::_instance{ nullptr };
 
@@ -85,6 +87,8 @@ void Engine::Render()
 
 	_player->Render(_window);
 
+	_window->draw(_fruit);
+
 	DisplayScore();
 
 	_window->display();
@@ -92,11 +96,17 @@ void Engine::Render()
 
 void Engine::Init()
 {
+	srand((unsigned int)time(NULL));
+
 	_score = 0;
 
 	_scoreText.setString("000");
 
 	_player = new Snake(3, _cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius), sf::Vector2i(1, 0));
+
+	_fruit = sf::RectangleShape(sf::Vector2f(_cellRadius, _cellRadius));
+	_fruit.setFillColor(sf::Color::White);
+	PlaceFruit();
 }
 
 bool Engine::IsRunning() const
@@ -179,6 +189,9 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 	{
 		_player->Die();
 	}
+
+	sf::Vector2f fruitPosition = _fruit.getPosition();
+	sf::Vector2i fruitGridPosition = WorldPositionToGridPosition(fruitPosition);
 }
 
 sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
@@ -191,6 +204,20 @@ bool Engine::IsPositionInBorder(sf::Vector2i gridPosition) const
 {
 	return gridPosition.x == 0 || gridPosition.x == _rectanglesCount.x - 1
 		|| gridPosition.y == 0 || gridPosition.y == _rectanglesCount.y - 1;
+}
+
+void Engine::PlaceFruit()
+{
+	sf::Vector2i position;
+	do
+	{
+		// Random between borders
+		position = sf::Vector2i(rand() % (_rectanglesCount.x - 1) + 1, rand() % (_rectanglesCount.y - 1) + 1);
+	} while (_player->IsPositionInSnake(position, false) || IsPositionInBorder(position));
+
+	_fruit.setPosition(sf::Vector2f(position.x * _cellRadius, position.y * _cellRadius));
+
+	std::cout << _fruit.getPosition().x << ", " << _fruit.getPosition().y << std::endl;
 }
 
 void Engine::DisplayScore()
