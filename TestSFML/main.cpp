@@ -4,26 +4,52 @@ void traceBorder(sf::Vector2i windowSize, sf::Vector2f cellSize, std::vector<sf:
 {
 	sf::Vector2i rectanglesCount(windowSize.x / (int)cellSize.x, windowSize.y / (int)cellSize.y);
 
-	for (int x = 0; x < rectanglesCount.x; ++x)
+	const int colorsLength = 2;
+	sf::Color colors[colorsLength] = { sf::Color::Cyan, sf::Color::Blue };
+	int colorIndex = 0;
+
+	for (int x = 0; x < rectanglesCount.x - 1; ++x)
 	{
-		for (int y = 0; y < 2; ++y)
-		{
-			sf::RectangleShape cell(cellSize);
-			cell.setFillColor(sf::Color::Cyan);
-			cell.setPosition(x * cellSize.x, y * (windowSize.y - cellSize.y));
-			border.push_back(cell);
-		}
+		sf::RectangleShape cell(cellSize);
+		cell.setFillColor(colors[colorIndex]);
+		cell.setPosition(x * cellSize.x, 0);
+		border.push_back(cell);
+
+		++colorIndex;
+		if (colorIndex >= colorsLength) colorIndex = 0;
 	}
 
-	for (int y = 0; y < rectanglesCount.y; ++y)
+	for (int y = 0; y < rectanglesCount.y - 1; ++y)
 	{
-		for (int x = 0; x < 2; ++x)
-		{
-			sf::RectangleShape cell(cellSize);
-			cell.setFillColor(sf::Color::Cyan);
-			cell.setPosition(x * (windowSize.x - cellSize.x), y * cellSize.y);
-			border.push_back(cell);
-		}
+		sf::RectangleShape cell(cellSize);
+		cell.setFillColor(colors[colorIndex]);
+		cell.setPosition(windowSize.x - cellSize.x, y * cellSize.y);
+		border.push_back(cell);
+
+		++colorIndex;
+		if (colorIndex >= colorsLength) colorIndex = 0;
+	}
+
+	for (int x = rectanglesCount.x - 1; x > 0; --x)
+	{
+		sf::RectangleShape cell(cellSize);
+		cell.setFillColor(colors[colorIndex]);
+		cell.setPosition(x * cellSize.x, windowSize.y - cellSize.y);
+		border.push_back(cell);
+
+		++colorIndex;
+		if (colorIndex >= colorsLength) colorIndex = 0;
+	}
+
+	for (int y = 1; y < rectanglesCount.y; ++y)
+	{
+		sf::RectangleShape cell(cellSize);
+		cell.setFillColor(colors[colorIndex]);
+		cell.setPosition(0, y * cellSize.y);
+		border.push_back(cell);
+
+		++colorIndex;
+		if (colorIndex >= colorsLength) colorIndex = 0;
 	}
 }
 
@@ -38,26 +64,6 @@ int main()
 	float top = 0.f;
 	float right = windowSize.x - rectangleSize.x;
 	float bottom = windowSize.y - rectangleSize.y;
-
-	sf::RectangleShape rectangle1(rectangleSize);
-	rectangle1.setFillColor(sf::Color::Green);
-	rectangle1.setPosition((windowSize.x - rectangleSize.x) / 2.f, (windowSize.y - rectangleSize.y) / 2.f);
-
-	sf::RectangleShape rectangle2(rectangleSize);
-	rectangle2.setFillColor(sf::Color::Red);
-	rectangle2.setPosition(left, top);
-
-	sf::RectangleShape rectangle3(rectangleSize);
-	rectangle3.setFillColor(sf::Color::Blue);
-	rectangle3.setPosition(left, bottom);
-
-	sf::RectangleShape rectangle4(rectangleSize);
-	rectangle4.setFillColor(sf::Color::Magenta);
-	rectangle4.setPosition(right, top);
-
-	sf::RectangleShape rectangle5(rectangleSize);
-	rectangle5.setFillColor(sf::Color::Yellow);
-	rectangle5.setPosition(right, bottom);
 
 	std::vector<sf::RectangleShape> border;
 	traceBorder(windowSize, rectangleSize, border);
@@ -77,12 +83,6 @@ int main()
 		{
 			window.draw(border.at(i));
 		}
-
-		window.draw(rectangle1);
-		window.draw(rectangle2);
-		window.draw(rectangle3);
-		window.draw(rectangle4);
-		window.draw(rectangle5);
 
 		window.display();
 	}
