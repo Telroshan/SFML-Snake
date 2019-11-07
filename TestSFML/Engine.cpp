@@ -1,7 +1,8 @@
 #include "Engine.h"
 
 Engine::Engine(std::string title, sf::Vector2i windowSize) :
-	_windowSize(windowSize)
+	_windowSize(windowSize),
+	_playerDirection(0.f, 0.f)
 {
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title);
 }
@@ -23,9 +24,34 @@ void Engine::Init(sf::Vector2f cellSize)
 
 void Engine::UpdateInput()
 {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	{
+		_playerDirection.y = -1.f;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		_playerDirection.y = 1.f;
+	}
+	else
+	{
+		_playerDirection.y = 0.f;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		_playerDirection.x = 1.f;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		_playerDirection.x = -1.f;
+	}
+	else
+	{
+		_playerDirection.x = 0.f;
+	}
 }
 
-void Engine::Update()
+void Engine::Update(float deltaTime)
 {
 	sf::Event event;
 	while (_window->pollEvent(event))
@@ -36,6 +62,8 @@ void Engine::Update()
 			return;
 		}
 	}
+
+	_player->move(_playerDirection * deltaTime);
 }
 
 void Engine::Render()

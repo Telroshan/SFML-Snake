@@ -10,11 +10,14 @@ int main()
 	
 	engine.Init(rectangleSize);
 
+	sf::Clock clock;
 	while (engine.IsRunning())
 	{
+		sf::Time deltaTime = clock.restart();
+
 		engine.UpdateInput();
 
-		engine.Update();
+		engine.Update(deltaTime.asMilliseconds());
 
 		engine.Render();
 	}

@@ -12,7 +12,7 @@ public:
 public:
 	void Init(sf::Vector2f cellSize);
 	void UpdateInput();
-	void Update();
+	void Update(float deltaTime);
 	void Render();
 
 	bool IsRunning() const;
@@ -27,4 +27,6 @@ private:
 	std::vector<sf::RectangleShape> _border;
 
 	sf::RectangleShape* _player;
+
+	sf::Vector2f _playerDirection;
 };
