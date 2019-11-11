@@ -142,7 +142,7 @@ void Engine::BuildBorder(float cellRadius)
 	_border.empty();
 
 	const int colorsLength = 2;
-	sf::Color colors[colorsLength] = { sf::Color::Cyan, sf::Color::Blue };
+	sf::Color colors[colorsLength] = { sf::Color::Color(30, 30, 30), sf::Color::Color(60, 60, 60) };
 	int colorIndex = 0;
 
 	// Top left => top right
