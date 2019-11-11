@@ -27,7 +27,7 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
 
 	InitText(_scoreText);
-	_scoreText.setPosition(windowSize.x - 75.f, windowSize.y - 60.f);
+	_scoreText.setPosition(windowSize.x - 120.f, windowSize.y - 60.f);
 
 	InitText(_playText);
 	_playText.setString("Press space to play");
