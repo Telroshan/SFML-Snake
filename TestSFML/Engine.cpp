@@ -15,13 +15,13 @@ Engine::Engine(std::string title, sf::Vector2i windowSize) :
 
 	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
 
-	if (!_font.loadFromFile("Fonts\\arial.ttf"))
+	if (!_font.loadFromFile("Fonts\\PressStart2P.ttf"))
 	{
 		std::cerr << "Couldn't load score font" << std::endl;
 	}
 
 	InitText(_gameTitle);
-	_gameTitle.setString("Snake");
+	_gameTitle.setString("SNAKE");
 	_gameTitle.setCharacterSize(60);
 
 	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);

@@ -148,7 +148,7 @@
     <ClInclude Include="Snake.h" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Fonts\arial.ttf" />
+    <Font Include="Fonts\PressStart2P.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

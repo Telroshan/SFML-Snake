@@ -37,7 +37,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Fonts\arial.ttf">
+    <Font Include="Fonts\PressStart2P.ttf">
       <Filter>Fonts</Filter>
     </Font>
   </ItemGroup>
