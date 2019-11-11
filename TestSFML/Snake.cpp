@@ -3,17 +3,17 @@
 #include "Engine.h"
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
-	_body(length),
+	_body(1),
 	_direction(direction),
 	_dead(false)
 {
-	float bodypartWidth = radius * 2;
-	for (int i = 0; i < length; ++i) {
-		_body[i] = sf::CircleShape(radius);
-		_body[i].setPosition(position - sf::Vector2f(i * direction.x * bodypartWidth, i * direction.y * bodypartWidth));
-		_body[i].setFillColor(_colors[i % _colors.size()]);
-	}
+	_body[0] = sf::CircleShape(radius);
+	_body[0].setPosition(position);
 	_body[0].setFillColor(sf::Color::White);
+	while (_body.size() < length)
+	{
+		Grow();
+	}
 }
 
 void Snake::Render(sf::RenderWindow* window) const
@@ -63,19 +63,21 @@ void Snake::Grow()
 {
 	float radius = _body[0].getRadius();
 	float size = radius * 2.f;
-	int bodyLength = (int)_body.size();
+	size_t bodyLength = _body.size();
 
 	sf::CircleShape bodypart = sf::CircleShape(radius);
-	sf::CircleShape previous = _body[(size_t)bodyLength - 1];
+	sf::CircleShape previous = _body[bodyLength - 1];
 	sf::Vector2f position = previous.getPosition();
 	sf::Vector2i gridPosition = Engine::GetInstance()->WorldPositionToGridPosition(position);
 
-	sf::Vector2i direction = bodyLength > 1
-		// If there's more than 2 parts, take the opposite of the direction between the 2 last parts
-		? gridPosition - Engine::GetInstance()->WorldPositionToGridPosition(_body[(size_t)bodyLength - 2].getPosition())
-		// If there's only the head, take the opposite of the movement direction
-		: _direction * -1;
 
+	sf::Vector2i direction = bodyLength > 1
+		// If there's more than 2 parts, take the direction between the 2 last parts
+		? Engine::GetInstance()->WorldPositionToGridPosition(_body[bodyLength - 2].getPosition()) - gridPosition
+		// If there's only the head, take the movement direction
+		: _direction;
+
+	// Append to the opposite of the direction (growing from the tail, not the head)
 	bodypart.setPosition(position - sf::Vector2f(direction.x * size, direction.y * size));
 	bodypart.setFillColor(_colors[_body.size() % _colors.size()]);
 	_body.push_back(bodypart);
