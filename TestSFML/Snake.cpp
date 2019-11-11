@@ -4,7 +4,8 @@
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
 	_body(length),
-	_direction(direction)
+	_direction(direction),
+	_dead(false)
 {
 	float bodypartWidth = radius * 2;
 	for (int i = 0; i < length; ++i) {
@@ -34,7 +35,7 @@ void Snake::Move(sf::Vector2f movement)
 	{
 		if (i > 0)
 		{
-			_body[i].setPosition(_body[i - 1].getPosition());
+			_body[i].setPosition(_body[(size_t)i - 1].getPosition());
 		}
 		else
 		{
@@ -65,13 +66,13 @@ void Snake::Grow()
 	int bodyLength = (int)_body.size();
 
 	sf::CircleShape bodypart = sf::CircleShape(radius);
-	sf::CircleShape previous = _body[bodyLength - 1];
+	sf::CircleShape previous = _body[(size_t)bodyLength - 1];
 	sf::Vector2f position = previous.getPosition();
 	sf::Vector2i gridPosition = Engine::GetInstance()->WorldPositionToGridPosition(position);
 
 	sf::Vector2i direction = bodyLength > 1
 		// If there's more than 2 parts, take the opposite of the direction between the 2 last parts
-		? gridPosition - Engine::GetInstance()->WorldPositionToGridPosition(_body[bodyLength - 2].getPosition())
+		? gridPosition - Engine::GetInstance()->WorldPositionToGridPosition(_body[(size_t)bodyLength - 2].getPosition())
 		// If there's only the head, take the opposite of the movement direction
 		: _direction * -1;
 
