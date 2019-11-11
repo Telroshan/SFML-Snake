@@ -11,9 +11,9 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 	for (int i = 0; i < length; ++i) {
 		_body[i] = sf::CircleShape(radius);
 		_body[i].setPosition(position - sf::Vector2f(i * direction.x * bodypartWidth, i * direction.y * bodypartWidth));
-		_body[i].setFillColor(sf::Color::Green);
+		_body[i].setFillColor(_colors[i % _colors.size()]);
 	}
-	_body[0].setFillColor(sf::Color::Cyan);
+	_body[0].setFillColor(sf::Color::White);
 }
 
 void Snake::Render(sf::RenderWindow* window) const
@@ -77,7 +77,7 @@ void Snake::Grow()
 		: _direction * -1;
 
 	bodypart.setPosition(position - sf::Vector2f(direction.x * size, direction.y * size));
-	bodypart.setFillColor(sf::Color::Green);
+	bodypart.setFillColor(_colors[_body.size() % _colors.size()]);
 	_body.push_back(bodypart);
 }
 

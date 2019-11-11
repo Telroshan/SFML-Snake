@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class Snake
 {
@@ -29,4 +30,6 @@ private:
 	sf::Vector2i _direction;
 
 	bool _dead;
+
+	std::vector<sf::Color> _colors = { sf::Color::Green, sf::Color::Cyan };
 };
