@@ -76,13 +76,14 @@ void Engine::Render()
 	_window->display();
 }
 
-void Engine::Init(std::string title, sf::Vector2i windowSize)
+void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight)
 {
 	_windowSize = windowSize;
 	_score = 0;
 	_mode = Mode::Menu;
 
 	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
+	_gameUiHeight = gameUiHeight;
 
 	if (!_font.loadFromFile("Fonts\\PressStart2P.ttf"))
 	{
@@ -160,7 +161,7 @@ void Engine::BuildBorder(float cellRadius)
 	{
 		sf::RectangleShape cell(sf::Vector2f(cellRadius, cellRadius));
 		cell.setFillColor(colors[colorIndex]);
-		cell.setPosition(x * cellRadius, _windowSize.y - cellRadius);
+		cell.setPosition(x * cellRadius, (_windowSize.y - _gameUiHeight) - cellRadius);
 		_border.push_back(cell);
 
 		++colorIndex;
@@ -381,7 +382,7 @@ void Engine::SetCellSize(float cellRadius)
 {
 	_cellRadius = cellRadius;
 
-	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellRadius, _windowSize.y / (int)cellRadius);
+	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellRadius, (_windowSize.y - _gameUiHeight) / (int)cellRadius);
 
 	BuildBorder(cellRadius);
 }

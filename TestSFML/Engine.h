@@ -23,7 +23,7 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	void Init(std::string title, sf::Vector2i windowSize);
+	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight);
 
 	bool IsRunning() const;
 
@@ -63,6 +63,8 @@ private:
 
 	std::shared_ptr<sf::RenderWindow> _window;
 	sf::Vector2i _windowSize;
+
+	int _gameUiHeight = 0;
 
 	float _cellRadius = 20.f;
 	sf::Vector2i _rectanglesCount;
