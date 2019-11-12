@@ -3,11 +3,11 @@
 #include <SFML/Graphics.hpp>
 #include "Snake.h"
 
-enum Mode
+enum class Mode
 {
-	Menu = 0,
-	Game = 1,
-	Endscreen = 2,
+	Menu,
+	Game,
+	Endscreen,
 };
 
 class Engine

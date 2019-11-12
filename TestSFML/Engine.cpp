@@ -22,11 +22,11 @@ void Engine::UpdateInput()
 {
 	switch (_mode)
 	{
-	case Menu:
-	case Endscreen:
+	case Mode::Menu:
+	case Mode::Endscreen:
 		UpdateInputMenu();
 		break;
-	case Game:
+	case Mode::Game:
 		UpdateInputGame();
 		break;
 	}
@@ -46,12 +46,12 @@ void Engine::Update(float deltaTime)
 
 	switch (_mode)
 	{
-	case Menu:
+	case Mode::Menu:
 		break;
-	case Game:
+	case Mode::Game:
 		UpdateGame(deltaTime);
 		break;
-	case Endscreen:
+	case Mode::Endscreen:
 		break;
 	}
 }
@@ -62,13 +62,13 @@ void Engine::Render()
 
 	switch (_mode)
 	{
-	case Menu:
+	case Mode::Menu:
 		RenderMenu();
 		break;
-	case Game:
+	case Mode::Game:
 		RenderGame();
 		break;
-	case Endscreen:
+	case Mode::Endscreen:
 		RenderEndScreen();
 		break;
 	}
@@ -349,12 +349,12 @@ void Engine::SetMode(Mode mode)
 	_mode = mode;
 	switch (_mode)
 	{
-	case Menu:
+	case Mode::Menu:
 		break;
-	case Game:
+	case Mode::Game:
 		InitGame();
 		break;
-	case Endscreen:
+	case Mode::Endscreen:
 		break;
 	default:
 		break;
