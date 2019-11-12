@@ -51,11 +51,12 @@ private:
 	void SetMode(Mode mode);
 
 	void SetScore(int score);
+	void SetMoveInterval(float moveInterval);
 
 	void SetupTexts();
 	void InitText(sf::Text& text);
 
-	std::string IntToStringWithZeros(int value, int textLength) const;
+	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
 public:
 	void SetCellSize(float cellSize);
@@ -76,6 +77,7 @@ private:
 	std::shared_ptr<Snake> _player;
 
 	float _moveInterval = 1.f;
+	float _initialMoveInterval = _moveInterval;
 	float _moveTimer = 0.f;
 
 	float _moveIntervalMultiplier = 1.f;
@@ -87,6 +89,8 @@ private:
 	sf::Text _timeText;
 	sf::Text _scoreLabel;
 	sf::Text _scoreText;
+	sf::Text _speedLabel;
+	sf::Text _speedText;
 	sf::Font _font;
 
 	sf::RectangleShape _fruit;

@@ -89,6 +89,7 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, 
 
 	_moveIntervalMultiplier = 1.f / moveSpeedMultiplier;
 	_moveInterval = 1.f / moveSpeed;
+	_initialMoveInterval = _moveInterval;
 
 	SetupTexts();
 }
@@ -183,7 +184,7 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 		_player->Grow();
 		SetScore(_score + 1);
 		PlaceFruit();
-		_moveInterval *= _moveIntervalMultiplier;
+		SetMoveInterval(_moveInterval * _moveIntervalMultiplier);
 	}
 }
 
@@ -250,7 +251,7 @@ void Engine::UpdateGame(float deltaTime)
 	if (!_player->IsDead())
 	{
 		_timeElapsed += deltaTime;
-		_timeText.setString(IntToStringWithZeros((int)_timeElapsed, 3));
+		_timeText.setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
 
 		_moveTimer += deltaTime;
 		if (_moveTimer > _moveInterval) {
@@ -295,8 +296,12 @@ void Engine::RenderGame()
 
 	_window->draw(_scoreLabel);
 	_window->draw(_scoreText);
+
 	_window->draw(_timeLabel);
 	_window->draw(_timeText);
+
+	_window->draw(_speedLabel);
+	_window->draw(_speedText);
 }
 
 void Engine::RenderEndScreen()
@@ -313,6 +318,8 @@ void Engine::InitGame()
 	SetScore(0);
 
 	_moveTimer = 0;
+	SetMoveInterval(_initialMoveInterval);
+	_timeElapsed = 0.f;
 
 	_player = std::make_shared<Snake>(Snake(3,
 		_cellRadius / 2.f,
@@ -346,7 +353,13 @@ void Engine::SetMode(Mode mode)
 void Engine::SetScore(int score)
 {
 	_score = score;
-	_scoreText.setString(IntToStringWithZeros(_score, 3));
+	_scoreText.setString(GetFormattedNumericString(std::to_string(_score), 3));
+}
+
+void Engine::SetMoveInterval(float moveInterval)
+{
+	_moveInterval = moveInterval;
+	_speedText.setString(GetFormattedNumericString(std::to_string(_initialMoveInterval / _moveInterval), 3));
 }
 
 void Engine::SetupTexts()
@@ -356,6 +369,8 @@ void Engine::SetupTexts()
 		std::cerr << "Couldn't load font" << std::endl;
 	}
 
+	float padding = 20.f;
+
 	InitText(_gameTitle);
 	_gameTitle.setString("SNAKE");
 	_gameTitle.setCharacterSize(60);
@@ -363,22 +378,30 @@ void Engine::SetupTexts()
 
 	InitText(_timeLabel);
 	_timeLabel.setCharacterSize(20);
-	_timeLabel.setString("Time: ");
-	_timeLabel.setPosition(20.f, _windowSize.y - 60.f);
+	_timeLabel.setString("Time");
+	_timeLabel.setPosition(padding, _windowSize.y - _gameUiHeight + padding);
 	InitText(_timeText);
-	_timeText.setString(IntToStringWithZeros(0, 3));
-	_timeText.setPosition(20.f + _timeLabel.getLocalBounds().width, _windowSize.y - 60.f);
-	_timeLabel.setPosition(_timeLabel.getPosition().x,
-		_timeText.getPosition().y + (_timeText.getLocalBounds().height - _timeLabel.getLocalBounds().height) / 2.f);
+	_timeText.setString(GetFormattedNumericString(std::to_string(0), 3));
+	_timeText.setPosition(padding + (_timeLabel.getLocalBounds().width - _timeText.getLocalBounds().width) / 2.f,
+		_windowSize.y - padding - _timeText.getLocalBounds().height);
 
-	InitText(_scoreText);
-	_scoreText.setString(IntToStringWithZeros(0, 3));
-	_scoreText.setPosition(_windowSize.x - _scoreText.getLocalBounds().width - 20, _windowSize.y - 60.f);
 	InitText(_scoreLabel);
-	_scoreLabel.setCharacterSize(20);
-	_scoreLabel.setString("Score: ");
-	_scoreLabel.setPosition(_windowSize.x - _scoreText.getLocalBounds().width - 20 - _scoreLabel.getLocalBounds().width,
-		_scoreText.getPosition().y + (_scoreText.getLocalBounds().height - _scoreLabel.getLocalBounds().height) / 2.f);
+	_scoreLabel.setCharacterSize(30);
+	_scoreLabel.setString("Score");
+	_scoreLabel.setPosition(_windowSize.x / 2.f - _scoreLabel.getLocalBounds().width / 2.f, _windowSize.y - _gameUiHeight + padding - (_scoreLabel.getLocalBounds().height - _timeLabel.getLocalBounds().height) / 2.f);
+	InitText(_scoreText);
+	_scoreText.setString(GetFormattedNumericString(std::to_string(0), 3));
+	_scoreText.setPosition(_windowSize.x / 2.f - _scoreText.getLocalBounds().width / 2.f,
+		_windowSize.y - padding - _scoreText.getLocalBounds().height);
+
+	InitText(_speedLabel);
+	_speedLabel.setCharacterSize(20);
+	_speedLabel.setString("Speed");
+	_speedLabel.setPosition(_windowSize.x - _speedLabel.getLocalBounds().width - padding, _windowSize.y - _gameUiHeight + padding);
+	InitText(_speedText);
+	SetMoveInterval(_moveInterval);
+	_speedText.setPosition(_windowSize.x - _speedText.getLocalBounds().width - padding - (_speedLabel.getLocalBounds().width - _speedText.getLocalBounds().width) / 2.f,
+		_windowSize.y - padding - _speedText.getLocalBounds().height);
 
 	InitText(_playText);
 	_playText.setString("Press space to play");
@@ -406,10 +429,15 @@ void Engine::InitText(sf::Text& text)
 	text.setFillColor(sf::Color::White);
 }
 
-std::string Engine::IntToStringWithZeros(int value, int textLength) const
+std::string Engine::GetFormattedNumericString(const std::string& string, int textLength) const
 {
-	std::string text = std::to_string(value);
-	while (text.length() < textLength) {
+	std::string text = string;
+	if (text.length() > textLength)
+	{
+		text = text.substr(0, textLength);
+	}
+	while (text.length() < textLength)
+	{
 		text = "0" + text;
 	}
 	return text;
