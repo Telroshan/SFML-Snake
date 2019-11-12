@@ -104,9 +104,9 @@ void Engine::BuildBorder()
 	// Top left => top right
 	for (int x = 0; x < _rectanglesCount.x - 1; ++x)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * _cellRadius, 0);
+		cell->setPosition(x * _cellSize, 0);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -116,9 +116,9 @@ void Engine::BuildBorder()
 	// Top right => bottom right
 	for (int y = 0; y < _rectanglesCount.y - 1; ++y)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(_windowSize.x - _cellRadius, y * _cellRadius);
+		cell->setPosition(_windowSize.x - _cellSize, y * _cellSize);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -128,9 +128,9 @@ void Engine::BuildBorder()
 	// Bottom right => bottom left
 	for (int x = _rectanglesCount.x - 1; x > 0; --x)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * _cellRadius, (_windowSize.y - _gameUiHeight) - _cellRadius);
+		cell->setPosition(x * _cellSize, (_windowSize.y - _gameUiHeight) - _cellSize);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -140,9 +140,9 @@ void Engine::BuildBorder()
 	// Bottom left => top left
 	for (int y = 1; y < _rectanglesCount.y; ++y)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(0, y * _cellRadius);
+		cell->setPosition(0, y * _cellSize);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -179,7 +179,7 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 
 sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
 {
-	sf::Vector2i gridPosition((int)(position.x / _cellRadius), (int)(position.y / _cellRadius));
+	sf::Vector2i gridPosition((int)(position.x / _cellSize), (int)(position.y / _cellSize));
 	return gridPosition;
 }
 
@@ -198,7 +198,7 @@ void Engine::PlaceFruit()
 		position = sf::Vector2i(rand() % (_rectanglesCount.x - 1) + 1, rand() % (_rectanglesCount.y - 1) + 1);
 	} while (_player->IsPositionInSnake(position, false) || IsPositionInBorder(position));
 
-	_fruit->setPosition(sf::Vector2f(position.x * _cellRadius, position.y * _cellRadius));
+	_fruit->setPosition(sf::Vector2f(position.x * _cellSize, position.y * _cellSize));
 }
 
 void Engine::UpdateInputMenu()
@@ -243,12 +243,12 @@ void Engine::UpdateGame(float deltaTime)
 		_moveTimer += deltaTime;
 		if (_moveTimer > _moveInterval) {
 			sf::Vector2i direction = _player->GetDirection();
-			sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius);
+			sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellSize, direction.y * _cellSize);
 			CheckCollisions(nextHeadPosition);
 			if (!_player->IsDead())
 			{
 				direction = _player->GetDirection();
-				_player->Move(sf::Vector2f(direction.x * _cellRadius, direction.y * _cellRadius));
+				_player->Move(sf::Vector2f(direction.x * _cellSize, direction.y * _cellSize));
 				_moveTimer = 0.f;
 			}
 		}
@@ -311,12 +311,12 @@ void Engine::InitGame()
 	_timeElapsed = 0.f;
 
 	_player = std::make_shared<Snake>(Snake(3,
-		_cellRadius / 2.f,
-		sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius),
+		_cellSize / 2.f,
+		sf::Vector2f((_rectanglesCount.x / 2) * _cellSize, (_rectanglesCount.y / 2) * _cellSize),
 		sf::Vector2i(1, 0)));
 	RegisterDrawable(_player, Mode::Game);
 
-	_fruit = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
+	_fruit = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
 	_fruit->setFillColor(sf::Color::White);
 	RegisterDrawable(_fruit, Mode::Game);
 	PlaceFruit();
@@ -409,7 +409,7 @@ std::string Engine::GetFormattedNumericString(const std::string& string, int tex
 
 void Engine::SetCellSize(float cellSize)
 {
-	_cellRadius = cellSize;
+	_cellSize = cellSize;
 
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize, (_windowSize.y - _gameUiHeight) / (int)cellSize);
 }

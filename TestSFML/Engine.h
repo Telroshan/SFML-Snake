@@ -72,7 +72,7 @@ private:
 
 	int _gameUiHeight = 0;
 
-	float _cellRadius = 20.f;
+	float _cellSize = 20.f;
 	sf::Vector2i _rectanglesCount;
 
 	std::shared_ptr<Snake> _player;
