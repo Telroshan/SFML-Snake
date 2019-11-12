@@ -60,17 +60,21 @@ void Engine::Render()
 {
 	_window->clear();
 
-	switch (_mode)
+	for (size_t i = 0; i < _texts[_mode].size(); ++i)
 	{
-	case Mode::Menu:
-		RenderMenu();
-		break;
-	case Mode::Game:
-		RenderGame();
-		break;
-	case Mode::Endscreen:
-		RenderEndScreen();
-		break;
+		_window->draw(*_texts[_mode][i]);
+	}
+
+	if (_mode == Mode::Game)
+	{
+		for (int i = 0; i < _border.size(); ++i)
+		{
+			_window->draw(_border.at(i));
+		}
+
+		_player->Render(_window);
+
+		_window->draw(_fruit);
 	}
 
 	_window->display();
@@ -251,7 +255,7 @@ void Engine::UpdateGame(float deltaTime)
 	if (!_player->IsDead())
 	{
 		_timeElapsed += deltaTime;
-		_timeText.setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
+		_timeText->setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
 
 		_moveTimer += deltaTime;
 		if (_moveTimer > _moveInterval) {
@@ -274,41 +278,6 @@ void Engine::UpdateGame(float deltaTime)
 			SetMode(Mode::Endscreen);
 		}
 	}
-}
-
-void Engine::RenderMenu()
-{
-	_window->draw(_gameTitle);
-	_window->draw(_playText);
-	_window->draw(_exitText);
-}
-
-void Engine::RenderGame()
-{
-	for (int i = 0; i < _border.size(); ++i)
-	{
-		_window->draw(_border.at(i));
-	}
-
-	_player->Render(_window);
-
-	_window->draw(_fruit);
-
-	_window->draw(_scoreLabel);
-	_window->draw(_scoreText);
-
-	_window->draw(_timeLabel);
-	_window->draw(_timeText);
-
-	_window->draw(_speedLabel);
-	_window->draw(_speedText);
-}
-
-void Engine::RenderEndScreen()
-{
-	_window->draw(_gameOverText);
-	_window->draw(_playText);
-	_window->draw(_exitText);
 }
 
 void Engine::InitGame()
@@ -353,13 +322,13 @@ void Engine::SetMode(Mode mode)
 void Engine::SetScore(int score)
 {
 	_score = score;
-	_scoreText.setString(GetFormattedNumericString(std::to_string(_score), 3));
+	_scoreText->setString(GetFormattedNumericString(std::to_string(_score), 3));
 }
 
 void Engine::SetMoveInterval(float moveInterval)
 {
 	_moveInterval = moveInterval;
-	_speedText.setString(GetFormattedNumericString(std::to_string(_initialMoveInterval / _moveInterval), 3));
+	_speedText->setString(GetFormattedNumericString(std::to_string(_initialMoveInterval / _moveInterval), 3));
 }
 
 void Engine::SetupTexts()
@@ -369,64 +338,72 @@ void Engine::SetupTexts()
 		std::cerr << "Couldn't load font" << std::endl;
 	}
 
-	float padding = 20.f;
+	{
+		std::shared_ptr<sf::Text> gameTitle = InitText(Mode::Menu, "SNAKE");
+		gameTitle->setCharacterSize(60);
+		gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2, 60.f);
 
-	InitText(_gameTitle);
-	_gameTitle.setString("SNAKE");
-	_gameTitle.setCharacterSize(60);
-	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
+		std::shared_ptr<sf::Text> playText = InitText(Mode::Menu, "Press space to play");
+		playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
 
-	InitText(_timeLabel);
-	_timeLabel.setCharacterSize(20);
-	_timeLabel.setString("Time");
-	_timeLabel.setPosition(padding, _windowSize.y - _gameUiHeight + padding);
-	InitText(_timeText);
-	_timeText.setString(GetFormattedNumericString(std::to_string(0), 3));
-	_timeText.setPosition(padding + (_timeLabel.getLocalBounds().width - _timeText.getLocalBounds().width) / 2.f,
-		_windowSize.y - padding - _timeText.getLocalBounds().height);
+		std::shared_ptr<sf::Text> exitText = InitText(Mode::Menu, "Press escape to exit");
+		exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
+	}
 
-	InitText(_scoreLabel);
-	_scoreLabel.setCharacterSize(30);
-	_scoreLabel.setString("Score");
-	_scoreLabel.setPosition(_windowSize.x / 2.f - _scoreLabel.getLocalBounds().width / 2.f, _windowSize.y - _gameUiHeight + padding - (_scoreLabel.getLocalBounds().height - _timeLabel.getLocalBounds().height) / 2.f);
-	InitText(_scoreText);
-	_scoreText.setString(GetFormattedNumericString(std::to_string(0), 3));
-	_scoreText.setPosition(_windowSize.x / 2.f - _scoreText.getLocalBounds().width / 2.f,
-		_windowSize.y - padding - _scoreText.getLocalBounds().height);
+	{
+		float padding = 20.f;
 
-	InitText(_speedLabel);
-	_speedLabel.setCharacterSize(20);
-	_speedLabel.setString("Speed");
-	_speedLabel.setPosition(_windowSize.x - _speedLabel.getLocalBounds().width - padding, _windowSize.y - _gameUiHeight + padding);
-	InitText(_speedText);
-	SetMoveInterval(_moveInterval);
-	_speedText.setPosition(_windowSize.x - _speedText.getLocalBounds().width - padding - (_speedLabel.getLocalBounds().width - _speedText.getLocalBounds().width) / 2.f,
-		_windowSize.y - padding - _speedText.getLocalBounds().height);
+		std::shared_ptr<sf::Text> timeLabel = InitText(Mode::Game, "Time");
+		timeLabel->setCharacterSize(20);
+		timeLabel->setPosition(padding, _windowSize.y - _gameUiHeight + padding);
+		_timeText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+		_timeText->setPosition(padding + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
+			_windowSize.y - padding - _timeText->getLocalBounds().height);
 
-	InitText(_playText);
-	_playText.setString("Press space to play");
-	_playText.setPosition(_windowSize.x / 2 - _playText.getLocalBounds().width / 2, _windowSize.y - 120.f);
+		std::shared_ptr<sf::Text> scoreLabel = InitText(Mode::Game, "Score");
+		scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f, _windowSize.y - _gameUiHeight + padding - (scoreLabel->getLocalBounds().height - timeLabel->getLocalBounds().height) / 2.f);
+		_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+		_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
+			_windowSize.y - padding - _scoreText->getLocalBounds().height);
 
-	InitText(_exitText);
-	_exitText.setString("Press escape to exit");
-	_exitText.setPosition(_windowSize.x / 2 - _exitText.getLocalBounds().width / 2, _windowSize.y - 60.f);
+		std::shared_ptr<sf::Text> speedLabel = InitText(Mode::Game, "Speed");
+		speedLabel->setCharacterSize(20);
+		speedLabel->setPosition(_windowSize.x - speedLabel->getLocalBounds().width - padding, _windowSize.y - _gameUiHeight + padding);
+		_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
+		_speedText->setPosition(_windowSize.x - _speedText->getLocalBounds().width - padding - (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
+			_windowSize.y - padding - _speedText->getLocalBounds().height);
+	}
 
-	InitText(_gameOverText);
-	_gameOverText.setString("GAME OVER");
-	_gameOverText.setCharacterSize(60);
-	_gameOverText.setPosition(_windowSize.x / 2 - _gameOverText.getLocalBounds().width / 2, _windowSize.y / 2 - _gameOverText.getLocalBounds().height / 2);
+	{
+		std::shared_ptr<sf::Text> gameOverText = InitText(Mode::Endscreen, "GAME OVER");
+		gameOverText->setCharacterSize(60);
+		gameOverText->setPosition(_windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, _windowSize.y / 2 - gameOverText->getLocalBounds().height / 2);
 
-	InitText(_beatScoreText);
-	_beatScoreText.setString("You beat the high score !");
-	_beatScoreText.setCharacterSize(45);
+		std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to play");
+		playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
 
-	InitText(_finalScoreText);
+		std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
+		exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
+
+		_finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(0), 3));
+		_finalScoreText->setPosition(_windowSize.x / 2.f - _finalScoreText->getLocalBounds().width / 2.f, 50.f);
+	}
 }
 
-void Engine::InitText(sf::Text& text)
+std::shared_ptr<sf::Text> Engine::InitText(Mode mode, const std::string& content)
 {
-	text.setFont(_font);
-	text.setFillColor(sf::Color::White);
+	std::shared_ptr<sf::Text> text = std::make_shared<sf::Text>();
+	text->setFont(_font);
+	text->setFillColor(sf::Color::White);
+	text->setString(content);
+
+	if (_texts.find(mode) == _texts.end())
+	{
+		_texts.insert({ mode, std::vector<std::shared_ptr<sf::Text>>() });
+	}
+	_texts[mode].push_back(text);
+
+	return text;
 }
 
 std::string Engine::GetFormattedNumericString(const std::string& string, int textLength) const

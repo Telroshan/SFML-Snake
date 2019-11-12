@@ -42,10 +42,6 @@ private:
 
 	void UpdateGame(float deltaTime);
 
-	void RenderMenu();
-	void RenderGame();
-	void RenderEndScreen();
-
 	void InitGame();
 
 	void SetMode(Mode mode);
@@ -54,7 +50,7 @@ private:
 	void SetMoveInterval(float moveInterval);
 
 	void SetupTexts();
-	void InitText(sf::Text& text);
+	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
 
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
@@ -82,20 +78,16 @@ private:
 
 	float _moveIntervalMultiplier = 1.f;
 
-	sf::Text _gameTitle;
-
 	int _score = 0;
-	sf::Text _timeLabel;
-	sf::Text _timeText;
-	sf::Text _scoreLabel;
-	sf::Text _scoreText;
-	sf::Text _speedLabel;
-	sf::Text _speedText;
+
 	sf::Font _font;
+	std::shared_ptr<sf::Text> _timeText;
+	std::shared_ptr<sf::Text> _scoreText;
+	std::shared_ptr<sf::Text> _speedText;
+	std::shared_ptr<sf::Text> _finalScoreText;
+	std::map<Mode, std::vector<std::shared_ptr<sf::Text>>> _texts;
 
 	sf::RectangleShape _fruit;
-	sf::Text _playText;
-	sf::Text _exitText;
 
 	Mode _mode = Mode::Menu;
 
@@ -103,8 +95,4 @@ private:
 	float _gameOverTimer = 0.f;
 
 	float _timeElapsed = 0.f;
-
-	sf::Text _gameOverText;
-	sf::Text _beatScoreText;
-	sf::Text _finalScoreText;
 };
