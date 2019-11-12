@@ -23,7 +23,7 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed);
+	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed, float moveSpeedMultiplier);
 
 	bool IsRunning() const;
 
@@ -59,7 +59,6 @@ private:
 
 public:
 	void SetCellSize(float cellSize);
-	void SetMoveSpeed(float speed);
 
 private:
 	static Engine _instance;
@@ -78,6 +77,8 @@ private:
 
 	float _moveInterval = 1.f;
 	float _moveTimer = 0.f;
+
+	float _moveIntervalMultiplier = 1.f;
 
 	sf::Text _gameTitle;
 

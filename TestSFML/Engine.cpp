@@ -76,7 +76,7 @@ void Engine::Render()
 	_window->display();
 }
 
-void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed)
+void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed, float moveSpeedMultiplier)
 {
 	_windowSize = windowSize;
 	_score = 0;
@@ -87,7 +87,8 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, 
 
 	SetCellSize(cellSize);
 
-	SetMoveSpeed(moveSpeed);
+	_moveIntervalMultiplier = 1.f / moveSpeedMultiplier;
+	_moveInterval = 1.f / moveSpeed;
 
 	SetupTexts();
 }
@@ -182,6 +183,7 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 		_player->Grow();
 		SetScore(_score + 1);
 		PlaceFruit();
+		_moveInterval *= _moveIntervalMultiplier;
 	}
 }
 
@@ -357,7 +359,6 @@ void Engine::SetupTexts()
 	InitText(_gameTitle);
 	_gameTitle.setString("SNAKE");
 	_gameTitle.setCharacterSize(60);
-
 	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
 
 	InitText(_timeLabel);
@@ -421,9 +422,4 @@ void Engine::SetCellSize(float cellSize)
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize, (_windowSize.y - _gameUiHeight) / (int)cellSize);
 
 	BuildBorder(cellSize);
-}
-
-void Engine::SetMoveSpeed(float speed)
-{
-	_moveInterval = 1.f / speed;
 }

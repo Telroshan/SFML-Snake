@@ -70,7 +70,6 @@ void Snake::Grow()
 	sf::Vector2f position = previous.getPosition();
 	sf::Vector2i gridPosition = Engine::GetInstance().WorldPositionToGridPosition(position);
 
-
 	sf::Vector2i direction = bodyLength > 1
 		// If there's more than 2 parts, take the direction between the 2 last parts
 		? Engine::GetInstance().WorldPositionToGridPosition(_body[bodyLength - 2].getPosition()) - gridPosition
