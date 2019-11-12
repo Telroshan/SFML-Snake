@@ -96,8 +96,24 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight)
 
 	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
 
+	InitText(_timeLabel);
+	_timeLabel.setCharacterSize(20);
+	_timeLabel.setString("Time: ");
+	_timeLabel.setPosition(20.f, windowSize.y - 60.f);
+	InitText(_timeText);
+	_timeText.setString(IntToStringWithZeros(0, 3));
+	_timeText.setPosition(20.f + _timeLabel.getLocalBounds().width, windowSize.y - 60.f);
+	_timeLabel.setPosition(_timeLabel.getPosition().x,
+		_timeText.getPosition().y + (_timeText.getLocalBounds().height - _timeLabel.getLocalBounds().height) / 2.f);
+
 	InitText(_scoreText);
-	_scoreText.setPosition(windowSize.x - 120.f, windowSize.y - 60.f);
+	_scoreText.setString(IntToStringWithZeros(0, 3));
+	_scoreText.setPosition(windowSize.x - _scoreText.getLocalBounds().width - 20, windowSize.y - 60.f);
+	InitText(_scoreLabel);
+	_scoreLabel.setCharacterSize(20);
+	_scoreLabel.setString("Score: ");
+	_scoreLabel.setPosition(windowSize.x - _scoreText.getLocalBounds().width - 20 - _scoreLabel.getLocalBounds().width,
+		_scoreText.getPosition().y + (_scoreText.getLocalBounds().height - _scoreLabel.getLocalBounds().height) / 2.f);
 
 	InitText(_playText);
 	_playText.setString("Press space to play");
@@ -274,6 +290,9 @@ void Engine::UpdateGame(float deltaTime)
 {
 	if (!_player->IsDead())
 	{
+		_timeElapsed += deltaTime;
+		_timeText.setString(IntToStringWithZeros(_timeElapsed, 3));
+
 		_moveTimer += deltaTime;
 		if (_moveTimer > _moveInterval) {
 			sf::Vector2i direction = _player->GetDirection();
@@ -315,7 +334,10 @@ void Engine::RenderGame()
 
 	_window->draw(_fruit);
 
+	_window->draw(_scoreLabel);
 	_window->draw(_scoreText);
+	_window->draw(_timeLabel);
+	_window->draw(_timeText);
 }
 
 void Engine::RenderEndScreen()
@@ -365,17 +387,22 @@ void Engine::SetMode(Mode mode)
 void Engine::SetScore(int score)
 {
 	_score = score;
-	std::string text = std::to_string(_score);
-	while (text.length() < 3) {
-		text = "0" + text;
-	}
-	_scoreText.setString(text);
+	_scoreText.setString(IntToStringWithZeros(_score, 3));
 }
 
 void Engine::InitText(sf::Text& text)
 {
 	text.setFont(_font);
 	text.setFillColor(sf::Color::White);
+}
+
+std::string Engine::IntToStringWithZeros(int value, int textLength) const
+{
+	std::string text = std::to_string(value);
+	while (text.length() < textLength) {
+		text = "0" + text;
+	}
+	return text;
 }
 
 void Engine::SetCellSize(float cellRadius)

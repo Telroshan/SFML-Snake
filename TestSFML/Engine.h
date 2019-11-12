@@ -54,6 +54,8 @@ private:
 
 	void InitText(sf::Text& text);
 
+	std::string IntToStringWithZeros(int value, int textLength) const;
+
 public:
 	void SetCellSize(float cellSize);
 	void SetMoveSpeed(float speed);
@@ -79,6 +81,9 @@ private:
 	sf::Text _gameTitle;
 
 	int _score = 0;
+	sf::Text _timeLabel;
+	sf::Text _timeText;
+	sf::Text _scoreLabel;
 	sf::Text _scoreText;
 	sf::Font _font;
 
@@ -90,6 +95,8 @@ private:
 
 	float _gameOverDelay = 1.f;
 	float _gameOverTimer = 0.f;
+
+	float _timeElapsed = 0.f;
 
 	sf::Text _gameOverText;
 	sf::Text _beatScoreText;
