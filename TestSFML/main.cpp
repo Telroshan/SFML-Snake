@@ -4,12 +4,12 @@ int main()
 {
 	sf::Vector2i windowSize(600, 400);
 
-	Engine snakeGame("Snake", windowSize);
+	Engine& snakeGame = Engine::GetInstance();
+
+	snakeGame.Init("Snake", windowSize);
 
 	snakeGame.SetCellSize(20);
 	snakeGame.SetMoveSpeed(5.f);
-
-	snakeGame.Init();
 
 	sf::Clock clock;
 	while (snakeGame.IsRunning())

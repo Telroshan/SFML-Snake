@@ -13,17 +13,17 @@ enum Mode
 class Engine
 {
 public:
-	Engine(std::string title, sf::Vector2i windowSize);
+	static Engine& GetInstance();
 
+private:
+	Engine();
 	~Engine();
-
-	static const Engine* GetInstance();
 
 public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	void Init();
+	void Init(std::string title, sf::Vector2i windowSize);
 
 	bool IsRunning() const;
 
@@ -45,7 +45,7 @@ private:
 	void RenderMenu();
 	void RenderGame();
 	void RenderEndScreen();
-	
+
 	void InitGame();
 
 	void SetMode(Mode mode);
@@ -59,25 +59,24 @@ public:
 	void SetMoveSpeed(float speed);
 
 private:
-	static Engine* _instance;
+	static Engine _instance;
 
-	sf::RenderWindow* _window;
+	std::shared_ptr<sf::RenderWindow> _window;
 	sf::Vector2i _windowSize;
 
-	float _cellRadius;
+	float _cellRadius = 20.f;
 	sf::Vector2i _rectanglesCount;
 
 	std::vector<sf::RectangleShape> _border;
 
-	Snake* _player;
+	std::shared_ptr<Snake> _player;
 
-	float _moveInterval;
-
-	float _moveTimer;
+	float _moveInterval = 1.f;
+	float _moveTimer = 0.f;
 
 	sf::Text _gameTitle;
 
-	int _score;
+	int _score = 0;
 	sf::Text _scoreText;
 	sf::Font _font;
 
@@ -85,10 +84,10 @@ private:
 	sf::Text _playText;
 	sf::Text _exitText;
 
-	Mode _mode;
+	Mode _mode = Mode::Menu;
 
-	float _gameOverDelay;
-	float _gameOverTimer;
+	float _gameOverDelay = 1.f;
+	float _gameOverTimer = 0.f;
 
 	sf::Text _gameOverText;
 	sf::Text _beatScoreText;

@@ -3,61 +3,19 @@
 #include <stdlib.h>
 #include <time.h>
 
-Engine* Engine::_instance{ nullptr };
+Engine Engine::_instance{};
 
-Engine::Engine(std::string title, sf::Vector2i windowSize) :
-	_windowSize(windowSize),
-	_score(0),
-	_mode(Mode::Menu),
-	_gameOverDelay(1.f)
+Engine& Engine::GetInstance()
 {
-	_instance = this;
+	return _instance;
+}
 
-	_window = new sf::RenderWindow(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
-
-	if (!_font.loadFromFile("Fonts\\PressStart2P.ttf"))
-	{
-		std::cerr << "Couldn't load score font" << std::endl;
-	}
-
-	InitText(_gameTitle);
-	_gameTitle.setString("SNAKE");
-	_gameTitle.setCharacterSize(60);
-
-	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
-
-	InitText(_scoreText);
-	_scoreText.setPosition(windowSize.x - 120.f, windowSize.y - 60.f);
-
-	InitText(_playText);
-	_playText.setString("Press space to play");
-	_playText.setPosition(_windowSize.x / 2 - _playText.getLocalBounds().width / 2, _windowSize.y - 120.f);
-
-	InitText(_exitText);
-	_exitText.setString("Press escape to exit");
-	_exitText.setPosition(_windowSize.x / 2 - _exitText.getLocalBounds().width / 2, _windowSize.y - 60.f);
-
-	InitText(_gameOverText);
-	_gameOverText.setString("GAME OVER");
-	_gameOverText.setCharacterSize(60);
-	_gameOverText.setPosition(_windowSize.x / 2 - _gameOverText.getLocalBounds().width / 2, _windowSize.y / 2 - _gameOverText.getLocalBounds().height / 2);
-
-	InitText(_beatScoreText);
-	_beatScoreText.setString("You beat the high score !");
-	_beatScoreText.setCharacterSize(45);
-
-	InitText(_finalScoreText);
+Engine::Engine()
+{
 }
 
 Engine::~Engine()
 {
-	delete _window;
-	delete _player;
-}
-
-const Engine* Engine::GetInstance()
-{
-	return Engine::_instance;
 }
 
 void Engine::UpdateInput()
@@ -118,18 +76,46 @@ void Engine::Render()
 	_window->display();
 }
 
-void Engine::Init()
+void Engine::Init(std::string title, sf::Vector2i windowSize)
 {
-	switch (_mode)
+	_windowSize = windowSize;
+	_score = 0;
+	_mode = Mode::Menu;
+
+	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
+
+	if (!_font.loadFromFile("Fonts\\PressStart2P.ttf"))
 	{
-	case Menu:
-		break;
-	case Game:
-		InitGame();
-		break;
-	case Endscreen:
-		break;
+		std::cerr << "Couldn't load font" << std::endl;
 	}
+
+	InitText(_gameTitle);
+	_gameTitle.setString("SNAKE");
+	_gameTitle.setCharacterSize(60);
+
+	_gameTitle.setPosition(_windowSize.x / 2 - _gameTitle.getLocalBounds().width / 2, 60.f);
+
+	InitText(_scoreText);
+	_scoreText.setPosition(windowSize.x - 120.f, windowSize.y - 60.f);
+
+	InitText(_playText);
+	_playText.setString("Press space to play");
+	_playText.setPosition(_windowSize.x / 2 - _playText.getLocalBounds().width / 2, _windowSize.y - 120.f);
+
+	InitText(_exitText);
+	_exitText.setString("Press escape to exit");
+	_exitText.setPosition(_windowSize.x / 2 - _exitText.getLocalBounds().width / 2, _windowSize.y - 60.f);
+
+	InitText(_gameOverText);
+	_gameOverText.setString("GAME OVER");
+	_gameOverText.setCharacterSize(60);
+	_gameOverText.setPosition(_windowSize.x / 2 - _gameOverText.getLocalBounds().width / 2, _windowSize.y / 2 - _gameOverText.getLocalBounds().height / 2);
+
+	InitText(_beatScoreText);
+	_beatScoreText.setString("You beat the high score !");
+	_beatScoreText.setCharacterSize(45);
+
+	InitText(_finalScoreText);
 }
 
 bool Engine::IsRunning() const
@@ -346,7 +332,10 @@ void Engine::InitGame()
 
 	_moveTimer = 0;
 
-	_player = new Snake(3, _cellRadius / 2.f, sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius), sf::Vector2i(1, 0));
+	_player = std::make_shared<Snake>(Snake(3,
+		_cellRadius / 2.f,
+		sf::Vector2f((_rectanglesCount.x / 2) * _cellRadius, (_rectanglesCount.y / 2) * _cellRadius),
+		sf::Vector2i(1, 0)));
 
 	_fruit = sf::RectangleShape(sf::Vector2f(_cellRadius, _cellRadius));
 	_fruit.setFillColor(sf::Color::White);

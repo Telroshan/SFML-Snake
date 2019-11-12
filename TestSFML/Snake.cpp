@@ -16,7 +16,7 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 	}
 }
 
-void Snake::Render(sf::RenderWindow* window) const
+void Snake::Render(std::shared_ptr<sf::RenderWindow> window) const
 {
 	for (int i = (int)_body.size() - 1; i >= 0; --i)
 	{
@@ -68,12 +68,12 @@ void Snake::Grow()
 	sf::CircleShape bodypart = sf::CircleShape(radius);
 	sf::CircleShape previous = _body[bodyLength - 1];
 	sf::Vector2f position = previous.getPosition();
-	sf::Vector2i gridPosition = Engine::GetInstance()->WorldPositionToGridPosition(position);
+	sf::Vector2i gridPosition = Engine::GetInstance().WorldPositionToGridPosition(position);
 
 
 	sf::Vector2i direction = bodyLength > 1
 		// If there's more than 2 parts, take the direction between the 2 last parts
-		? Engine::GetInstance()->WorldPositionToGridPosition(_body[bodyLength - 2].getPosition()) - gridPosition
+		? Engine::GetInstance().WorldPositionToGridPosition(_body[bodyLength - 2].getPosition()) - gridPosition
 		// If there's only the head, take the movement direction
 		: _direction;
 
@@ -99,7 +99,7 @@ bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) co
 	if (ignoreLastPart) --max;
 	for (int i = 0; i < max; ++i)
 	{
-		sf::Vector2i bodyPartPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[i].getPosition());
+		sf::Vector2i bodyPartPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[i].getPosition());
 		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
 		{
 			return true;
