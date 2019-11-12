@@ -285,6 +285,8 @@ void Engine::InitGame()
 {
 	srand((unsigned int)time(NULL));
 
+	BuildBorder();
+
 	float padding = 20.f;
 
 	std::shared_ptr<sf::Text> timeLabel = InitText(Mode::Game, "Time");
@@ -308,8 +310,6 @@ void Engine::InitGame()
 		_windowSize.y - padding - _speedText->getLocalBounds().height);
 
 	SetScore(0);
-
-	BuildBorder();
 
 	_moveTimer = 0;
 	SetMoveInterval(_initialMoveInterval);
