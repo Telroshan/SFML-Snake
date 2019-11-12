@@ -291,7 +291,7 @@ void Engine::UpdateGame(float deltaTime)
 	if (!_player->IsDead())
 	{
 		_timeElapsed += deltaTime;
-		_timeText.setString(IntToStringWithZeros(_timeElapsed, 3));
+		_timeText.setString(IntToStringWithZeros((int)_timeElapsed, 3));
 
 		_moveTimer += deltaTime;
 		if (_moveTimer > _moveInterval) {
