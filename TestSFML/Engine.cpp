@@ -231,6 +231,11 @@ void Engine::UpdateInputGame()
 	{
 		_player->SetDirection(sf::Vector2i(-1, 0));
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		SetMode(Mode::Menu);
+	}
 }
 
 void Engine::UpdateGame(float deltaTime)
