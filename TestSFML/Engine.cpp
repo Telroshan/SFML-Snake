@@ -12,6 +12,10 @@ Engine& Engine::GetInstance()
 
 Engine::Engine()
 {
+	if (!_font.loadFromFile("Fonts\\PressStart2P.ttf"))
+	{
+		std::cerr << "Couldn't load font" << std::endl;
+	}
 }
 
 Engine::~Engine()
@@ -72,7 +76,7 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, 
 {
 	_windowSize = windowSize;
 	_score = 0;
-	_mode = Mode::Menu;
+	_drawables.clear();
 
 	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
 	_gameUiHeight = gameUiHeight;
@@ -83,7 +87,7 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, 
 	_moveInterval = 1.f / moveSpeed;
 	_initialMoveInterval = _moveInterval;
 
-	SetupTexts();
+	SetMode(Mode::Menu);
 }
 
 bool Engine::IsRunning() const
@@ -91,7 +95,7 @@ bool Engine::IsRunning() const
 	return _window->isOpen();
 }
 
-void Engine::BuildBorder(float cellRadius)
+void Engine::BuildBorder()
 {
 	const int colorsLength = 2;
 	sf::Color colors[colorsLength] = { sf::Color::Color(30, 30, 30), sf::Color::Color(60, 60, 60) };
@@ -100,9 +104,9 @@ void Engine::BuildBorder(float cellRadius)
 	// Top left => top right
 	for (int x = 0; x < _rectanglesCount.x - 1; ++x)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellRadius, cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * cellRadius, 0);
+		cell->setPosition(x * _cellRadius, 0);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -112,9 +116,9 @@ void Engine::BuildBorder(float cellRadius)
 	// Top right => bottom right
 	for (int y = 0; y < _rectanglesCount.y - 1; ++y)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellRadius, cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(_windowSize.x - cellRadius, y * cellRadius);
+		cell->setPosition(_windowSize.x - _cellRadius, y * _cellRadius);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -124,9 +128,9 @@ void Engine::BuildBorder(float cellRadius)
 	// Bottom right => bottom left
 	for (int x = _rectanglesCount.x - 1; x > 0; --x)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellRadius, cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * cellRadius, (_windowSize.y - _gameUiHeight) - cellRadius);
+		cell->setPosition(x * _cellRadius, (_windowSize.y - _gameUiHeight) - _cellRadius);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -136,9 +140,9 @@ void Engine::BuildBorder(float cellRadius)
 	// Bottom left => top left
 	for (int y = 1; y < _rectanglesCount.y; ++y)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellRadius, cellRadius));
+		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellRadius, _cellRadius));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(0, y * cellRadius);
+		cell->setPosition(0, y * _cellRadius);
 		RegisterDrawable(cell, Mode::Game);
 
 		++colorIndex;
@@ -259,11 +263,48 @@ void Engine::UpdateGame(float deltaTime)
 	}
 }
 
+void Engine::InitMenu()
+{
+	std::shared_ptr<sf::Text> gameTitle = InitText(Mode::Menu, "SNAKE");
+	gameTitle->setCharacterSize(60);
+	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2, 60.f);
+
+	std::shared_ptr<sf::Text> playText = InitText(Mode::Menu, "Press space to play");
+	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
+
+	std::shared_ptr<sf::Text> exitText = InitText(Mode::Menu, "Press escape to exit");
+	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
+}
+
 void Engine::InitGame()
 {
 	srand((unsigned int)time(NULL));
 
+	float padding = 20.f;
+
+	std::shared_ptr<sf::Text> timeLabel = InitText(Mode::Game, "Time");
+	timeLabel->setCharacterSize(20);
+	timeLabel->setPosition(padding, _windowSize.y - _gameUiHeight + padding);
+	_timeText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+	_timeText->setPosition(padding + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
+		_windowSize.y - padding - _timeText->getLocalBounds().height);
+
+	std::shared_ptr<sf::Text> scoreLabel = InitText(Mode::Game, "Score");
+	scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f, _windowSize.y - _gameUiHeight + padding - (scoreLabel->getLocalBounds().height - timeLabel->getLocalBounds().height) / 2.f);
+	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
+		_windowSize.y - padding - _scoreText->getLocalBounds().height);
+
+	std::shared_ptr<sf::Text> speedLabel = InitText(Mode::Game, "Speed");
+	speedLabel->setCharacterSize(20);
+	speedLabel->setPosition(_windowSize.x - speedLabel->getLocalBounds().width - padding, _windowSize.y - _gameUiHeight + padding);
+	_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
+	_speedText->setPosition(_windowSize.x - _speedText->getLocalBounds().width - padding - (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
+		_windowSize.y - padding - _speedText->getLocalBounds().height);
+
 	SetScore(0);
+
+	BuildBorder();
 
 	_moveTimer = 0;
 	SetMoveInterval(_initialMoveInterval);
@@ -283,17 +324,36 @@ void Engine::InitGame()
 	_gameOverTimer = 0;
 }
 
+void Engine::InitEndscreen()
+{
+	std::shared_ptr<sf::Text> gameOverText = InitText(Mode::Endscreen, "GAME OVER");
+	gameOverText->setCharacterSize(60);
+	gameOverText->setPosition(_windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, _windowSize.y / 2 - gameOverText->getLocalBounds().height / 2);
+
+	std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to play");
+	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
+
+	std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
+	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
+
+	_finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(0), 3));
+	_finalScoreText->setPosition(_windowSize.x / 2.f - _finalScoreText->getLocalBounds().width / 2.f, 50.f);
+}
+
 void Engine::SetMode(Mode mode)
 {
 	_mode = mode;
+	_drawables.clear();
 	switch (_mode)
 	{
 	case Mode::Menu:
+		InitMenu();
 		break;
 	case Mode::Game:
 		InitGame();
 		break;
 	case Mode::Endscreen:
+		InitEndscreen();
 		break;
 	default:
 		break;
@@ -310,65 +370,6 @@ void Engine::SetMoveInterval(float moveInterval)
 {
 	_moveInterval = moveInterval;
 	_speedText->setString(GetFormattedNumericString(std::to_string(_initialMoveInterval / _moveInterval), 3));
-}
-
-void Engine::SetupTexts()
-{
-	if (!_font.loadFromFile("Fonts\\PressStart2P.ttf"))
-	{
-		std::cerr << "Couldn't load font" << std::endl;
-	}
-
-	{
-		std::shared_ptr<sf::Text> gameTitle = InitText(Mode::Menu, "SNAKE");
-		gameTitle->setCharacterSize(60);
-		gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2, 60.f);
-
-		std::shared_ptr<sf::Text> playText = InitText(Mode::Menu, "Press space to play");
-		playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
-
-		std::shared_ptr<sf::Text> exitText = InitText(Mode::Menu, "Press escape to exit");
-		exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
-	}
-
-	{
-		float padding = 20.f;
-
-		std::shared_ptr<sf::Text> timeLabel = InitText(Mode::Game, "Time");
-		timeLabel->setCharacterSize(20);
-		timeLabel->setPosition(padding, _windowSize.y - _gameUiHeight + padding);
-		_timeText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
-		_timeText->setPosition(padding + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
-			_windowSize.y - padding - _timeText->getLocalBounds().height);
-
-		std::shared_ptr<sf::Text> scoreLabel = InitText(Mode::Game, "Score");
-		scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f, _windowSize.y - _gameUiHeight + padding - (scoreLabel->getLocalBounds().height - timeLabel->getLocalBounds().height) / 2.f);
-		_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
-		_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
-			_windowSize.y - padding - _scoreText->getLocalBounds().height);
-
-		std::shared_ptr<sf::Text> speedLabel = InitText(Mode::Game, "Speed");
-		speedLabel->setCharacterSize(20);
-		speedLabel->setPosition(_windowSize.x - speedLabel->getLocalBounds().width - padding, _windowSize.y - _gameUiHeight + padding);
-		_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
-		_speedText->setPosition(_windowSize.x - _speedText->getLocalBounds().width - padding - (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
-			_windowSize.y - padding - _speedText->getLocalBounds().height);
-	}
-
-	{
-		std::shared_ptr<sf::Text> gameOverText = InitText(Mode::Endscreen, "GAME OVER");
-		gameOverText->setCharacterSize(60);
-		gameOverText->setPosition(_windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, _windowSize.y / 2 - gameOverText->getLocalBounds().height / 2);
-
-		std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to play");
-		playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
-
-		std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
-		exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
-
-		_finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(0), 3));
-		_finalScoreText->setPosition(_windowSize.x / 2.f - _finalScoreText->getLocalBounds().width / 2.f, 50.f);
-	}
 }
 
 std::shared_ptr<sf::Text> Engine::InitText(Mode mode, const std::string& content)
@@ -411,6 +412,4 @@ void Engine::SetCellSize(float cellSize)
 	_cellRadius = cellSize;
 
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize, (_windowSize.y - _gameUiHeight) / (int)cellSize);
-
-	BuildBorder(cellSize);
 }

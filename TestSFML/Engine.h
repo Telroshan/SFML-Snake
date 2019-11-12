@@ -30,7 +30,7 @@ public:
 	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 
 private:
-	void BuildBorder(float cellSize);
+	void BuildBorder();
 	void CheckCollisions(sf::Vector2f nextPosition);
 
 	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
@@ -42,14 +42,15 @@ private:
 
 	void UpdateGame(float deltaTime);
 
+	void InitMenu();
 	void InitGame();
+	void InitEndscreen();
 
 	void SetMode(Mode mode);
 
 	void SetScore(int score);
 	void SetMoveInterval(float moveInterval);
 
-	void SetupTexts();
 	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
 
 	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
