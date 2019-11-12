@@ -6,10 +6,7 @@ int main()
 
 	Engine& snakeGame = Engine::GetInstance();
 
-	snakeGame.Init("Snake", windowSize, 100);
-
-	snakeGame.SetCellSize(20);
-	snakeGame.SetMoveSpeed(5.f);
+	snakeGame.Init("Snake", windowSize, 100, 20.f, 5.f);
 
 	sf::Clock clock;
 	while (snakeGame.IsRunning())

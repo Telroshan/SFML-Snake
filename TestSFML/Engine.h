@@ -23,7 +23,7 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight);
+	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed);
 
 	bool IsRunning() const;
 
@@ -52,6 +52,7 @@ private:
 
 	void SetScore(int score);
 
+	void SetupTexts();
 	void InitText(sf::Text& text);
 
 	std::string IntToStringWithZeros(int value, int textLength) const;
