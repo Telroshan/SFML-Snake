@@ -16,14 +16,6 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 	}
 }
 
-void Snake::Render(std::shared_ptr<sf::RenderWindow> window) const
-{
-	for (int i = (int)_body.size() - 1; i >= 0; --i)
-	{
-		window->draw(_body[i]);
-	}
-}
-
 const sf::Vector2f& Snake::GetHeadPosition() const
 {
 	return _body[0].getPosition();
@@ -84,7 +76,6 @@ void Snake::Grow()
 
 void Snake::Die()
 {
-	std::cout << "DIE" << std::endl;
 	_dead = true;
 	for (int i = 0; i < _body.size(); ++i)
 	{
@@ -111,4 +102,12 @@ bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) co
 bool Snake::IsDead() const
 {
 	return _dead;
+}
+
+void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (int i = (int)_body.size() - 1; i >= 0; --i)
+	{
+		target.draw(_body[i]);
+	}
 }

@@ -3,13 +3,12 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-class Snake
+class Snake : public sf::Drawable
 {
 public:
 	Snake(int size, float length, sf::Vector2f position, sf::Vector2i direction);
 
 public:
-	void Render(std::shared_ptr<sf::RenderWindow> window) const;
 	const sf::Vector2f& GetHeadPosition() const;
 	void Move(sf::Vector2f movement);
 	const sf::Vector2i& GetDirection() const;
@@ -24,6 +23,9 @@ public:
 	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
 
 	bool IsDead() const;
+
+protected:
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
 	std::vector<sf::CircleShape> _body;

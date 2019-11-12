@@ -52,6 +52,8 @@ private:
 	void SetupTexts();
 	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
 
+	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
+
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
 public:
@@ -63,14 +65,17 @@ private:
 	std::shared_ptr<sf::RenderWindow> _window;
 	sf::Vector2i _windowSize;
 
+	Mode _mode = Mode::Menu;
+
+	std::map<Mode, std::vector<std::shared_ptr<sf::Drawable>>> _drawables;
+
 	int _gameUiHeight = 0;
 
 	float _cellRadius = 20.f;
 	sf::Vector2i _rectanglesCount;
 
-	std::vector<sf::RectangleShape> _border;
-
 	std::shared_ptr<Snake> _player;
+	std::shared_ptr<sf::RectangleShape> _fruit;
 
 	float _moveInterval = 1.f;
 	float _initialMoveInterval = _moveInterval;
@@ -85,11 +90,6 @@ private:
 	std::shared_ptr<sf::Text> _scoreText;
 	std::shared_ptr<sf::Text> _speedText;
 	std::shared_ptr<sf::Text> _finalScoreText;
-	std::map<Mode, std::vector<std::shared_ptr<sf::Text>>> _texts;
-
-	sf::RectangleShape _fruit;
-
-	Mode _mode = Mode::Menu;
 
 	float _gameOverDelay = 1.f;
 	float _gameOverTimer = 0.f;
