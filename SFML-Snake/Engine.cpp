@@ -30,11 +30,13 @@ void Engine::UpdateInput()
 	switch (_mode)
 	{
 	case Mode::Menu:
-	case Mode::Endscreen:
 		UpdateInputMenu();
 		break;
 	case Mode::Game:
 		UpdateInputGame();
+		break;
+	case Mode::Endscreen:
+		UpdateInputEndscreen();
 		break;
 	}
 }
@@ -246,6 +248,18 @@ void Engine::UpdateInputGame()
 	}
 }
 
+void Engine::UpdateInputEndscreen()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		SetMode(Mode::Menu);
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		_window->close();
+	}
+}
+
 void Engine::UpdateGame(float deltaTime)
 {
 	if (!_player->IsDead())
@@ -283,9 +297,11 @@ void Engine::InitMenu()
 	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2.f, 60.f);
 
 	std::shared_ptr<sf::Text> playText = InitText(Mode::Menu, "Press space to play");
+	playText->setCharacterSize(20);
 	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2.f, _windowSize.y - 120.f);
 
 	std::shared_ptr<sf::Text> exitText = InitText(Mode::Menu, "Press escape to exit");
+	exitText->setCharacterSize(20);
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2.f, _windowSize.y - 60.f);
 
 	float space = 10.f;
@@ -374,10 +390,12 @@ void Engine::InitEndscreen()
 	finalScoreText->setPosition(_windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
 		finalScoreLabel->getPosition().y + finalScoreLabel->getLocalBounds().height + space);
 
-	std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to play");
+	std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to return to menu");
+	playText->setCharacterSize(20);
 	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
 
 	std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
+	exitText->setCharacterSize(20);
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
 
 	if (_score > _highScore)

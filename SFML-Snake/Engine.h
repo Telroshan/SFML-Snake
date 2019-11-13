@@ -39,6 +39,7 @@ private:
 
 	void UpdateInputMenu();
 	void UpdateInputGame();
+	void UpdateInputEndscreen();
 
 	void UpdateGame(float deltaTime);
 
