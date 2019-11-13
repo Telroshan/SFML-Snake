@@ -299,27 +299,35 @@ void Engine::InitGame()
 
 	BuildBorder();
 
-	float padding = 20.f;
+	float horizontalPadding = 20.f;
+	float space = 10.f;
 
 	std::shared_ptr<sf::Text> timeLabel = InitText(Mode::Game, "Time");
-	timeLabel->setCharacterSize(20);
-	timeLabel->setPosition(padding, _windowSize.y - _gameUiHeight + padding);
 	_timeText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
-	_timeText->setPosition(padding + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
-		_windowSize.y - padding - _timeText->getLocalBounds().height);
+	timeLabel->setCharacterSize(24);
+	_timeText->setCharacterSize(24);
+	timeLabel->setPosition(horizontalPadding,
+		_windowSize.y - _gameUiHeight / 2.f - (timeLabel->getLocalBounds().height + _timeText->getLocalBounds().height + space) / 2.f);
+	_timeText->setPosition(timeLabel->getPosition().x + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
+		timeLabel->getPosition().y + timeLabel->getLocalBounds().height + space);
 
 	std::shared_ptr<sf::Text> scoreLabel = InitText(Mode::Game, "Score");
-	scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f, _windowSize.y - _gameUiHeight + padding - (scoreLabel->getLocalBounds().height - timeLabel->getLocalBounds().height) / 2.f);
 	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+	scoreLabel->setCharacterSize(35);
+	_scoreText->setCharacterSize(35);
+	scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f,
+		_windowSize.y - _gameUiHeight / 2.f - (scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
-		_windowSize.y - padding - _scoreText->getLocalBounds().height);
+		scoreLabel->getPosition().y + scoreLabel->getLocalBounds().height + space);
 
 	std::shared_ptr<sf::Text> speedLabel = InitText(Mode::Game, "Speed");
-	speedLabel->setCharacterSize(20);
-	speedLabel->setPosition(_windowSize.x - speedLabel->getLocalBounds().width - padding, _windowSize.y - _gameUiHeight + padding);
 	_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
-	_speedText->setPosition(_windowSize.x - _speedText->getLocalBounds().width - padding - (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
-		_windowSize.y - padding - _speedText->getLocalBounds().height);
+	speedLabel->setCharacterSize(24);
+	_speedText->setCharacterSize(24);
+	speedLabel->setPosition(_windowSize.x - speedLabel->getLocalBounds().width - horizontalPadding,
+		_windowSize.y - _gameUiHeight / 2.f - (speedLabel->getLocalBounds().height + _speedText->getLocalBounds().height + space) / 2.f);
+	_speedText->setPosition(speedLabel->getPosition().x + (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
+		speedLabel->getPosition().y + speedLabel->getLocalBounds().height + space);
 
 	SetScore(0);
 
