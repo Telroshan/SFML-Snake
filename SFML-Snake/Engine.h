@@ -72,6 +72,9 @@ private:
 
 	Mode _mode = Mode::Menu;
 
+	bool _wasSpacePressed;
+	bool _wasEscapePressed;
+
 	std::map<Mode, std::vector<std::shared_ptr<sf::Drawable>>> _drawables;
 
 	int _gameUiHeight = 0;

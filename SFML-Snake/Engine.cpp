@@ -19,6 +19,9 @@ Engine::Engine()
 	}
 
 	ReadHighScore();
+
+	_wasSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+	_wasEscapePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 }
 
 Engine::~Engine()
@@ -39,6 +42,9 @@ void Engine::UpdateInput()
 		UpdateInputEndscreen();
 		break;
 	}
+
+	_wasSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+	_wasEscapePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 }
 
 void Engine::Update(float deltaTime)
@@ -213,11 +219,12 @@ void Engine::PlaceFruit()
 
 void Engine::UpdateInputMenu()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (!_wasSpacePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		SetMode(Mode::Game);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	
+	if (!_wasEscapePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
 		_window->close();
 	}
@@ -242,7 +249,7 @@ void Engine::UpdateInputGame()
 		_player->SetDirection(sf::Vector2i(-1, 0));
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (!_wasEscapePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
 		SetMode(Mode::Menu);
 	}
@@ -250,11 +257,12 @@ void Engine::UpdateInputGame()
 
 void Engine::UpdateInputEndscreen()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (!_wasSpacePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		SetMode(Mode::Menu);
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+
+	if (!_wasEscapePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
 		_window->close();
 	}
