@@ -159,13 +159,13 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 
 	if (IsPositionInBorder(nextHeadGridPosition))
 	{
-		_player->Die();
+		GameOver();
 		return;
 	}
 
 	if (_player->IsPositionInSnake(nextHeadGridPosition, true))
 	{
-		_player->Die();
+		GameOver();
 		return;
 	}
 
@@ -353,7 +353,7 @@ void Engine::InitEndscreen()
 	std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
 
-	_finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(0), 3));
+	_finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_score), 3));
 	_finalScoreText->setPosition(_windowSize.x / 2.f - _finalScoreText->getLocalBounds().width / 2.f, 50.f);
 }
 
@@ -452,6 +452,16 @@ void Engine::SaveHighScore()
 	stream << _highScore;
 
 	stream.close();
+}
+
+void Engine::GameOver()
+{
+	_player->Die();
+	if (_score > _highScore)
+	{
+		_highScore = _score;
+		SaveHighScore();
+	}
 }
 
 void Engine::SetCellSize(float cellSize)

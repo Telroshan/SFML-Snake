@@ -60,6 +60,8 @@ private:
 	void ReadHighScore();
 	void SaveHighScore();
 
+	void GameOver();
+
 public:
 	void SetCellSize(float cellSize);
 
