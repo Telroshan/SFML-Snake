@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Fruit.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Snake.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Fruit.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="Updatable.h" />

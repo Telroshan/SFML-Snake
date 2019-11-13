@@ -343,8 +343,7 @@ void Engine::InitGame()
 	RegisterDrawable(_player, Mode::Game);
 	RegisterUpdatable(_player, Mode::Game);
 
-	_fruit = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
-	_fruit->setFillColor(sf::Color::White);
+	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
 	RegisterDrawable(_fruit, Mode::Game);
 	PlaceFruit();
 

@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Snake.h"
+#include "Fruit.h"
 
 enum class Mode
 {
@@ -83,7 +84,7 @@ private:
 	sf::Vector2i _rectanglesCount;
 
 	std::shared_ptr<Snake> _player;
-	std::shared_ptr<sf::RectangleShape> _fruit;
+	std::shared_ptr<Fruit> _fruit;
 
 	const char* scoresFilename = "scores.data";
 	int _score = 0;
