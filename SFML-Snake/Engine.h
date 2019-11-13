@@ -60,8 +60,6 @@ private:
 	void ReadHighScore();
 	void SaveHighScore();
 
-	void GameOver();
-
 public:
 	void SetCellSize(float cellSize);
 
@@ -95,6 +93,7 @@ private:
 
 	sf::Font _font;
 	std::shared_ptr<sf::Text> _timeText;
+	std::shared_ptr<sf::Text> _scoreLabel;
 	std::shared_ptr<sf::Text> _scoreText;
 	std::shared_ptr<sf::Text> _speedText;
 

@@ -159,13 +159,13 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 
 	if (IsPositionInBorder(nextHeadGridPosition))
 	{
-		GameOver();
+		_player->Die();
 		return;
 	}
 
 	if (_player->IsPositionInSnake(nextHeadGridPosition, true))
 	{
-		GameOver();
+		_player->Die();
 		return;
 	}
 
@@ -174,6 +174,11 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 	if (nextHeadGridPosition.x == fruitGridPosition.x && nextHeadGridPosition.y == fruitGridPosition.y)
 	{
 		_player->Grow();
+		if (_score == _highScore)
+		{
+			_scoreLabel->setFillColor(sf::Color::Green);
+			_scoreText->setFillColor(sf::Color::Green);
+		}
 		SetScore(_score + 1);
 		PlaceFruit();
 		SetMoveInterval(_moveInterval * _moveIntervalMultiplier);
@@ -311,16 +316,16 @@ void Engine::InitGame()
 	_timeText->setPosition(timeLabel->getPosition().x + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
 		timeLabel->getPosition().y + timeLabel->getLocalBounds().height + space);
 
-	std::shared_ptr<sf::Text> scoreLabel = InitText(Mode::Game, "Score");
+	_scoreLabel = InitText(Mode::Game, "Score");
 	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
-	scoreLabel->setCharacterSize(35);
+	_scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
-	scoreLabel->setFillColor(sf::Color::Yellow);
+	_scoreLabel->setFillColor(sf::Color::Yellow);
 	_scoreText->setFillColor(sf::Color::Yellow);
-	scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f,
-		_windowSize.y - _gameUiHeight / 2.f - (scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
+	_scoreLabel->setPosition(_windowSize.x / 2.f - _scoreLabel->getLocalBounds().width / 2.f,
+		_windowSize.y - _gameUiHeight / 2.f - (_scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
-		scoreLabel->getPosition().y + scoreLabel->getLocalBounds().height + space);
+		_scoreLabel->getPosition().y + _scoreLabel->getLocalBounds().height + space);
 
 	std::shared_ptr<sf::Text> speedLabel = InitText(Mode::Game, "Speed");
 	_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
@@ -362,8 +367,8 @@ void Engine::InitEndscreen()
 	std::shared_ptr<sf::Text> finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_score), 3));
 	finalScoreLabel->setCharacterSize(50);
 	finalScoreText->setCharacterSize(50);
-	finalScoreLabel->setFillColor(sf::Color::Yellow);
-	finalScoreText->setFillColor(sf::Color::Yellow);
+	finalScoreLabel->setFillColor(_score > _highScore ? sf::Color::Green : sf::Color::Yellow);
+	finalScoreText->setFillColor(_score > _highScore ? sf::Color::Green : sf::Color::Yellow);
 	finalScoreLabel->setPosition(_windowSize.x / 2 - finalScoreLabel->getLocalBounds().width / 2.f,
 		_windowSize.y / 2 - (finalScoreLabel->getLocalBounds().height + finalScoreText->getLocalBounds().height + space) / 2.f);
 	finalScoreText->setPosition(_windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
@@ -374,6 +379,12 @@ void Engine::InitEndscreen()
 
 	std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
+
+	if (_score > _highScore)
+	{
+		_highScore = _score;
+		SaveHighScore();
+	}
 }
 
 void Engine::SetMode(Mode mode)
@@ -471,16 +482,6 @@ void Engine::SaveHighScore()
 	stream << _highScore;
 
 	stream.close();
-}
-
-void Engine::GameOver()
-{
-	_player->Die();
-	if (_score > _highScore)
-	{
-		_highScore = _score;
-		SaveHighScore();
-	}
 }
 
 void Engine::SetCellSize(float cellSize)
