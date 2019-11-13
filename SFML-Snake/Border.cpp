@@ -20,7 +20,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
 		cell->setPosition(x * cellSize, 0);
-		engine.RegisterDrawable(cell, Mode::Game);
+		_cells.push_back(cell);
 
 		++colorIndex;
 		if (colorIndex >= colorsLength) colorIndex = 0;
@@ -32,7 +32,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
 		cell->setPosition(windowSize.x - cellSize, y * cellSize);
-		engine.RegisterDrawable(cell, Mode::Game);
+		_cells.push_back(cell);
 
 		++colorIndex;
 		if (colorIndex >= colorsLength) colorIndex = 0;
@@ -44,7 +44,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
 		cell->setPosition(x * cellSize, (windowSize.y - gameUiHeight) - cellSize);
-		engine.RegisterDrawable(cell, Mode::Game);
+		_cells.push_back(cell);
 
 		++colorIndex;
 		if (colorIndex >= colorsLength) colorIndex = 0;
@@ -56,7 +56,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
 		cell->setPosition(0, y * cellSize);
-		engine.RegisterDrawable(cell, Mode::Game);
+		_cells.push_back(cell);
 
 		++colorIndex;
 		if (colorIndex >= colorsLength) colorIndex = 0;
@@ -71,4 +71,8 @@ bool Border::Collides(sf::Vector2i gridPosition) const
 
 void Border::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	for (size_t i = 0; i < _cells.size(); ++i)
+	{
+		target.draw(*_cells[i]);
+	}
 }

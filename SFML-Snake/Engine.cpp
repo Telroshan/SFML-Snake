@@ -236,6 +236,7 @@ void Engine::InitGame()
 	srand((unsigned int)time(NULL));
 
 	_border = std::make_shared<Border>(_rectanglesCount);
+	RegisterDrawable(_border, Mode::Game);
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;

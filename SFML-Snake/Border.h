@@ -15,5 +15,6 @@ protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
+	std::vector<std::shared_ptr<sf::RectangleShape>> _cells;
 	sf::Vector2i _rectanglesCount;
 };

@@ -33,9 +33,6 @@ public:
 
 	void CheckCollisions(sf::Vector2f nextPosition);
 
-	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
-	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
-
 private:
 	void PlaceFruit();
 
@@ -54,6 +51,9 @@ private:
 	void SetScore(int score);
 
 	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
+
+	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
+	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
 
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
