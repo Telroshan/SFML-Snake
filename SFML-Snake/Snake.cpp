@@ -83,6 +83,10 @@ const sf::Vector2i& Snake::GetDirection() const
 
 void Snake::SetDirection(const sf::Vector2i& direction)
 {
+	if (!CanMoveTowards(direction))
+	{
+		return;
+	}
 	_direction = direction;
 }
 
@@ -159,4 +163,17 @@ bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) co
 	}
 
 	return false;
+}
+
+bool Snake::CanMoveTowards(sf::Vector2i direction) const
+{
+	if (_body.size() == 0)
+	{
+		return true;
+	}
+
+	sf::Vector2i headGridPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[0].getPosition());
+	sf::Vector2i secondPartGridPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[1].getPosition());
+
+	return secondPartGridPosition - headGridPosition != direction;
 }

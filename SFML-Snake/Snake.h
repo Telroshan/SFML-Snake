@@ -34,6 +34,7 @@ protected:
 
 private:
 	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
+	bool CanMoveTowards(sf::Vector2i direction) const;
 
 private:
 	std::vector<sf::CircleShape> _body;
