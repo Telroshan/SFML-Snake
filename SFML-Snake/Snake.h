@@ -33,6 +33,9 @@ protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
+	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
+
+private:
 	std::vector<sf::CircleShape> _body;
 	sf::Vector2i _direction;
 

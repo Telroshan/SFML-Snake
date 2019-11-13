@@ -19,6 +19,8 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 
 void Snake::Update(float deltaTime)
 {
+	if (IsDead()) return;
+
 	_moveTimer += deltaTime;
 	float cellSize = Engine::GetInstance().GetCellSize();
 	if (_moveTimer > _moveInterval) {
@@ -32,7 +34,7 @@ void Snake::Update(float deltaTime)
 			return;
 		}
 
-		if (Collides(nextHeadGridPosition))
+		if (IsPositionInSnake(nextHeadGridPosition, true))
 		{
 			Die();
 			return;
@@ -51,17 +53,7 @@ void Snake::Update(float deltaTime)
 
 bool Snake::Collides(sf::Vector2i gridPosition) const
 {
-	int max = (int)_body.size();
-	for (int i = 0; i < max; ++i)
-	{
-		sf::Vector2i bodyPartPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[i].getPosition());
-		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
-		{
-			return true;
-		}
-	}
-
-	return false;
+	return IsPositionInSnake(gridPosition, false);
 }
 
 const sf::Vector2f& Snake::GetHeadPosition() const
@@ -151,4 +143,20 @@ void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(_body[i]);
 	}
+}
+
+bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const
+{
+	int max = (int)_body.size();
+	if (ignoreLastPart) --max;
+	for (int i = 0; i < max; ++i)
+	{
+		sf::Vector2i bodyPartPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[i].getPosition());
+		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
