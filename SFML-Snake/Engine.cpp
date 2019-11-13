@@ -275,13 +275,22 @@ void Engine::InitMenu()
 {
 	std::shared_ptr<sf::Text> gameTitle = InitText(Mode::Menu, "SNAKE");
 	gameTitle->setCharacterSize(60);
-	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2, 60.f);
+	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2.f, 60.f);
 
 	std::shared_ptr<sf::Text> playText = InitText(Mode::Menu, "Press space to play");
-	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
+	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2.f, _windowSize.y - 120.f);
 
 	std::shared_ptr<sf::Text> exitText = InitText(Mode::Menu, "Press escape to exit");
-	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
+	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2.f, _windowSize.y - 60.f);
+
+	float space = 10.f;
+	std::shared_ptr<sf::Text> highScoreLabel = InitText(Mode::Menu, "High score");
+	std::shared_ptr<sf::Text> highScoreText = InitText(Mode::Menu, GetFormattedNumericString(std::to_string(_highScore), 3));
+	highScoreText->setCharacterSize(40);
+	highScoreLabel->setPosition(_windowSize.x / 2 - highScoreLabel->getLocalBounds().width / 2.f,
+		_windowSize.y / 2 - (highScoreLabel->getLocalBounds().height + highScoreText->getLocalBounds().height + space) / 2.f);
+	highScoreText->setPosition(_windowSize.x / 2 - highScoreText->getLocalBounds().width / 2.f,
+		highScoreLabel->getPosition().y + highScoreLabel->getLocalBounds().height + space);
 }
 
 void Engine::InitGame()
