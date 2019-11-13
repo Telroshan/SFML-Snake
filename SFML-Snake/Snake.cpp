@@ -37,7 +37,12 @@ void Snake::Update(float deltaTime)
 			return;
 		}
 
-		Engine::GetInstance().CheckCollisions(nextHeadPosition);
+		if (_fruit->Collides(nextHeadGridPosition))
+		{
+			Grow();
+			++score;
+			_fruit->Spawn();
+		}
 
 		if (!IsDead())
 		{
@@ -135,6 +140,11 @@ bool Snake::IsDead() const
 float Snake::GetMoveSpeed() const
 {
 	return _initialMoveInterval / _moveInterval;
+}
+
+void Snake::SetFruit(std::shared_ptr<Fruit> fruit)
+{
+	_fruit = fruit;
 }
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const

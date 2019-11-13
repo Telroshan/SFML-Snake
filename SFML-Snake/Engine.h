@@ -32,7 +32,6 @@ public:
 	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 	sf::Vector2f GridPositionToWorldPosition(sf::Vector2i position) const;
 
-	void CheckCollisions(sf::Vector2f nextPosition);
 	bool Collides(sf::Vector2i gridPosition) const;
 
 private:

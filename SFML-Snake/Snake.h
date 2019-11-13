@@ -4,6 +4,7 @@
 #include <vector>
 #include "Updatable.h"
 #include "Collidable.h"
+#include "Fruit.h"
 
 class Snake : public sf::Drawable, public Updatable, public Collidable
 {
@@ -29,6 +30,8 @@ public:
 
 	float GetMoveSpeed() const;
 
+	void SetFruit(std::shared_ptr<Fruit> fruit);
+
 protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -51,4 +54,6 @@ private:
 	float _moveInterval = _initialMoveInterval;
 	float _moveTimer = 0.f;
 	float _moveIntervalMultiplier = .9f;
+
+	std::shared_ptr<Fruit> _fruit;
 };

@@ -102,23 +102,6 @@ bool Engine::IsRunning() const
 	return _window->isOpen();
 }
 
-void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
-{
-	sf::Vector2i nextHeadGridPosition = WorldPositionToGridPosition(nextHeadPosition);
-
-	if (_fruit->Collides(nextHeadGridPosition))
-	{
-		_player->Grow();
-		if (_player->score == _highScore)
-		{
-			_scoreLabel->setFillColor(sf::Color::Green);
-			_scoreText->setFillColor(sf::Color::Green);
-		}
-		++_player->score;
-		_fruit->Spawn();
-	}
-}
-
 bool Engine::Collides(sf::Vector2i gridPosition) const
 {
 	if (!_collidables.count(_mode))
@@ -208,6 +191,8 @@ void Engine::UpdateGame(float deltaTime)
 		_timeText->setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
 		_speedText->setString(GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
 		_scoreText->setString(GetFormattedNumericString(std::to_string(_player->score), 3));
+		_scoreLabel->setFillColor(GetScoreColor());
+		_scoreText->setFillColor(GetScoreColor());
 	}
 	else
 	{
@@ -265,6 +250,7 @@ void Engine::InitGame()
 	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
 	RegisterDrawable(_fruit, Mode::Game);
 	_fruit->Spawn();
+	_player->SetFruit(_fruit);
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;
