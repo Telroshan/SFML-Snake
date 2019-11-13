@@ -39,6 +39,7 @@ private:
 	void UpdateInputGame();
 	void UpdateInputEndscreen();
 
+	void UpdateMenu(float deltaTime);
 	void UpdateGame(float deltaTime);
 
 	void InitMenu();
@@ -102,4 +103,6 @@ private:
 	float _gameOverTimer = 0.f;
 
 	float _timeElapsed = 0.f;
+
+	float _menuDirectionSwitchTimer = 0.f;
 };

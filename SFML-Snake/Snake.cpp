@@ -37,7 +37,7 @@ void Snake::Update(float deltaTime)
 			return;
 		}
 
-		if (_fruit->Collides(nextHeadGridPosition))
+		if (_fruit && _fruit->Collides(nextHeadGridPosition))
 		{
 			Grow();
 			++score;

@@ -64,6 +64,7 @@ void Engine::Update(float deltaTime)
 	switch (_mode)
 	{
 	case Mode::Menu:
+		UpdateMenu(deltaTime);
 		break;
 	case Mode::Game:
 		UpdateGame(deltaTime);
@@ -183,6 +184,17 @@ void Engine::UpdateInputEndscreen()
 	}
 }
 
+void Engine::UpdateMenu(float deltaTime)
+{
+	_menuDirectionSwitchTimer += deltaTime;
+	if (_menuDirectionSwitchTimer > 1.f)
+	{
+		_menuDirectionSwitchTimer = 0.f;
+		sf::Vector2i direction = sf::Vector2i(-_player->GetDirection().y, _player->GetDirection().x);
+		_player->SetDirection(direction);
+	}
+}
+
 void Engine::UpdateGame(float deltaTime)
 {
 	if (!_player->IsDead())
@@ -211,6 +223,15 @@ void Engine::UpdateGame(float deltaTime)
 
 void Engine::InitMenu()
 {
+	_player = std::make_shared<Snake>(Snake(3,
+		_cellSize / 2.f,
+		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
+		sf::Vector2i(1, 0)));
+	RegisterDrawable(_player, Mode::Menu);
+	RegisterUpdatable(_player, Mode::Menu);
+
+	_menuDirectionSwitchTimer = 0.f;
+
 	std::shared_ptr<sf::Text> gameTitle = InitText(Mode::Menu, "SNAKE");
 	gameTitle->setCharacterSize(60);
 	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2.f, 60.f);
