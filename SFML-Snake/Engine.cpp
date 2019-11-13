@@ -3,6 +3,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <time.h>
+#include "InputManager.h"
 
 Engine Engine::_instance{};
 
@@ -19,9 +20,6 @@ Engine::Engine()
 	}
 
 	ReadHighScore();
-
-	_wasSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-	_wasEscapePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 }
 
 Engine::~Engine()
@@ -30,6 +28,8 @@ Engine::~Engine()
 
 void Engine::UpdateInput()
 {
+	InputManager::Update();
+
 	switch (_mode)
 	{
 	case Mode::Menu:
@@ -42,9 +42,6 @@ void Engine::UpdateInput()
 		UpdateInputEndscreen();
 		break;
 	}
-
-	_wasSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-	_wasEscapePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
 }
 
 void Engine::Update(float deltaTime)
@@ -219,12 +216,12 @@ void Engine::PlaceFruit()
 
 void Engine::UpdateInputMenu()
 {
-	if (!_wasSpacePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Space))
 	{
 		SetMode(Mode::Game);
 	}
-	
-	if (!_wasEscapePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
 	{
 		_window->close();
 	}
@@ -232,24 +229,24 @@ void Engine::UpdateInputMenu()
 
 void Engine::UpdateInputGame()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	if (InputManager::IsKeyPressed(sf::Keyboard::Z))
 	{
 		_player->SetDirection(sf::Vector2i(0, -1));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	else if (InputManager::IsKeyPressed(sf::Keyboard::S))
 	{
 		_player->SetDirection(sf::Vector2i(0, 1));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	else if (InputManager::IsKeyPressed(sf::Keyboard::D))
 	{
 		_player->SetDirection(sf::Vector2i(1, 0));
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	else if (InputManager::IsKeyPressed(sf::Keyboard::Q))
 	{
 		_player->SetDirection(sf::Vector2i(-1, 0));
 	}
 
-	if (!_wasEscapePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
 	{
 		SetMode(Mode::Menu);
 	}
@@ -257,12 +254,12 @@ void Engine::UpdateInputGame()
 
 void Engine::UpdateInputEndscreen()
 {
-	if (!_wasSpacePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Space))
 	{
 		SetMode(Mode::Menu);
 	}
 
-	if (!_wasEscapePressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
 	{
 		_window->close();
 	}
