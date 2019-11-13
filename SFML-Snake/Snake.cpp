@@ -121,6 +121,10 @@ void Snake::Grow()
 
 	// Accelerate
 	_moveInterval *= _moveIntervalMultiplier;
+	if (_moveInterval < _minMoveInterval)
+	{
+		_moveInterval = _minMoveInterval;
+	}
 }
 
 void Snake::Die()
@@ -145,6 +149,11 @@ float Snake::GetMoveSpeed() const
 void Snake::SetFruit(std::shared_ptr<Fruit> fruit)
 {
 	_fruit = fruit;
+}
+
+bool Snake::ReachedMaxSpeed() const
+{
+	return _moveInterval <= _minMoveInterval;
 }
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const

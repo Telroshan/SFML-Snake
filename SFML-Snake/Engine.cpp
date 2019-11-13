@@ -189,10 +189,15 @@ void Engine::UpdateGame(float deltaTime)
 	{
 		_timeElapsed += deltaTime;
 		_timeText->setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
-		_speedText->setString(GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
+
 		_scoreText->setString(GetFormattedNumericString(std::to_string(_player->score), 3));
 		_scoreLabel->setFillColor(GetScoreColor());
 		_scoreText->setFillColor(GetScoreColor());
+
+		_speedText->setString(GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
+		sf::Color speedColor = _player->ReachedMaxSpeed() ? sf::Color(185, 45, 185) : sf::Color::White;
+		_speedText->setFillColor(speedColor);
+		_speedLabel->setFillColor(speedColor);
 	}
 	else
 	{
@@ -275,14 +280,14 @@ void Engine::InitGame()
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
 		_scoreLabel->getPosition().y + _scoreLabel->getLocalBounds().height + space);
 
-	std::shared_ptr<sf::Text> speedLabel = InitText(Mode::Game, "Speed");
+	_speedLabel = InitText(Mode::Game, "Speed");
 	_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
-	speedLabel->setCharacterSize(24);
+	_speedLabel->setCharacterSize(24);
 	_speedText->setCharacterSize(24);
-	speedLabel->setPosition(_windowSize.x - speedLabel->getLocalBounds().width - horizontalPadding,
-		_windowSize.y - _gameUiHeight / 2.f - (speedLabel->getLocalBounds().height + _speedText->getLocalBounds().height + space) / 2.f);
-	_speedText->setPosition(speedLabel->getPosition().x + (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
-		speedLabel->getPosition().y + speedLabel->getLocalBounds().height + space);
+	_speedLabel->setPosition(_windowSize.x - _speedLabel->getLocalBounds().width - horizontalPadding,
+		_windowSize.y - _gameUiHeight / 2.f - (_speedLabel->getLocalBounds().height + _speedText->getLocalBounds().height + space) / 2.f);
+	_speedText->setPosition(_speedLabel->getPosition().x + (_speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
+		_speedLabel->getPosition().y + _speedLabel->getLocalBounds().height + space);
 }
 
 void Engine::InitEndscreen()

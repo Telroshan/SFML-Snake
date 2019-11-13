@@ -32,6 +32,8 @@ public:
 
 	void SetFruit(std::shared_ptr<Fruit> fruit);
 
+	bool ReachedMaxSpeed() const;
+
 protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -54,6 +56,7 @@ private:
 	float _moveInterval = _initialMoveInterval;
 	float _moveTimer = 0.f;
 	float _moveIntervalMultiplier = .9f;
+	float _minMoveInterval = _initialMoveInterval / 4.f;
 
 	std::shared_ptr<Fruit> _fruit;
 };

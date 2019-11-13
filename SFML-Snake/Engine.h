@@ -95,6 +95,7 @@ private:
 	std::shared_ptr<sf::Text> _timeText;
 	std::shared_ptr<sf::Text> _scoreLabel;
 	std::shared_ptr<sf::Text> _scoreText;
+	std::shared_ptr<sf::Text> _speedLabel;
 	std::shared_ptr<sf::Text> _speedText;
 
 	float _gameOverDelay = 1.f;
