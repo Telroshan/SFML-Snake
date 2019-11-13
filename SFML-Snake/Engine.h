@@ -48,8 +48,6 @@ private:
 
 	void SetMode(Mode mode);
 
-	void SetScore(int score);
-
 	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
 
 	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
@@ -60,6 +58,8 @@ private:
 
 	void ReadHighScore();
 	void SaveHighScore();
+
+	sf::Color GetScoreColor() const;
 
 public:
 	void SetCellSize(float cellSize);
@@ -90,7 +90,6 @@ private:
 	std::shared_ptr<Fruit> _fruit;
 
 	const char* scoresFilename = "scores.data";
-	int _score = 0;
 	int _highScore = 0;
 
 	sf::Font _font;

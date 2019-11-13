@@ -88,7 +88,6 @@ void Engine::Render()
 void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize)
 {
 	_windowSize = windowSize;
-	_score = 0;
 
 	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
 	_gameUiHeight = gameUiHeight;
@@ -110,12 +109,12 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 	if (_fruit->Collides(nextHeadGridPosition))
 	{
 		_player->Grow();
-		if (_score == _highScore)
+		if (_player->score == _highScore)
 		{
 			_scoreLabel->setFillColor(sf::Color::Green);
 			_scoreText->setFillColor(sf::Color::Green);
 		}
-		SetScore(_score + 1);
+		++_player->score;
 		_fruit->Spawn();
 	}
 }
@@ -208,6 +207,7 @@ void Engine::UpdateGame(float deltaTime)
 		_timeElapsed += deltaTime;
 		_timeText->setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
 		_speedText->setString(GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
+		_scoreText->setString(GetFormattedNumericString(std::to_string(_player->score), 3));
 	}
 	else
 	{
@@ -247,9 +247,24 @@ void Engine::InitGame()
 {
 	srand((unsigned int)time(NULL));
 
+	_timeElapsed = 0.f;
+	_gameOverTimer = 0;
+
 	_border = std::make_shared<Border>(_gridSize);
 	RegisterDrawable(_border, Mode::Game);
 	RegisterCollidable(_border, Mode::Game);
+
+	_player = std::make_shared<Snake>(Snake(3,
+		_cellSize / 2.f,
+		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
+		sf::Vector2i(1, 0)));
+	RegisterDrawable(_player, Mode::Game);
+	RegisterUpdatable(_player, Mode::Game);
+	RegisterCollidable(_player, Mode::Game);
+
+	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
+	RegisterDrawable(_fruit, Mode::Game);
+	_fruit->Spawn();
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;
@@ -267,8 +282,8 @@ void Engine::InitGame()
 	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
 	_scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
-	_scoreLabel->setFillColor(sf::Color::Yellow);
-	_scoreText->setFillColor(sf::Color::Yellow);
+	_scoreLabel->setFillColor(GetScoreColor());
+	_scoreText->setFillColor(GetScoreColor());
 	_scoreLabel->setPosition(_windowSize.x / 2.f - _scoreLabel->getLocalBounds().width / 2.f,
 		_windowSize.y - _gameUiHeight / 2.f - (_scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
@@ -282,24 +297,6 @@ void Engine::InitGame()
 		_windowSize.y - _gameUiHeight / 2.f - (speedLabel->getLocalBounds().height + _speedText->getLocalBounds().height + space) / 2.f);
 	_speedText->setPosition(speedLabel->getPosition().x + (speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
 		speedLabel->getPosition().y + speedLabel->getLocalBounds().height + space);
-
-	SetScore(0);
-
-	_timeElapsed = 0.f;
-
-	_player = std::make_shared<Snake>(Snake(3,
-		_cellSize / 2.f,
-		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
-		sf::Vector2i(1, 0)));
-	RegisterDrawable(_player, Mode::Game);
-	RegisterUpdatable(_player, Mode::Game);
-	RegisterCollidable(_player, Mode::Game);
-
-	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
-	RegisterDrawable(_fruit, Mode::Game);
-	_fruit->Spawn();
-
-	_gameOverTimer = 0;
 }
 
 void Engine::InitEndscreen()
@@ -310,11 +307,11 @@ void Engine::InitEndscreen()
 
 	float space = 10.f;
 	std::shared_ptr<sf::Text> finalScoreLabel = InitText(Mode::Endscreen, "Score");
-	std::shared_ptr<sf::Text> finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_score), 3));
+	std::shared_ptr<sf::Text> finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_player->score), 3));
 	finalScoreLabel->setCharacterSize(50);
 	finalScoreText->setCharacterSize(50);
-	finalScoreLabel->setFillColor(_score > _highScore ? sf::Color::Green : sf::Color::Yellow);
-	finalScoreText->setFillColor(_score > _highScore ? sf::Color::Green : sf::Color::Yellow);
+	finalScoreLabel->setFillColor(GetScoreColor());
+	finalScoreText->setFillColor(GetScoreColor());
 	finalScoreLabel->setPosition(_windowSize.x / 2 - finalScoreLabel->getLocalBounds().width / 2.f,
 		_windowSize.y / 2 - (finalScoreLabel->getLocalBounds().height + finalScoreText->getLocalBounds().height + space) / 2.f);
 	finalScoreText->setPosition(_windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
@@ -328,14 +325,14 @@ void Engine::InitEndscreen()
 	exitText->setCharacterSize(20);
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
 
-	if (_score > _highScore)
+	if (_player->score > _highScore)
 	{
 		std::shared_ptr<sf::Text> beatHighscoreText = InitText(Mode::Endscreen, "You beat the high score !");
 		beatHighscoreText->setCharacterSize(20);
 		beatHighscoreText->setFillColor(sf::Color::Green);
 		beatHighscoreText->setPosition(_windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
 			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + space * 2.5f);
-		_highScore = _score;
+		_highScore = _player->score;
 		SaveHighScore();
 	}
 }
@@ -360,12 +357,6 @@ void Engine::SetMode(Mode mode)
 	default:
 		break;
 	}
-}
-
-void Engine::SetScore(int score)
-{
-	_score = score;
-	_scoreText->setString(GetFormattedNumericString(std::to_string(_score), 3));
 }
 
 std::shared_ptr<sf::Text> Engine::InitText(Mode mode, const std::string& content)
@@ -449,6 +440,11 @@ void Engine::SaveHighScore()
 	stream << _highScore;
 
 	stream.close();
+}
+
+sf::Color Engine::GetScoreColor() const
+{
+	return _player->score > _highScore ? sf::Color::Green : sf::Color::Yellow;
 }
 
 void Engine::SetCellSize(float cellSize)
