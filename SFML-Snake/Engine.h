@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Snake.h"
 #include "Fruit.h"
+#include "Border.h"
 
 enum class Mode
 {
@@ -34,9 +35,10 @@ public:
 
 	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
 
-private:
-	void BuildBorder();
+	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
+	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
 
+private:
 	void PlaceFruit();
 
 	void UpdateInputMenu();
@@ -55,9 +57,6 @@ private:
 
 	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
 
-	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
-	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
-
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
 	void ReadHighScore();
@@ -66,6 +65,8 @@ private:
 public:
 	void SetCellSize(float cellSize);
 	float GetCellSize() const;
+	const sf::Vector2i GetWindowSize() const;
+	const float GetGameUiHeight() const;
 
 private:
 	static Engine _instance;
@@ -83,6 +84,7 @@ private:
 	float _cellSize = 20.f;
 	sf::Vector2i _rectanglesCount;
 
+	std::shared_ptr<Border> _border;
 	std::shared_ptr<Snake> _player;
 	std::shared_ptr<Fruit> _fruit;
 

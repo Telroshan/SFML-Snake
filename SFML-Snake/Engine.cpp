@@ -103,61 +103,6 @@ bool Engine::IsRunning() const
 	return _window->isOpen();
 }
 
-void Engine::BuildBorder()
-{
-	const int colorsLength = 2;
-	sf::Color colors[colorsLength] = { sf::Color::Color(30, 30, 30), sf::Color::Color(60, 60, 60) };
-	int colorIndex = 0;
-
-	// Top left => top right
-	for (int x = 0; x < _rectanglesCount.x - 1; ++x)
-	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * _cellSize, 0);
-		RegisterDrawable(cell, Mode::Game);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
-	}
-
-	// Top right => bottom right
-	for (int y = 0; y < _rectanglesCount.y - 1; ++y)
-	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(_windowSize.x - _cellSize, y * _cellSize);
-		RegisterDrawable(cell, Mode::Game);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
-	}
-
-	// Bottom right => bottom left
-	for (int x = _rectanglesCount.x - 1; x > 0; --x)
-	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * _cellSize, (_windowSize.y - _gameUiHeight) - _cellSize);
-		RegisterDrawable(cell, Mode::Game);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
-	}
-
-	// Bottom left => top left
-	for (int y = 1; y < _rectanglesCount.y; ++y)
-	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(0, y * _cellSize);
-		RegisterDrawable(cell, Mode::Game);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
-	}
-}
-
 void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 {
 	sf::Vector2i nextHeadGridPosition = WorldPositionToGridPosition(nextHeadPosition);
@@ -298,7 +243,7 @@ void Engine::InitGame()
 {
 	srand((unsigned int)time(NULL));
 
-	BuildBorder();
+	_border = std::make_shared<Border>(_rectanglesCount);
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;
@@ -499,4 +444,14 @@ void Engine::SetCellSize(float cellSize)
 float Engine::GetCellSize() const
 {
 	return _cellSize;
+}
+
+const sf::Vector2i Engine::GetWindowSize() const
+{
+	return _windowSize;
+}
+
+const float Engine::GetGameUiHeight() const
+{
+	return _gameUiHeight;
 }
