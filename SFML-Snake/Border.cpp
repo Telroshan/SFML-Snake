@@ -1,21 +1,21 @@
 #include "Border.h"
 #include "Engine.h"
 
-Border::Border(sf::Vector2i rectanglesCount)
+Border::Border(sf::Vector2i gridSize)
 {
 	Engine& engine = Engine::GetInstance();
 	float cellSize = engine.GetCellSize();
 	sf::Vector2i windowSize = engine.GetWindowSize();
 	int gameUiHeight = engine.GetGameUiHeight();
 
-	_rectanglesCount = rectanglesCount;
+	_gridSize = gridSize;
 
 	const int colorsLength = 2;
 	sf::Color colors[colorsLength] = { sf::Color::Color(30, 30, 30), sf::Color::Color(60, 60, 60) };
 	int colorIndex = 0;
 
 	// Top left => top right
-	for (int x = 0; x < _rectanglesCount.x - 1; ++x)
+	for (int x = 0; x < _gridSize.x - 1; ++x)
 	{
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
@@ -27,7 +27,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 	}
 
 	// Top right => bottom right
-	for (int y = 0; y < _rectanglesCount.y - 1; ++y)
+	for (int y = 0; y < _gridSize.y - 1; ++y)
 	{
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
@@ -39,7 +39,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 	}
 
 	// Bottom right => bottom left
-	for (int x = _rectanglesCount.x - 1; x > 0; --x)
+	for (int x = _gridSize.x - 1; x > 0; --x)
 	{
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
@@ -51,7 +51,7 @@ Border::Border(sf::Vector2i rectanglesCount)
 	}
 
 	// Bottom left => top left
-	for (int y = 1; y < _rectanglesCount.y; ++y)
+	for (int y = 1; y < _gridSize.y; ++y)
 	{
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
@@ -65,8 +65,8 @@ Border::Border(sf::Vector2i rectanglesCount)
 
 bool Border::Collides(sf::Vector2i gridPosition) const
 {
-	return gridPosition.x == 0 || gridPosition.x == _rectanglesCount.x - 1
-		|| gridPosition.y == 0 || gridPosition.y == _rectanglesCount.y - 1;
+	return gridPosition.x == 0 || gridPosition.x == _gridSize.x - 1
+		|| gridPosition.y == 0 || gridPosition.y == _gridSize.y - 1;
 }
 
 void Border::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -6,7 +6,7 @@
 class Border : public sf::Drawable, public Collidable
 {
 public:
-	Border(sf::Vector2i rectanglesCount);
+	Border(sf::Vector2i gridSize);
 
 public:
 	virtual bool Collides(sf::Vector2i gridPosition) const;
@@ -16,5 +16,5 @@ protected:
 
 private:
 	std::vector<std::shared_ptr<sf::RectangleShape>> _cells;
-	sf::Vector2i _rectanglesCount;
+	sf::Vector2i _gridSize;
 };

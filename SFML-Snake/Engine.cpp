@@ -116,7 +116,7 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 			_scoreText->setFillColor(sf::Color::Green);
 		}
 		SetScore(_score + 1);
-		PlaceFruit();
+		_fruit->Spawn();
 	}
 }
 
@@ -144,16 +144,10 @@ sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
 	return gridPosition;
 }
 
-void Engine::PlaceFruit()
+sf::Vector2f Engine::GridPositionToWorldPosition(sf::Vector2i position) const
 {
-	sf::Vector2i position;
-	do
-	{
-		// Random between borders
-		position = sf::Vector2i(rand() % (_rectanglesCount.x - 1) + 1, rand() % (_rectanglesCount.y - 1) + 1);
-	} while (_player->Collides(position) || _border->Collides(position));
-
-	_fruit->setPosition(sf::Vector2f(position.x * _cellSize, position.y * _cellSize));
+	sf::Vector2f worldPosition(position.x * _cellSize, position.y * _cellSize);
+	return worldPosition;
 }
 
 void Engine::UpdateInputMenu()
@@ -253,7 +247,7 @@ void Engine::InitGame()
 {
 	srand((unsigned int)time(NULL));
 
-	_border = std::make_shared<Border>(_rectanglesCount);
+	_border = std::make_shared<Border>(_gridSize);
 	RegisterDrawable(_border, Mode::Game);
 	RegisterCollidable(_border, Mode::Game);
 
@@ -295,7 +289,7 @@ void Engine::InitGame()
 
 	_player = std::make_shared<Snake>(Snake(3,
 		_cellSize / 2.f,
-		sf::Vector2f((_rectanglesCount.x / 2) * _cellSize, (_rectanglesCount.y / 2) * _cellSize),
+		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
 		sf::Vector2i(1, 0)));
 	RegisterDrawable(_player, Mode::Game);
 	RegisterUpdatable(_player, Mode::Game);
@@ -303,7 +297,7 @@ void Engine::InitGame()
 
 	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
 	RegisterDrawable(_fruit, Mode::Game);
-	PlaceFruit();
+	_fruit->Spawn();
 
 	_gameOverTimer = 0;
 }
@@ -461,7 +455,7 @@ void Engine::SetCellSize(float cellSize)
 {
 	_cellSize = cellSize;
 
-	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize, (_windowSize.y - _gameUiHeight) / (int)cellSize);
+	_gridSize = sf::Vector2i(_windowSize.x / (int)cellSize, (_windowSize.y - _gameUiHeight) / (int)cellSize);
 }
 
 float Engine::GetCellSize() const
@@ -472,6 +466,11 @@ float Engine::GetCellSize() const
 const sf::Vector2i Engine::GetWindowSize() const
 {
 	return _windowSize;
+}
+
+const sf::Vector2i Engine::GetGridSize() const
+{
+	return _gridSize;
 }
 
 const int Engine::GetGameUiHeight() const

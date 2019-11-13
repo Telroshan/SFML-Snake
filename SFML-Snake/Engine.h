@@ -30,13 +30,12 @@ public:
 	bool IsRunning() const;
 
 	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
+	sf::Vector2f GridPositionToWorldPosition(sf::Vector2i position) const;
 
 	void CheckCollisions(sf::Vector2f nextPosition);
 	bool Collides(sf::Vector2i gridPosition) const;
 
 private:
-	void PlaceFruit();
-
 	void UpdateInputMenu();
 	void UpdateInputGame();
 	void UpdateInputEndscreen();
@@ -66,6 +65,7 @@ public:
 	void SetCellSize(float cellSize);
 	float GetCellSize() const;
 	const sf::Vector2i GetWindowSize() const;
+	const sf::Vector2i GetGridSize() const;
 	const int GetGameUiHeight() const;
 
 private:
@@ -83,7 +83,7 @@ private:
 	int _gameUiHeight = 0;
 
 	float _cellSize = 20.f;
-	sf::Vector2i _rectanglesCount;
+	sf::Vector2i _gridSize;
 
 	std::shared_ptr<Border> _border;
 	std::shared_ptr<Snake> _player;

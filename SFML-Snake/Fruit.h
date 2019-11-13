@@ -10,4 +10,5 @@ public:
 
 public:
 	virtual bool Collides(sf::Vector2i gridPosition) const;
+	void Spawn();
 };
