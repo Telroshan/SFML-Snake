@@ -3,14 +3,16 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "Updatable.h"
+#include "Collidable.h"
 
-class Snake : public sf::Drawable, public Updatable
+class Snake : public sf::Drawable, public Updatable, public Collidable
 {
 public:
 	Snake(int size, float length, sf::Vector2f position, sf::Vector2i direction);
 
 public:
 	virtual void Update(float deltaTime);
+	virtual bool Collides(sf::Vector2i gridPosition) const;
 
 	const sf::Vector2f& GetHeadPosition() const;
 	void Move(sf::Vector2f movement);
@@ -22,8 +24,6 @@ public:
 	void Grow();
 
 	void Die();
-
-	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
 
 	bool IsDead() const;
 

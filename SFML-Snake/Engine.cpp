@@ -107,9 +107,7 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 {
 	sf::Vector2i nextHeadGridPosition = WorldPositionToGridPosition(nextHeadPosition);
 
-	sf::Vector2f fruitPosition = _fruit->getPosition();
-	sf::Vector2i fruitGridPosition = WorldPositionToGridPosition(fruitPosition);
-	if (nextHeadGridPosition.x == fruitGridPosition.x && nextHeadGridPosition.y == fruitGridPosition.y)
+	if (_fruit->Collides(nextHeadGridPosition))
 	{
 		_player->Grow();
 		if (_score == _highScore)
@@ -128,12 +126,6 @@ sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
 	return gridPosition;
 }
 
-bool Engine::IsPositionInBorder(sf::Vector2i gridPosition) const
-{
-	return gridPosition.x == 0 || gridPosition.x == _rectanglesCount.x - 1
-		|| gridPosition.y == 0 || gridPosition.y == _rectanglesCount.y - 1;
-}
-
 void Engine::PlaceFruit()
 {
 	sf::Vector2i position;
@@ -141,7 +133,7 @@ void Engine::PlaceFruit()
 	{
 		// Random between borders
 		position = sf::Vector2i(rand() % (_rectanglesCount.x - 1) + 1, rand() % (_rectanglesCount.y - 1) + 1);
-	} while (_player->IsPositionInSnake(position, false) || IsPositionInBorder(position));
+	} while (_player->Collides(position) || _border->Collides(position));
 
 	_fruit->setPosition(sf::Vector2f(position.x * _cellSize, position.y * _cellSize));
 }
@@ -451,7 +443,12 @@ const sf::Vector2i Engine::GetWindowSize() const
 	return _windowSize;
 }
 
-const float Engine::GetGameUiHeight() const
+const int Engine::GetGameUiHeight() const
 {
 	return _gameUiHeight;
+}
+
+std::shared_ptr<Border> Engine::GetBorder() const
+{
+	return _border;
 }

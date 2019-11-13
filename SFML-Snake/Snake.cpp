@@ -1,6 +1,7 @@
 #include "Snake.h"
 #include <iostream>
 #include "Engine.h"
+#include "Border.h"
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
 	_body(1),
@@ -25,13 +26,13 @@ void Snake::Update(float deltaTime)
 		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
 		sf::Vector2i nextHeadGridPosition = Engine::GetInstance().WorldPositionToGridPosition(nextHeadPosition);
 
-		if (Engine::GetInstance().IsPositionInBorder(nextHeadGridPosition))
+		if (Engine::GetInstance().GetBorder()->Collides(nextHeadGridPosition))
 		{
 			Die();
 			return;
 		}
 
-		if (IsPositionInSnake(nextHeadGridPosition, true))
+		if (Collides(nextHeadGridPosition))
 		{
 			Die();
 			return;
@@ -46,6 +47,21 @@ void Snake::Update(float deltaTime)
 			_moveTimer = 0.f;
 		}
 	}
+}
+
+bool Snake::Collides(sf::Vector2i gridPosition) const
+{
+	int max = (int)_body.size();
+	for (int i = 0; i < max; ++i)
+	{
+		sf::Vector2i bodyPartPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[i].getPosition());
+		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 const sf::Vector2f& Snake::GetHeadPosition() const
@@ -117,22 +133,6 @@ void Snake::Die()
 	{
 		_body[i].setFillColor(sf::Color::Red);
 	}
-}
-
-bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const
-{
-	int max = (int)_body.size();
-	if (ignoreLastPart) --max;
-	for (int i = 0; i < max; ++i)
-	{
-		sf::Vector2i bodyPartPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[i].getPosition());
-		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
-		{
-			return true;
-		}
-	}
-
-	return false;
 }
 
 bool Snake::IsDead() const

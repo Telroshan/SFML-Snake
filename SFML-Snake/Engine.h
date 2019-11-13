@@ -33,8 +33,6 @@ public:
 
 	void CheckCollisions(sf::Vector2f nextPosition);
 
-	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
-
 	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
 	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
 
@@ -66,7 +64,9 @@ public:
 	void SetCellSize(float cellSize);
 	float GetCellSize() const;
 	const sf::Vector2i GetWindowSize() const;
-	const float GetGameUiHeight() const;
+	const int GetGameUiHeight() const;
+
+	std::shared_ptr<Border> GetBorder() const;
 
 private:
 	static Engine _instance;
