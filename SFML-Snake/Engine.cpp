@@ -56,6 +56,11 @@ void Engine::Update(float deltaTime)
 		}
 	}
 
+	for (size_t i = 0; i < _updatables[_mode].size(); ++i)
+	{
+		_updatables[_mode][i]->Update(deltaTime);
+	}
+
 	switch (_mode)
 	{
 	case Mode::Menu:
@@ -80,20 +85,15 @@ void Engine::Render()
 	_window->display();
 }
 
-void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed, float moveSpeedMultiplier)
+void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize)
 {
 	_windowSize = windowSize;
 	_score = 0;
-	_drawables.clear();
 
 	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
 	_gameUiHeight = gameUiHeight;
 
 	SetCellSize(cellSize);
-
-	_moveIntervalMultiplier = 1.f / moveSpeedMultiplier;
-	_moveInterval = 1.f / moveSpeed;
-	_initialMoveInterval = _moveInterval;
 
 	SetMode(Mode::Menu);
 }
@@ -186,7 +186,6 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 		}
 		SetScore(_score + 1);
 		PlaceFruit();
-		SetMoveInterval(_moveInterval * _moveIntervalMultiplier);
 	}
 }
 
@@ -271,19 +270,7 @@ void Engine::UpdateGame(float deltaTime)
 	{
 		_timeElapsed += deltaTime;
 		_timeText->setString(GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
-
-		_moveTimer += deltaTime;
-		if (_moveTimer > _moveInterval) {
-			sf::Vector2i direction = _player->GetDirection();
-			sf::Vector2f nextHeadPosition = _player->GetHeadPosition() + sf::Vector2f(direction.x * _cellSize, direction.y * _cellSize);
-			CheckCollisions(nextHeadPosition);
-			if (!_player->IsDead())
-			{
-				direction = _player->GetDirection();
-				_player->Move(sf::Vector2f(direction.x * _cellSize, direction.y * _cellSize));
-				_moveTimer = 0.f;
-			}
-		}
+		_speedText->setString(GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
 	}
 	else
 	{
@@ -359,8 +346,6 @@ void Engine::InitGame()
 
 	SetScore(0);
 
-	_moveTimer = 0;
-	SetMoveInterval(_initialMoveInterval);
 	_timeElapsed = 0.f;
 
 	_player = std::make_shared<Snake>(Snake(3,
@@ -368,6 +353,7 @@ void Engine::InitGame()
 		sf::Vector2f((_rectanglesCount.x / 2) * _cellSize, (_rectanglesCount.y / 2) * _cellSize),
 		sf::Vector2i(1, 0)));
 	RegisterDrawable(_player, Mode::Game);
+	RegisterUpdatable(_player, Mode::Game);
 
 	_fruit = std::make_shared<sf::RectangleShape>(sf::Vector2f(_cellSize, _cellSize));
 	_fruit->setFillColor(sf::Color::White);
@@ -419,6 +405,7 @@ void Engine::SetMode(Mode mode)
 {
 	_mode = mode;
 	_drawables.clear();
+	_updatables.clear();
 	switch (_mode)
 	{
 	case Mode::Menu:
@@ -441,12 +428,6 @@ void Engine::SetScore(int score)
 	_scoreText->setString(GetFormattedNumericString(std::to_string(_score), 3));
 }
 
-void Engine::SetMoveInterval(float moveInterval)
-{
-	_moveInterval = moveInterval;
-	_speedText->setString(GetFormattedNumericString(std::to_string(_initialMoveInterval / _moveInterval), 3));
-}
-
 std::shared_ptr<sf::Text> Engine::InitText(Mode mode, const std::string& content)
 {
 	std::shared_ptr<sf::Text> text = std::make_shared<sf::Text>();
@@ -466,6 +447,15 @@ void Engine::RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode)
 		_drawables.insert({ mode, std::vector<std::shared_ptr<sf::Drawable>>() });
 	}
 	_drawables[mode].push_back(drawable);
+}
+
+void Engine::RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode)
+{
+	if (_updatables.find(mode) == _updatables.end())
+	{
+		_updatables.insert({ mode, std::vector<std::shared_ptr<Updatable>>() });
+	}
+	_updatables[mode].push_back(updatable);
 }
 
 std::string Engine::GetFormattedNumericString(const std::string& string, int textLength) const
@@ -517,4 +507,9 @@ void Engine::SetCellSize(float cellSize)
 	_cellSize = cellSize;
 
 	_rectanglesCount = sf::Vector2i(_windowSize.x / (int)cellSize, (_windowSize.y - _gameUiHeight) / (int)cellSize);
+}
+
+float Engine::GetCellSize() const
+{
+	return _cellSize;
 }

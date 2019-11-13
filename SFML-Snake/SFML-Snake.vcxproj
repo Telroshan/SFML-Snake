@@ -143,11 +143,13 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="Updatable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Snake.h" />
+    <ClInclude Include="Updatable.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\PressStart2P.ttf" />

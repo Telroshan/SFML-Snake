@@ -16,6 +16,25 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 	}
 }
 
+void Snake::Update(float deltaTime)
+{
+	_moveTimer += deltaTime;
+	float cellSize = Engine::GetInstance().GetCellSize();
+	if (_moveTimer > _moveInterval) {
+		sf::Vector2i direction = _direction;
+		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
+
+		Engine::GetInstance().CheckCollisions(nextHeadPosition);
+
+		if (!IsDead())
+		{
+			direction = _direction;
+			Move(sf::Vector2f(direction.x * cellSize, direction.y * cellSize));
+			_moveTimer = 0.f;
+		}
+	}
+}
+
 const sf::Vector2f& Snake::GetHeadPosition() const
 {
 	return _body[0].getPosition();
@@ -72,6 +91,10 @@ void Snake::Grow()
 	bodypart.setPosition(position - sf::Vector2f(direction.x * size, direction.y * size));
 	bodypart.setFillColor(_colors[_body.size() % _colors.size()]);
 	_body.push_back(bodypart);
+
+	// Accelerate
+	// TODO : don't accelerate on construct...
+	_moveInterval *= _moveIntervalMultiplier;
 }
 
 void Snake::Die()
@@ -102,6 +125,11 @@ bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) co
 bool Snake::IsDead() const
 {
 	return _dead;
+}
+
+float Snake::GetMoveSpeed() const
+{
+	return _initialMoveInterval / _moveInterval;
 }
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -23,15 +23,16 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize, float moveSpeed, float moveSpeedMultiplier);
+	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize);
 
 	bool IsRunning() const;
 
 	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 
+	void CheckCollisions(sf::Vector2f nextPosition);
+
 private:
 	void BuildBorder();
-	void CheckCollisions(sf::Vector2f nextPosition);
 
 	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
 
@@ -50,11 +51,11 @@ private:
 	void SetMode(Mode mode);
 
 	void SetScore(int score);
-	void SetMoveInterval(float moveInterval);
 
 	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
 
 	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
+	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
 
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
@@ -63,6 +64,7 @@ private:
 
 public:
 	void SetCellSize(float cellSize);
+	float GetCellSize() const;
 
 private:
 	static Engine _instance;
@@ -73,6 +75,7 @@ private:
 	Mode _mode = Mode::Menu;
 
 	std::map<Mode, std::vector<std::shared_ptr<sf::Drawable>>> _drawables;
+	std::map<Mode, std::vector<std::shared_ptr<Updatable>>> _updatables;
 
 	int _gameUiHeight = 0;
 
@@ -81,12 +84,6 @@ private:
 
 	std::shared_ptr<Snake> _player;
 	std::shared_ptr<sf::RectangleShape> _fruit;
-
-	float _moveInterval = 1.f;
-	float _initialMoveInterval = _moveInterval;
-	float _moveTimer = 0.f;
-
-	float _moveIntervalMultiplier = 1.f;
 
 	const char* scoresFilename = "scores.data";
 	int _score = 0;

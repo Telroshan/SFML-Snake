@@ -2,13 +2,16 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "Updatable.h"
 
-class Snake : public sf::Drawable
+class Snake : public sf::Drawable, public Updatable
 {
 public:
 	Snake(int size, float length, sf::Vector2f position, sf::Vector2i direction);
 
 public:
+	virtual void Update(float deltaTime);
+
 	const sf::Vector2f& GetHeadPosition() const;
 	void Move(sf::Vector2f movement);
 	const sf::Vector2i& GetDirection() const;
@@ -24,6 +27,8 @@ public:
 
 	bool IsDead() const;
 
+	float GetMoveSpeed() const;
+
 protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -34,4 +39,9 @@ private:
 	bool _dead;
 
 	std::vector<sf::Color> _colors = { sf::Color::Green, sf::Color::Cyan };
+
+	float _initialMoveInterval = .2f;
+	float _moveInterval = _initialMoveInterval;
+	float _moveTimer = 0.f;
+	float _moveIntervalMultiplier = .9f;
 };
