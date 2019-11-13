@@ -315,8 +315,8 @@ void Engine::InitGame()
 	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
 	scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
-	scoreLabel->setFillColor(sf::Color::Green);
-	_scoreText->setFillColor(sf::Color::Green);
+	scoreLabel->setFillColor(sf::Color::Yellow);
+	_scoreText->setFillColor(sf::Color::Yellow);
 	scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f,
 		_windowSize.y - _gameUiHeight / 2.f - (scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
@@ -355,16 +355,25 @@ void Engine::InitEndscreen()
 {
 	std::shared_ptr<sf::Text> gameOverText = InitText(Mode::Endscreen, "GAME OVER");
 	gameOverText->setCharacterSize(60);
-	gameOverText->setPosition(_windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, _windowSize.y / 2 - gameOverText->getLocalBounds().height / 2);
+	gameOverText->setPosition(_windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, 30.f);
+
+	float space = 10.f;
+	std::shared_ptr<sf::Text> finalScoreLabel = InitText(Mode::Endscreen, "Score");
+	std::shared_ptr<sf::Text> finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_score), 3));
+	finalScoreLabel->setCharacterSize(50);
+	finalScoreText->setCharacterSize(50);
+	finalScoreLabel->setFillColor(sf::Color::Yellow);
+	finalScoreText->setFillColor(sf::Color::Yellow);
+	finalScoreLabel->setPosition(_windowSize.x / 2 - finalScoreLabel->getLocalBounds().width / 2.f,
+		_windowSize.y / 2 - (finalScoreLabel->getLocalBounds().height + finalScoreText->getLocalBounds().height + space) / 2.f);
+	finalScoreText->setPosition(_windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
+		finalScoreLabel->getPosition().y + finalScoreLabel->getLocalBounds().height + space);
 
 	std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to play");
 	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
 
 	std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
-
-	_finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_score), 3));
-	_finalScoreText->setPosition(_windowSize.x / 2.f - _finalScoreText->getLocalBounds().width / 2.f, 50.f);
 }
 
 void Engine::SetMode(Mode mode)
