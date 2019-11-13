@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <time.h>
 
@@ -16,6 +17,8 @@ Engine::Engine()
 	{
 		std::cerr << "Couldn't load font" << std::endl;
 	}
+
+	ReadHighScore();
 }
 
 Engine::~Engine()
@@ -410,6 +413,36 @@ std::string Engine::GetFormattedNumericString(const std::string& string, int tex
 		text = "0" + text;
 	}
 	return text;
+}
+
+void Engine::ReadHighScore()
+{
+	std::ifstream stream;
+	stream.open(scoresFilename);
+	if (!stream.is_open())
+	{
+		_highScore = 0;
+		return;
+	}
+
+	stream >> _highScore;
+
+	stream.close();
+}
+
+void Engine::SaveHighScore()
+{
+	std::ofstream stream;
+	stream.open(scoresFilename);
+	if (!stream.is_open())
+	{
+		std::cerr << "Couldn't save high score" << std::endl;
+		return;
+	}
+
+	stream << _highScore;
+
+	stream.close();
 }
 
 void Engine::SetCellSize(float cellSize)

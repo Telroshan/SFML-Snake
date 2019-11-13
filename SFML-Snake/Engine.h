@@ -57,6 +57,9 @@ private:
 
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
+	void ReadHighScore();
+	void SaveHighScore();
+
 public:
 	void SetCellSize(float cellSize);
 
@@ -84,7 +87,9 @@ private:
 
 	float _moveIntervalMultiplier = 1.f;
 
+	const char* scoresFilename = "scores.data";
 	int _score = 0;
+	int _highScore = 0;
 
 	sf::Font _font;
 	std::shared_ptr<sf::Text> _timeText;
