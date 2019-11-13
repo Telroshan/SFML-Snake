@@ -31,10 +31,10 @@ public:
 
 	void CheckCollisions(sf::Vector2f nextPosition);
 
+	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
+
 private:
 	void BuildBorder();
-
-	bool IsPositionInBorder(sf::Vector2i gridPosition) const;
 
 	void PlaceFruit();
 

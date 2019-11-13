@@ -162,18 +162,6 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 {
 	sf::Vector2i nextHeadGridPosition = WorldPositionToGridPosition(nextHeadPosition);
 
-	if (IsPositionInBorder(nextHeadGridPosition))
-	{
-		_player->Die();
-		return;
-	}
-
-	if (_player->IsPositionInSnake(nextHeadGridPosition, true))
-	{
-		_player->Die();
-		return;
-	}
-
 	sf::Vector2f fruitPosition = _fruit->getPosition();
 	sf::Vector2i fruitGridPosition = WorldPositionToGridPosition(fruitPosition);
 	if (nextHeadGridPosition.x == fruitGridPosition.x && nextHeadGridPosition.y == fruitGridPosition.y)

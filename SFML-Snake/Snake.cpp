@@ -23,6 +23,19 @@ void Snake::Update(float deltaTime)
 	if (_moveTimer > _moveInterval) {
 		sf::Vector2i direction = _direction;
 		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
+		sf::Vector2i nextHeadGridPosition = Engine::GetInstance().WorldPositionToGridPosition(nextHeadPosition);
+
+		if (Engine::GetInstance().IsPositionInBorder(nextHeadGridPosition))
+		{
+			Die();
+			return;
+		}
+
+		if (IsPositionInSnake(nextHeadGridPosition, true))
+		{
+			Die();
+			return;
+		}
 
 		Engine::GetInstance().CheckCollisions(nextHeadPosition);
 
