@@ -382,6 +382,11 @@ void Engine::InitEndscreen()
 
 	if (_score > _highScore)
 	{
+		std::shared_ptr<sf::Text> beatHighscoreText = InitText(Mode::Endscreen, "You beat the high score !");
+		beatHighscoreText->setCharacterSize(20);
+		beatHighscoreText->setFillColor(sf::Color::Green);
+		beatHighscoreText->setPosition(_windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
+			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + space * 2.5f);
 		_highScore = _score;
 		SaveHighScore();
 	}
