@@ -122,6 +122,11 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 
 bool Engine::Collides(sf::Vector2i gridPosition) const
 {
+	if (!_collidables.count(_mode))
+	{
+		return false;
+	}
+
 	for (size_t i = 0; i < _collidables.at(_mode).size(); ++i)
 	{
 		if (_collidables.at(_mode)[i]->Collides(gridPosition))
