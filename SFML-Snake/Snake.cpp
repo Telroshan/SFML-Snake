@@ -15,6 +15,7 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 	{
 		Grow();
 	}
+	_moveInterval = _initialMoveInterval;
 }
 
 void Snake::Update(float deltaTime)
@@ -118,7 +119,6 @@ void Snake::Grow()
 	_body.push_back(bodypart);
 
 	// Accelerate
-	// TODO : don't accelerate on construct...
 	_moveInterval *= _moveIntervalMultiplier;
 }
 
