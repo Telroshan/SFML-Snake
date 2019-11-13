@@ -56,7 +56,7 @@ private:
 	float _moveInterval = _initialMoveInterval;
 	float _moveTimer = 0.f;
 	float _moveIntervalMultiplier = .9f;
-	float _minMoveInterval = _initialMoveInterval / 4.f;
+	float _minMoveInterval = _initialMoveInterval / 3.f;
 
 	std::shared_ptr<Fruit> _fruit;
 };
