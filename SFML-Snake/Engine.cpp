@@ -315,6 +315,8 @@ void Engine::InitGame()
 	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
 	scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
+	scoreLabel->setFillColor(sf::Color::Green);
+	_scoreText->setFillColor(sf::Color::Green);
 	scoreLabel->setPosition(_windowSize.x / 2.f - scoreLabel->getLocalBounds().width / 2.f,
 		_windowSize.y - _gameUiHeight / 2.f - (scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
