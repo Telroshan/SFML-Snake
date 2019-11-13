@@ -32,6 +32,7 @@ public:
 	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 
 	void CheckCollisions(sf::Vector2f nextPosition);
+	bool Collides(sf::Vector2i gridPosition) const;
 
 private:
 	void PlaceFruit();
@@ -54,6 +55,7 @@ private:
 
 	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
 	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
+	void RegisterCollidable(std::shared_ptr<Collidable> collidable, Mode mode);
 
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
@@ -66,8 +68,6 @@ public:
 	const sf::Vector2i GetWindowSize() const;
 	const int GetGameUiHeight() const;
 
-	std::shared_ptr<Border> GetBorder() const;
-
 private:
 	static Engine _instance;
 
@@ -78,6 +78,7 @@ private:
 
 	std::map<Mode, std::vector<std::shared_ptr<sf::Drawable>>> _drawables;
 	std::map<Mode, std::vector<std::shared_ptr<Updatable>>> _updatables;
+	std::map<Mode, std::vector<std::shared_ptr<Collidable>>> _collidables;
 
 	int _gameUiHeight = 0;
 

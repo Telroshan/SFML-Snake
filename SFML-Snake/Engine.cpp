@@ -120,6 +120,19 @@ void Engine::CheckCollisions(sf::Vector2f nextHeadPosition)
 	}
 }
 
+bool Engine::Collides(sf::Vector2i gridPosition) const
+{
+	for (size_t i = 0; i < _collidables.at(_mode).size(); ++i)
+	{
+		if (_collidables.at(_mode)[i]->Collides(gridPosition))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 sf::Vector2i Engine::WorldPositionToGridPosition(sf::Vector2f position) const
 {
 	sf::Vector2i gridPosition((int)(position.x / _cellSize), (int)(position.y / _cellSize));
@@ -237,6 +250,7 @@ void Engine::InitGame()
 
 	_border = std::make_shared<Border>(_rectanglesCount);
 	RegisterDrawable(_border, Mode::Game);
+	RegisterCollidable(_border, Mode::Game);
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;
@@ -280,6 +294,7 @@ void Engine::InitGame()
 		sf::Vector2i(1, 0)));
 	RegisterDrawable(_player, Mode::Game);
 	RegisterUpdatable(_player, Mode::Game);
+	RegisterCollidable(_player, Mode::Game);
 
 	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
 	RegisterDrawable(_fruit, Mode::Game);
@@ -331,6 +346,7 @@ void Engine::SetMode(Mode mode)
 	_mode = mode;
 	_drawables.clear();
 	_updatables.clear();
+	_collidables.clear();
 	switch (_mode)
 	{
 	case Mode::Menu:
@@ -381,6 +397,15 @@ void Engine::RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode)
 		_updatables.insert({ mode, std::vector<std::shared_ptr<Updatable>>() });
 	}
 	_updatables[mode].push_back(updatable);
+}
+
+void Engine::RegisterCollidable(std::shared_ptr<Collidable> collidable, Mode mode)
+{
+	if (_collidables.find(mode) == _collidables.end())
+	{
+		_collidables.insert({ mode, std::vector<std::shared_ptr<Collidable>>() });
+	}
+	_collidables[mode].push_back(collidable);
 }
 
 std::string Engine::GetFormattedNumericString(const std::string& string, int textLength) const
@@ -447,9 +472,4 @@ const sf::Vector2i Engine::GetWindowSize() const
 const int Engine::GetGameUiHeight() const
 {
 	return _gameUiHeight;
-}
-
-std::shared_ptr<Border> Engine::GetBorder() const
-{
-	return _border;
 }

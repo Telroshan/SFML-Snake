@@ -29,13 +29,9 @@ void Snake::Update(float deltaTime)
 		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
 		sf::Vector2i nextHeadGridPosition = Engine::GetInstance().WorldPositionToGridPosition(nextHeadPosition);
 
-		if (Engine::GetInstance().GetBorder()->Collides(nextHeadGridPosition))
-		{
-			Die();
-			return;
-		}
+		sf::Vector2i lastPartGridPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[_body.size() - 1].getPosition());
 
-		if (IsPositionInSnake(nextHeadGridPosition, true))
+		if (Engine::GetInstance().Collides(nextHeadGridPosition) && nextHeadGridPosition != lastPartGridPosition)
 		{
 			Die();
 			return;
