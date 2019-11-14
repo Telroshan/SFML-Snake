@@ -15,11 +15,12 @@ enum class Mode
 class Engine
 {
 public:
-	static Engine& GetInstance();
+	static Engine* GetInstance();
+
+	~Engine();
+	Engine();
 
 private:
-	Engine();
-	~Engine();
 
 public:
 	void UpdateInput();
@@ -69,7 +70,7 @@ public:
 	const int GetGameUiHeight() const;
 
 private:
-	static Engine _instance;
+	static Engine* _instance;
 
 	std::shared_ptr<sf::RenderWindow> _window;
 	sf::Vector2i _windowSize;

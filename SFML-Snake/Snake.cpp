@@ -23,15 +23,15 @@ void Snake::Update(float deltaTime)
 	if (IsDead()) return;
 
 	_moveTimer += deltaTime;
-	float cellSize = Engine::GetInstance().GetCellSize();
+	float cellSize = Engine::GetInstance()->GetCellSize();
 	if (_moveTimer > _moveInterval) {
 		sf::Vector2i direction = _direction;
 		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
-		sf::Vector2i nextHeadGridPosition = Engine::GetInstance().WorldPositionToGridPosition(nextHeadPosition);
+		sf::Vector2i nextHeadGridPosition = Engine::GetInstance()->WorldPositionToGridPosition(nextHeadPosition);
 
-		sf::Vector2i lastPartGridPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[_body.size() - 1].getPosition());
+		sf::Vector2i lastPartGridPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[_body.size() - 1].getPosition());
 
-		if (Engine::GetInstance().Collides(nextHeadGridPosition) && nextHeadGridPosition != lastPartGridPosition)
+		if (Engine::GetInstance()->Collides(nextHeadGridPosition) && nextHeadGridPosition != lastPartGridPosition)
 		{
 			Die();
 			return;
@@ -106,11 +106,11 @@ void Snake::Grow()
 	sf::CircleShape bodypart = sf::CircleShape(radius);
 	sf::CircleShape previous = _body[bodyLength - 1];
 	sf::Vector2f position = previous.getPosition();
-	sf::Vector2i gridPosition = Engine::GetInstance().WorldPositionToGridPosition(position);
+	sf::Vector2i gridPosition = Engine::GetInstance()->WorldPositionToGridPosition(position);
 
 	sf::Vector2i direction = bodyLength > 1
 		// If there's more than 2 parts, take the direction between the 2 last parts
-		? Engine::GetInstance().WorldPositionToGridPosition(_body[bodyLength - 2].getPosition()) - gridPosition
+		? Engine::GetInstance()->WorldPositionToGridPosition(_body[bodyLength - 2].getPosition()) - gridPosition
 		// If there's only the head, take the movement direction
 		: _direction;
 
@@ -170,7 +170,7 @@ bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) co
 	if (ignoreLastPart) --max;
 	for (int i = 0; i < max; ++i)
 	{
-		sf::Vector2i bodyPartPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[i].getPosition());
+		sf::Vector2i bodyPartPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[i].getPosition());
 		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
 		{
 			return true;
@@ -187,8 +187,8 @@ bool Snake::CanMoveTowards(sf::Vector2i direction) const
 		return true;
 	}
 
-	sf::Vector2i headGridPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[0].getPosition());
-	sf::Vector2i secondPartGridPosition = Engine::GetInstance().WorldPositionToGridPosition(_body[1].getPosition());
+	sf::Vector2i headGridPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[0].getPosition());
+	sf::Vector2i secondPartGridPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[1].getPosition());
 
 	return secondPartGridPosition - headGridPosition != direction;
 }

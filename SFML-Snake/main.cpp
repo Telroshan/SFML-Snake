@@ -1,24 +1,27 @@
 #include "Engine.h"
+#include <iostream>
 
 int main()
 {
 	sf::Vector2i windowSize(600, 500);
 
-	Engine& snakeGame = Engine::GetInstance();
+	Engine* snakeGame = Engine::GetInstance();
 
-	snakeGame.Init("Snake", windowSize, 100, 20.f);
+	snakeGame->Init("Snake", windowSize, 100, 20.f);
 
 	sf::Clock clock;
-	while (snakeGame.IsRunning())
+	while (snakeGame->IsRunning())
 	{
 		sf::Time deltaTime = clock.restart();
 
-		snakeGame.UpdateInput();
+		snakeGame->UpdateInput();
 
-		snakeGame.Update(deltaTime.asSeconds());
+		snakeGame->Update(deltaTime.asSeconds());
 
-		snakeGame.Render();
+		snakeGame->Render();
 	}
+
+	delete snakeGame;
 
 	return 0;
 }

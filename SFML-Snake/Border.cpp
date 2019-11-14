@@ -3,10 +3,10 @@
 
 Border::Border(sf::Vector2i gridSize)
 {
-	Engine& engine = Engine::GetInstance();
-	float cellSize = engine.GetCellSize();
-	sf::Vector2i windowSize = engine.GetWindowSize();
-	int gameUiHeight = engine.GetGameUiHeight();
+	Engine* engine = Engine::GetInstance();
+	float cellSize = engine->GetCellSize();
+	sf::Vector2i windowSize = engine->GetWindowSize();
+	int gameUiHeight = engine->GetGameUiHeight();
 
 	_gridSize = gridSize;
 

@@ -5,10 +5,14 @@
 #include <time.h>
 #include "InputManager.h"
 
-Engine Engine::_instance{};
+Engine* Engine::_instance{};
 
-Engine& Engine::GetInstance()
+Engine* Engine::GetInstance()
 {
+	if (_instance == nullptr)
+	{
+		_instance = new Engine();
+	}
 	return _instance;
 }
 
