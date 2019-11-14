@@ -89,7 +89,7 @@ private:
 	std::shared_ptr<Snake> _player;
 	std::shared_ptr<Fruit> _fruit;
 
-	const char* scoresFilename = "Saves/scores.data";
+	const char* scoresFilename = "scores.data";
 	int _highScore = 0;
 
 	sf::Font _font;

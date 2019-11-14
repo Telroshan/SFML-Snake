@@ -344,8 +344,12 @@ void Engine::InitEndscreen()
 		std::shared_ptr<sf::Text> beatHighscoreText = InitText("You beat the high score !");
 		beatHighscoreText->setCharacterSize(20);
 		beatHighscoreText->setFillColor(sf::Color::Green);
+		float spaceBeathHighScore = space * 2.5f;
+		float offset = (beatHighscoreText->getLocalBounds().height + spaceBeathHighScore) / 2.f;
+		finalScoreLabel->setPosition(finalScoreLabel->getPosition().x, finalScoreLabel->getPosition().y - offset);
+		finalScoreText->setPosition(finalScoreText->getPosition().x, finalScoreText->getPosition().y - offset);
 		beatHighscoreText->setPosition(_windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
-			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + space * 2.5f);
+			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + spaceBeathHighScore);
 		_highScore = _player->score;
 		SaveHighScore();
 	}
