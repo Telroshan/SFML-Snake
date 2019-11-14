@@ -20,7 +20,7 @@ public:
 	void UpdateInput();
 	void Update(float deltaTime);
 	void Render();
-	void Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize);
+	void Init(std::string title, sf::Vector2i windowSize, float cellSize);
 
 	bool IsRunning() const;
 

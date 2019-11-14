@@ -77,7 +77,7 @@ void Engine::Render()
 	_window->display();
 }
 
-void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, float cellSize)
+void Engine::Init(std::string title, sf::Vector2i windowSize, float cellSize)
 {
 	_windowSize = windowSize;
 

@@ -7,7 +7,7 @@ int main()
 
 	Engine* snakeGame = Engine::GetInstance();
 
-	snakeGame->Init("Snake", windowSize, 100, 20.f);
+	snakeGame->Init("Snake", windowSize, 20.f);
 
 	sf::Clock clock;
 	while (snakeGame->IsRunning())
