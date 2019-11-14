@@ -48,11 +48,11 @@ private:
 
 	void SetMode(Mode mode);
 
-	std::shared_ptr<sf::Text> InitText(Mode mode, const std::string& content);
+	std::shared_ptr<sf::Text> InitText(const std::string& content);
 
-	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode);
-	void RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode);
-	void RegisterCollidable(std::shared_ptr<Collidable> collidable, Mode mode);
+	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable);
+	void RegisterUpdatable(std::shared_ptr<Updatable> updatable);
+	void RegisterCollidable(std::shared_ptr<Collidable> collidable);
 
 	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
 
@@ -76,9 +76,9 @@ private:
 
 	Mode _mode = Mode::Menu;
 
-	std::map<Mode, std::vector<std::shared_ptr<sf::Drawable>>> _drawables;
-	std::map<Mode, std::vector<std::shared_ptr<Updatable>>> _updatables;
-	std::map<Mode, std::vector<std::shared_ptr<Collidable>>> _collidables;
+	std::vector<std::shared_ptr<sf::Drawable>> _drawables;
+	std::vector<std::shared_ptr<Updatable>> _updatables;
+	std::vector<std::shared_ptr<Collidable>> _collidables;
 
 	int _gameUiHeight = 0;
 

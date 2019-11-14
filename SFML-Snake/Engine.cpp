@@ -56,9 +56,9 @@ void Engine::Update(float deltaTime)
 		}
 	}
 
-	for (size_t i = 0; i < _updatables[_mode].size(); ++i)
+	for (size_t i = 0; i < _updatables.size(); ++i)
 	{
-		_updatables[_mode][i]->Update(deltaTime);
+		_updatables[i]->Update(deltaTime);
 	}
 
 	switch (_mode)
@@ -78,9 +78,9 @@ void Engine::Render()
 {
 	_window->clear();
 
-	for (size_t i = 0; i < _drawables[_mode].size(); ++i)
+	for (size_t i = 0; i < _drawables.size(); ++i)
 	{
-		_window->draw(*_drawables[_mode][i]);
+		_window->draw(*_drawables[i]);
 	}
 
 	_window->display();
@@ -105,14 +105,9 @@ bool Engine::IsRunning() const
 
 bool Engine::Collides(sf::Vector2i gridPosition) const
 {
-	if (!_collidables.count(_mode))
+	for (size_t i = 0; i < _collidables.size(); ++i)
 	{
-		return false;
-	}
-
-	for (size_t i = 0; i < _collidables.at(_mode).size(); ++i)
-	{
-		if (_collidables.at(_mode)[i]->Collides(gridPosition))
+		if (_collidables[i]->Collides(gridPosition))
 		{
 			return true;
 		}
@@ -227,26 +222,26 @@ void Engine::InitMenu()
 		_cellSize / 2.f,
 		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
 		sf::Vector2i(1, 0)));
-	RegisterDrawable(_player, Mode::Menu);
-	RegisterUpdatable(_player, Mode::Menu);
+	RegisterDrawable(_player);
+	RegisterUpdatable(_player);
 
 	_menuDirectionSwitchTimer = 0.f;
 
-	std::shared_ptr<sf::Text> gameTitle = InitText(Mode::Menu, "SNAKE");
+	std::shared_ptr<sf::Text> gameTitle = InitText("SNAKE");
 	gameTitle->setCharacterSize(60);
 	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2.f, 60.f);
 
-	std::shared_ptr<sf::Text> playText = InitText(Mode::Menu, "Press space to play");
+	std::shared_ptr<sf::Text> playText = InitText("Press space to play");
 	playText->setCharacterSize(20);
 	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2.f, _windowSize.y - 120.f);
 
-	std::shared_ptr<sf::Text> exitText = InitText(Mode::Menu, "Press escape to exit");
+	std::shared_ptr<sf::Text> exitText = InitText("Press escape to exit");
 	exitText->setCharacterSize(20);
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2.f, _windowSize.y - 60.f);
 
 	float space = 10.f;
-	std::shared_ptr<sf::Text> highScoreLabel = InitText(Mode::Menu, "High score");
-	std::shared_ptr<sf::Text> highScoreText = InitText(Mode::Menu, GetFormattedNumericString(std::to_string(_highScore), 3));
+	std::shared_ptr<sf::Text> highScoreLabel = InitText("High score");
+	std::shared_ptr<sf::Text> highScoreText = InitText(GetFormattedNumericString(std::to_string(_highScore), 3));
 	highScoreText->setCharacterSize(40);
 	highScoreLabel->setPosition(_windowSize.x / 2 - highScoreLabel->getLocalBounds().width / 2.f,
 		_windowSize.y / 2 - (highScoreLabel->getLocalBounds().height + highScoreText->getLocalBounds().height + space) / 2.f);
@@ -262,27 +257,27 @@ void Engine::InitGame()
 	_gameOverTimer = 0;
 
 	_border = std::make_shared<Border>(_gridSize);
-	RegisterDrawable(_border, Mode::Game);
-	RegisterCollidable(_border, Mode::Game);
+	RegisterDrawable(_border);
+	RegisterCollidable(_border);
 
 	_player = std::make_shared<Snake>(Snake(3,
 		_cellSize / 2.f,
 		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
 		sf::Vector2i(1, 0)));
-	RegisterDrawable(_player, Mode::Game);
-	RegisterUpdatable(_player, Mode::Game);
-	RegisterCollidable(_player, Mode::Game);
+	RegisterDrawable(_player);
+	RegisterUpdatable(_player);
+	RegisterCollidable(_player);
 
 	_fruit = std::make_shared<Fruit>(sf::Vector2f(_cellSize, _cellSize));
-	RegisterDrawable(_fruit, Mode::Game);
+	RegisterDrawable(_fruit);
 	_fruit->Spawn();
 	_player->SetFruit(_fruit);
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;
 
-	std::shared_ptr<sf::Text> timeLabel = InitText(Mode::Game, "Time");
-	_timeText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+	std::shared_ptr<sf::Text> timeLabel = InitText("Time");
+	_timeText = InitText(GetFormattedNumericString(std::to_string(0), 3));
 	timeLabel->setCharacterSize(24);
 	_timeText->setCharacterSize(24);
 	timeLabel->setPosition(horizontalPadding,
@@ -290,8 +285,8 @@ void Engine::InitGame()
 	_timeText->setPosition(timeLabel->getPosition().x + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
 		timeLabel->getPosition().y + timeLabel->getLocalBounds().height + space);
 
-	_scoreLabel = InitText(Mode::Game, "Score");
-	_scoreText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(0), 3));
+	_scoreLabel = InitText("Score");
+	_scoreText = InitText(GetFormattedNumericString(std::to_string(0), 3));
 	_scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
 	_scoreLabel->setFillColor(GetScoreColor());
@@ -301,8 +296,8 @@ void Engine::InitGame()
 	_scoreText->setPosition(_windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
 		_scoreLabel->getPosition().y + _scoreLabel->getLocalBounds().height + space);
 
-	_speedLabel = InitText(Mode::Game, "Speed");
-	_speedText = InitText(Mode::Game, GetFormattedNumericString(std::to_string(1.f), 3));
+	_speedLabel = InitText("Speed");
+	_speedText = InitText(GetFormattedNumericString(std::to_string(1.f), 3));
 	_speedLabel->setCharacterSize(24);
 	_speedText->setCharacterSize(24);
 	_speedLabel->setPosition(_windowSize.x - _speedLabel->getLocalBounds().width - horizontalPadding,
@@ -313,13 +308,13 @@ void Engine::InitGame()
 
 void Engine::InitEndscreen()
 {
-	std::shared_ptr<sf::Text> gameOverText = InitText(Mode::Endscreen, "GAME OVER");
+	std::shared_ptr<sf::Text> gameOverText = InitText("GAME OVER");
 	gameOverText->setCharacterSize(60);
 	gameOverText->setPosition(_windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, 30.f);
 
 	float space = 10.f;
-	std::shared_ptr<sf::Text> finalScoreLabel = InitText(Mode::Endscreen, "Score");
-	std::shared_ptr<sf::Text> finalScoreText = InitText(Mode::Endscreen, GetFormattedNumericString(std::to_string(_player->score), 3));
+	std::shared_ptr<sf::Text> finalScoreLabel = InitText("Score");
+	std::shared_ptr<sf::Text> finalScoreText = InitText(GetFormattedNumericString(std::to_string(_player->score), 3));
 	finalScoreLabel->setCharacterSize(50);
 	finalScoreText->setCharacterSize(50);
 	finalScoreLabel->setFillColor(GetScoreColor());
@@ -329,17 +324,17 @@ void Engine::InitEndscreen()
 	finalScoreText->setPosition(_windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
 		finalScoreLabel->getPosition().y + finalScoreLabel->getLocalBounds().height + space);
 
-	std::shared_ptr<sf::Text> playText = InitText(Mode::Endscreen, "Press space to return to menu");
+	std::shared_ptr<sf::Text> playText = InitText("Press space to return to menu");
 	playText->setCharacterSize(20);
 	playText->setPosition(_windowSize.x / 2 - playText->getLocalBounds().width / 2, _windowSize.y - 120.f);
 
-	std::shared_ptr<sf::Text> exitText = InitText(Mode::Endscreen, "Press escape to exit");
+	std::shared_ptr<sf::Text> exitText = InitText("Press escape to exit");
 	exitText->setCharacterSize(20);
 	exitText->setPosition(_windowSize.x / 2 - exitText->getLocalBounds().width / 2, _windowSize.y - 60.f);
 
 	if (_player->score > _highScore)
 	{
-		std::shared_ptr<sf::Text> beatHighscoreText = InitText(Mode::Endscreen, "You beat the high score !");
+		std::shared_ptr<sf::Text> beatHighscoreText = InitText("You beat the high score !");
 		beatHighscoreText->setCharacterSize(20);
 		beatHighscoreText->setFillColor(sf::Color::Green);
 		beatHighscoreText->setPosition(_windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
@@ -371,43 +366,31 @@ void Engine::SetMode(Mode mode)
 	}
 }
 
-std::shared_ptr<sf::Text> Engine::InitText(Mode mode, const std::string& content)
+std::shared_ptr<sf::Text> Engine::InitText(const std::string& content)
 {
 	std::shared_ptr<sf::Text> text = std::make_shared<sf::Text>();
 	text->setFont(_font);
 	text->setFillColor(sf::Color::White);
 	text->setString(content);
 
-	RegisterDrawable(text, mode);
+	RegisterDrawable(text);
 
 	return text;
 }
 
-void Engine::RegisterDrawable(std::shared_ptr<sf::Drawable> drawable, Mode mode)
+void Engine::RegisterDrawable(std::shared_ptr<sf::Drawable> drawable)
 {
-	if (_drawables.find(mode) == _drawables.end())
-	{
-		_drawables.insert({ mode, std::vector<std::shared_ptr<sf::Drawable>>() });
-	}
-	_drawables[mode].push_back(drawable);
+	_drawables.push_back(drawable);
 }
 
-void Engine::RegisterUpdatable(std::shared_ptr<Updatable> updatable, Mode mode)
+void Engine::RegisterUpdatable(std::shared_ptr<Updatable> updatable)
 {
-	if (_updatables.find(mode) == _updatables.end())
-	{
-		_updatables.insert({ mode, std::vector<std::shared_ptr<Updatable>>() });
-	}
-	_updatables[mode].push_back(updatable);
+	_updatables.push_back(updatable);
 }
 
-void Engine::RegisterCollidable(std::shared_ptr<Collidable> collidable, Mode mode)
+void Engine::RegisterCollidable(std::shared_ptr<Collidable> collidable)
 {
-	if (_collidables.find(mode) == _collidables.end())
-	{
-		_collidables.insert({ mode, std::vector<std::shared_ptr<Collidable>>() });
-	}
-	_collidables[mode].push_back(collidable);
+	_collidables.push_back(collidable);
 }
 
 std::string Engine::GetFormattedNumericString(const std::string& string, int textLength) const
