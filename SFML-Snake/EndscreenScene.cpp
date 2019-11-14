@@ -7,15 +7,16 @@
 
 void EndscreenScene::Init()
 {
-	sf::Vector2i windowSize = Engine::GetInstance()->GetWindowSize();
+	Engine* engine = Engine::GetInstance();
+	sf::Vector2i windowSize = engine->GetWindowSize();
 
-	std::shared_ptr<sf::Text> gameOverText = Engine::GetInstance()->InitText("GAME OVER");
+	std::shared_ptr<sf::Text> gameOverText = engine->InitText("GAME OVER");
 	gameOverText->setCharacterSize(60);
 	gameOverText->setPosition(windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, 30.f);
 
 	float space = 10.f;
-	std::shared_ptr<sf::Text> finalScoreLabel = Engine::GetInstance()->InitText("Score");
-	std::shared_ptr<sf::Text> finalScoreText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::Score), 3));
+	std::shared_ptr<sf::Text> finalScoreLabel = engine->InitText("Score");
+	std::shared_ptr<sf::Text> finalScoreText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::Score), 3));
 	finalScoreLabel->setCharacterSize(50);
 	finalScoreText->setCharacterSize(50);
 	finalScoreLabel->setFillColor(_player->GetScoreColor());
@@ -25,17 +26,17 @@ void EndscreenScene::Init()
 	finalScoreText->setPosition(windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
 		finalScoreLabel->getPosition().y + finalScoreLabel->getLocalBounds().height + space);
 
-	std::shared_ptr<sf::Text> playText = Engine::GetInstance()->InitText("Press space to return to menu");
+	std::shared_ptr<sf::Text> playText = engine->InitText("Press space to return to menu");
 	playText->setCharacterSize(20);
 	playText->setPosition(windowSize.x / 2 - playText->getLocalBounds().width / 2, windowSize.y - 120.f);
 
-	std::shared_ptr<sf::Text> exitText = Engine::GetInstance()->InitText("Press escape to exit");
+	std::shared_ptr<sf::Text> exitText = engine->InitText("Press escape to exit");
 	exitText->setCharacterSize(20);
 	exitText->setPosition(windowSize.x / 2 - exitText->getLocalBounds().width / 2, windowSize.y - 60.f);
 
 	if (GameData::Score > GameData::HighScore)
 	{
-		std::shared_ptr<sf::Text> beatHighscoreText = Engine::GetInstance()->InitText("You beat the high score !");
+		std::shared_ptr<sf::Text> beatHighscoreText = engine->InitText("You beat the high score !");
 		beatHighscoreText->setCharacterSize(20);
 		beatHighscoreText->setFillColor(sf::Color::Green);
 		float spaceBeathHighScore = space * 2.5f;
@@ -45,7 +46,7 @@ void EndscreenScene::Init()
 		beatHighscoreText->setPosition(windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
 			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + spaceBeathHighScore);
 		GameData::HighScore = GameData::Score;
-		Engine::GetInstance()->SaveHighScore();
+		engine->SaveHighScore();
 	}
 }
 

@@ -7,24 +7,25 @@
 
 void MenuScene::Init()
 {
-	sf::Vector2i windowSize = Engine::GetInstance()->GetWindowSize();
-	float cellSize = Engine::GetInstance()->GetCellSize();
+	Engine* engine = Engine::GetInstance();
+	sf::Vector2i windowSize = engine->GetWindowSize();
+	float cellSize = engine->GetCellSize();
 
-	std::shared_ptr<sf::Text> gameTitle = Engine::GetInstance()->InitText("SNAKE");
+	std::shared_ptr<sf::Text> gameTitle = engine->InitText("SNAKE");
 	gameTitle->setCharacterSize(60);
 	gameTitle->setPosition(windowSize.x / 2 - gameTitle->getLocalBounds().width / 2.f, 60.f);
 
-	std::shared_ptr<sf::Text> playText = Engine::GetInstance()->InitText("Press space to play");
+	std::shared_ptr<sf::Text> playText = engine->InitText("Press space to play");
 	playText->setCharacterSize(20);
 	playText->setPosition(windowSize.x / 2 - playText->getLocalBounds().width / 2.f, windowSize.y - 120.f);
 
-	std::shared_ptr<sf::Text> exitText = Engine::GetInstance()->InitText("Press escape to exit");
+	std::shared_ptr<sf::Text> exitText = engine->InitText("Press escape to exit");
 	exitText->setCharacterSize(20);
 	exitText->setPosition(windowSize.x / 2 - exitText->getLocalBounds().width / 2.f, windowSize.y - 60.f);
 
 	float space = 10.f;
-	std::shared_ptr<sf::Text> highScoreLabel = Engine::GetInstance()->InitText("High score");
-	std::shared_ptr<sf::Text> highScoreText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::HighScore), 3));
+	std::shared_ptr<sf::Text> highScoreLabel = engine->InitText("High score");
+	std::shared_ptr<sf::Text> highScoreText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::HighScore), 3));
 	highScoreText->setCharacterSize(40);
 	highScoreLabel->setPosition(windowSize.x / 2 - highScoreLabel->getLocalBounds().width / 2.f,
 		windowSize.y / 2 - (highScoreLabel->getLocalBounds().height + highScoreText->getLocalBounds().height + space) / 2.f);
@@ -40,8 +41,8 @@ void MenuScene::Init()
 		sf::Vector2f(_menuSnakePatrolBounds.left, _menuSnakePatrolBounds.top),
 		sf::Vector2i(1, 0)));
 
-	Engine::GetInstance()->RegisterDrawable(_player);
-	Engine::GetInstance()->RegisterUpdatable(_player);
+	engine->RegisterDrawable(_player);
+	engine->RegisterUpdatable(_player);
 }
 
 void MenuScene::UpdateInput()

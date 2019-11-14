@@ -10,8 +10,10 @@ void GameScene::Init()
 {
 	srand((unsigned int)time(NULL));
 
-	sf::Vector2i windowSize = Engine::GetInstance()->GetWindowSize();
-	float cellSize = Engine::GetInstance()->GetCellSize();
+	Engine* engine = Engine::GetInstance();
+
+	sf::Vector2i windowSize = engine->GetWindowSize();
+	float cellSize = engine->GetCellSize();
 	_gridSize = sf::Vector2i(windowSize.x / (int)cellSize, (windowSize.y - _gameUiHeight) / (int)cellSize);
 
 	GameData::Score = 0;
@@ -19,27 +21,27 @@ void GameScene::Init()
 	_gameOverTimer = 0;
 
 	_border = std::make_shared<Border>(_gridSize, sf::Vector2i(windowSize.x, windowSize.y - _gameUiHeight));
-	Engine::GetInstance()->RegisterDrawable(_border);
-	Engine::GetInstance()->RegisterCollidable(_border);
+	engine->RegisterDrawable(_border);
+	engine->RegisterCollidable(_border);
 
 	_player = std::make_shared<Snake>(Snake(3,
 		cellSize / 2.f,
 		sf::Vector2f((_gridSize.x / 2) * cellSize, (_gridSize.y / 2) * cellSize),
 		sf::Vector2i(1, 0)));
-	Engine::GetInstance()->RegisterDrawable(_player);
-	Engine::GetInstance()->RegisterUpdatable(_player);
-	Engine::GetInstance()->RegisterCollidable(_player);
+	engine->RegisterDrawable(_player);
+	engine->RegisterUpdatable(_player);
+	engine->RegisterCollidable(_player);
 
 	_fruit = std::make_shared<Fruit>(sf::Vector2f(cellSize, cellSize), _gridSize);
-	Engine::GetInstance()->RegisterDrawable(_fruit);
+	engine->RegisterDrawable(_fruit);
 	_fruit->Spawn();
 	_player->SetFruit(_fruit);
 
 	float horizontalPadding = 20.f;
 	float space = 10.f;
 
-	std::shared_ptr<sf::Text> timeLabel = Engine::GetInstance()->InitText("Time");
-	_timeText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
+	std::shared_ptr<sf::Text> timeLabel = engine->InitText("Time");
+	_timeText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
 	timeLabel->setCharacterSize(24);
 	_timeText->setCharacterSize(24);
 	timeLabel->setPosition(horizontalPadding,
@@ -47,8 +49,8 @@ void GameScene::Init()
 	_timeText->setPosition(timeLabel->getPosition().x + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
 		timeLabel->getPosition().y + timeLabel->getLocalBounds().height + space);
 
-	_scoreLabel = Engine::GetInstance()->InitText("Score");
-	_scoreText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
+	_scoreLabel = engine->InitText("Score");
+	_scoreText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
 	_scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
 	_scoreLabel->setFillColor(_player->GetScoreColor());
@@ -58,8 +60,8 @@ void GameScene::Init()
 	_scoreText->setPosition(windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
 		_scoreLabel->getPosition().y + _scoreLabel->getLocalBounds().height + space);
 
-	_speedLabel = Engine::GetInstance()->InitText("Speed");
-	_speedText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(1.f), 3));
+	_speedLabel = engine->InitText("Speed");
+	_speedText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(1.f), 3));
 	_speedLabel->setCharacterSize(24);
 	_speedText->setCharacterSize(24);
 	_speedLabel->setPosition(windowSize.x - _speedLabel->getLocalBounds().width - horizontalPadding,

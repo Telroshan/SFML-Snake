@@ -24,15 +24,16 @@ void Snake::Update(float deltaTime)
 	if (IsDead()) return;
 
 	_moveTimer += deltaTime;
-	float cellSize = Engine::GetInstance()->GetCellSize();
+	Engine* engine = Engine::GetInstance();
+	float cellSize = engine->GetCellSize();
 	if (_moveTimer > _moveInterval) {
 		sf::Vector2i direction = _direction;
 		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
-		sf::Vector2i nextHeadGridPosition = Engine::GetInstance()->WorldPositionToGridPosition(nextHeadPosition);
+		sf::Vector2i nextHeadGridPosition = engine->WorldPositionToGridPosition(nextHeadPosition);
 
-		sf::Vector2i lastPartGridPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[_body.size() - 1].getPosition());
+		sf::Vector2i lastPartGridPosition = engine->WorldPositionToGridPosition(_body[_body.size() - 1].getPosition());
 
-		if (Engine::GetInstance()->Collides(nextHeadGridPosition) && nextHeadGridPosition != lastPartGridPosition)
+		if (engine->Collides(nextHeadGridPosition) && nextHeadGridPosition != lastPartGridPosition)
 		{
 			Die();
 			return;
