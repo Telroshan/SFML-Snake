@@ -1,7 +1,5 @@
 #include "Snake.h"
-#include <iostream>
 #include "Engine.h"
-#include "Border.h"
 #include "GameData.h"
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :

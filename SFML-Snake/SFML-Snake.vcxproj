@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Border.cpp" />
-    <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="EndscreenScene.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Fruit.cpp" />
@@ -150,7 +149,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="Snake.cpp" />
-    <ClCompile Include="Updatable.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
