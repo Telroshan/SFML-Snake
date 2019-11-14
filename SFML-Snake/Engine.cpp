@@ -93,6 +93,8 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, 
 	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
 	_gameUiHeight = gameUiHeight;
 
+	_window->setFramerateLimit(60);
+
 	SetCellSize(cellSize);
 
 	SetMode(Mode::Menu);
