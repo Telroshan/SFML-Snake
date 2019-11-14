@@ -5,7 +5,7 @@
 #include "Fruit.h"
 #include "Border.h"
 
-enum class Mode
+enum class Scene
 {
 	Menu,
 	Game,
@@ -18,9 +18,9 @@ public:
 	static Engine* GetInstance();
 
 	~Engine();
-	Engine();
 
 private:
+	Engine();
 
 public:
 	void UpdateInput();
@@ -47,7 +47,7 @@ private:
 	void InitGame();
 	void InitEndscreen();
 
-	void SetMode(Mode mode);
+	void SetScene(Scene scene);
 
 	std::shared_ptr<sf::Text> InitText(const std::string& content);
 
@@ -75,7 +75,7 @@ private:
 	std::shared_ptr<sf::RenderWindow> _window;
 	sf::Vector2i _windowSize;
 
-	Mode _mode = Mode::Menu;
+	Scene _scene = Scene::Menu;
 
 	std::vector<std::shared_ptr<sf::Drawable>> _drawables;
 	std::vector<std::shared_ptr<Updatable>> _updatables;

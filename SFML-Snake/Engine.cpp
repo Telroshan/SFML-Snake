@@ -34,15 +34,15 @@ void Engine::UpdateInput()
 {
 	InputManager::Update();
 
-	switch (_mode)
+	switch (_scene)
 	{
-	case Mode::Menu:
+	case Scene::Menu:
 		UpdateInputMenu();
 		break;
-	case Mode::Game:
+	case Scene::Game:
 		UpdateInputGame();
 		break;
-	case Mode::Endscreen:
+	case Scene::Endscreen:
 		UpdateInputEndscreen();
 		break;
 	}
@@ -65,15 +65,15 @@ void Engine::Update(float deltaTime)
 		_updatables[i]->Update(deltaTime);
 	}
 
-	switch (_mode)
+	switch (_scene)
 	{
-	case Mode::Menu:
+	case Scene::Menu:
 		UpdateMenu(deltaTime);
 		break;
-	case Mode::Game:
+	case Scene::Game:
 		UpdateGame(deltaTime);
 		break;
-	case Mode::Endscreen:
+	case Scene::Endscreen:
 		break;
 	}
 }
@@ -101,7 +101,7 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, int gameUiHeight, 
 
 	SetCellSize(cellSize);
 
-	SetMode(Mode::Menu);
+	SetScene(Scene::Menu);
 }
 
 bool Engine::IsRunning() const
@@ -138,7 +138,7 @@ void Engine::UpdateInputMenu()
 {
 	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Space))
 	{
-		SetMode(Mode::Game);
+		SetScene(Scene::Game);
 	}
 
 	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
@@ -168,7 +168,7 @@ void Engine::UpdateInputGame()
 
 	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
 	{
-		SetMode(Mode::Menu);
+		SetScene(Scene::Menu);
 	}
 }
 
@@ -176,7 +176,7 @@ void Engine::UpdateInputEndscreen()
 {
 	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Space))
 	{
-		SetMode(Mode::Menu);
+		SetScene(Scene::Menu);
 	}
 
 	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
@@ -220,7 +220,7 @@ void Engine::UpdateGame(float deltaTime)
 		_gameOverTimer += deltaTime;
 		if (_gameOverTimer >= _gameOverDelay)
 		{
-			SetMode(Mode::Endscreen);
+			SetScene(Scene::Endscreen);
 		}
 	}
 }
@@ -359,21 +359,21 @@ void Engine::InitEndscreen()
 	}
 }
 
-void Engine::SetMode(Mode mode)
+void Engine::SetScene(Scene scene)
 {
-	_mode = mode;
+	_scene = scene;
 	_drawables.clear();
 	_updatables.clear();
 	_collidables.clear();
-	switch (_mode)
+	switch (_scene)
 	{
-	case Mode::Menu:
+	case Scene::Menu:
 		InitMenu();
 		break;
-	case Mode::Game:
+	case Scene::Game:
 		InitGame();
 		break;
-	case Mode::Endscreen:
+	case Scene::Endscreen:
 		InitEndscreen();
 		break;
 	default:
