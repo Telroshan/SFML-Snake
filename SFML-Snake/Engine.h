@@ -104,5 +104,5 @@ private:
 
 	float _timeElapsed = 0.f;
 
-	float _menuDirectionSwitchTimer = 0.f;
+	sf::FloatRect _menuSnakePatrolBounds;
 };

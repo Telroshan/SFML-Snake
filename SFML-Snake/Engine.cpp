@@ -181,12 +181,15 @@ void Engine::UpdateInputEndscreen()
 
 void Engine::UpdateMenu(float deltaTime)
 {
-	_menuDirectionSwitchTimer += deltaTime;
-	if (_menuDirectionSwitchTimer > 1.f)
+	sf::Vector2i direction = _player->GetDirection();
+	sf::Vector2f snakeHeadPosition = _player->GetHeadPosition();
+	if (direction.x > 0.f && snakeHeadPosition.x >= _menuSnakePatrolBounds.left + _menuSnakePatrolBounds.width ||
+		direction.y > 0.f && snakeHeadPosition.y >= _menuSnakePatrolBounds.top + _menuSnakePatrolBounds.height ||
+		direction.x < 0.f && snakeHeadPosition.x <= _menuSnakePatrolBounds.left ||
+		direction.y < 0.f && snakeHeadPosition.y <= _menuSnakePatrolBounds.top)
 	{
-		_menuDirectionSwitchTimer = 0.f;
-		sf::Vector2i direction = sf::Vector2i(-_player->GetDirection().y, _player->GetDirection().x);
-		_player->SetDirection(direction);
+		sf::Vector2i newDirection = sf::Vector2i(-_player->GetDirection().y, _player->GetDirection().x);
+		_player->SetDirection(newDirection);
 	}
 }
 
@@ -218,15 +221,6 @@ void Engine::UpdateGame(float deltaTime)
 
 void Engine::InitMenu()
 {
-	_player = std::make_shared<Snake>(Snake(3,
-		_cellSize / 2.f,
-		sf::Vector2f((_gridSize.x / 2) * _cellSize, (_gridSize.y / 2) * _cellSize),
-		sf::Vector2i(1, 0)));
-	RegisterDrawable(_player);
-	RegisterUpdatable(_player);
-
-	_menuDirectionSwitchTimer = 0.f;
-
 	std::shared_ptr<sf::Text> gameTitle = InitText("SNAKE");
 	gameTitle->setCharacterSize(60);
 	gameTitle->setPosition(_windowSize.x / 2 - gameTitle->getLocalBounds().width / 2.f, 60.f);
@@ -247,6 +241,17 @@ void Engine::InitMenu()
 		_windowSize.y / 2 - (highScoreLabel->getLocalBounds().height + highScoreText->getLocalBounds().height + space) / 2.f);
 	highScoreText->setPosition(_windowSize.x / 2 - highScoreText->getLocalBounds().width / 2.f,
 		highScoreLabel->getPosition().y + highScoreLabel->getLocalBounds().height + space);
+
+	_menuSnakePatrolBounds = sf::FloatRect(highScoreLabel->getPosition().x - _cellSize - space,
+		highScoreLabel->getPosition().y - _cellSize - space,
+		highScoreLabel->getLocalBounds().width + _cellSize + space,
+		(highScoreText->getPosition().y - highScoreLabel->getPosition().y) + highScoreText->getLocalBounds().height + _cellSize + space);
+	_player = std::make_shared<Snake>(Snake(3,
+		_cellSize / 2.f,
+		sf::Vector2f(_menuSnakePatrolBounds.left, _menuSnakePatrolBounds.top),
+		sf::Vector2i(1, 0)));
+	RegisterDrawable(_player);
+	RegisterUpdatable(_player);
 }
 
 void Engine::InitGame()
