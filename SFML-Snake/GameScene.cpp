@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "EndscreenScene.h"
 #include "GameData.h"
+#include "Utils.h"
 
 void GameScene::Init()
 {
@@ -38,7 +39,7 @@ void GameScene::Init()
 	float space = 10.f;
 
 	std::shared_ptr<sf::Text> timeLabel = Engine::GetInstance()->InitText("Time");
-	_timeText = Engine::GetInstance()->InitText(Engine::GetFormattedNumericString(std::to_string(0), 3));
+	_timeText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
 	timeLabel->setCharacterSize(24);
 	_timeText->setCharacterSize(24);
 	timeLabel->setPosition(horizontalPadding,
@@ -47,7 +48,7 @@ void GameScene::Init()
 		timeLabel->getPosition().y + timeLabel->getLocalBounds().height + space);
 
 	_scoreLabel = Engine::GetInstance()->InitText("Score");
-	_scoreText = Engine::GetInstance()->InitText(Engine::GetFormattedNumericString(std::to_string(0), 3));
+	_scoreText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
 	_scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
 	_scoreLabel->setFillColor(_player->GetScoreColor());
@@ -58,7 +59,7 @@ void GameScene::Init()
 		_scoreLabel->getPosition().y + _scoreLabel->getLocalBounds().height + space);
 
 	_speedLabel = Engine::GetInstance()->InitText("Speed");
-	_speedText = Engine::GetInstance()->InitText(Engine::GetFormattedNumericString(std::to_string(1.f), 3));
+	_speedText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(1.f), 3));
 	_speedLabel->setCharacterSize(24);
 	_speedText->setCharacterSize(24);
 	_speedLabel->setPosition(windowSize.x - _speedLabel->getLocalBounds().width - horizontalPadding,
@@ -97,13 +98,13 @@ void GameScene::Update(float deltaTime)
 	if (!_player->IsDead())
 	{
 		_timeElapsed += deltaTime;
-		_timeText->setString(Engine::GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
+		_timeText->setString(Utils::GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
 
-		_scoreText->setString(Engine::GetFormattedNumericString(std::to_string(GameData::Score), 3));
+		_scoreText->setString(Utils::GetFormattedNumericString(std::to_string(GameData::Score), 3));
 		_scoreLabel->setFillColor(_player->GetScoreColor());
 		_scoreText->setFillColor(_player->GetScoreColor());
 
-		_speedText->setString(Engine::GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
+		_speedText->setString(Utils::GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
 		sf::Color speedColor = _player->ReachedMaxSpeed() ? sf::Color(185, 45, 185) : sf::Color::White;
 		_speedText->setFillColor(speedColor);
 		_speedLabel->setFillColor(speedColor);

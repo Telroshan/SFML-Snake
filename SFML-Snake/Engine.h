@@ -40,8 +40,6 @@ public:
 
 	void Quit();
 
-	static std::string GetFormattedNumericString(const std::string& string, int textLength);
-
 	std::shared_ptr<sf::Text> InitText(const std::string& content);
 
 	void RegisterDrawable(std::shared_ptr<sf::Drawable> drawable);

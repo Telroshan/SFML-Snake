@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "GameScene.h"
 #include "GameData.h"
+#include "Utils.h"
 
 void MenuScene::Init()
 {
@@ -23,7 +24,7 @@ void MenuScene::Init()
 
 	float space = 10.f;
 	std::shared_ptr<sf::Text> highScoreLabel = Engine::GetInstance()->InitText("High score");
-	std::shared_ptr<sf::Text> highScoreText = Engine::GetInstance()->InitText(Engine::GetFormattedNumericString(std::to_string(GameData::HighScore), 3));
+	std::shared_ptr<sf::Text> highScoreText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::HighScore), 3));
 	highScoreText->setCharacterSize(40);
 	highScoreLabel->setPosition(windowSize.x / 2 - highScoreLabel->getLocalBounds().width / 2.f,
 		windowSize.y / 2 - (highScoreLabel->getLocalBounds().height + highScoreText->getLocalBounds().height + space) / 2.f);

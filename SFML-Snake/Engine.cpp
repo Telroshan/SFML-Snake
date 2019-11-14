@@ -152,20 +152,6 @@ void Engine::RegisterCollidable(std::shared_ptr<Collidable> collidable)
 	_collidables.push_back(collidable);
 }
 
-std::string Engine::GetFormattedNumericString(const std::string& string, int textLength)
-{
-	std::string text = string;
-	if (text.length() > textLength)
-	{
-		text = text.substr(0, textLength);
-	}
-	while (text.length() < textLength)
-	{
-		text = "0" + text;
-	}
-	return text;
-}
-
 void Engine::ReadHighScore()
 {
 	std::ifstream stream;

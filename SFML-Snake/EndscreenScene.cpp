@@ -3,6 +3,7 @@
 #include "Engine.h"
 #include "MenuScene.h"
 #include "GameData.h"
+#include "Utils.h"
 
 void EndscreenScene::Init()
 {
@@ -14,7 +15,7 @@ void EndscreenScene::Init()
 
 	float space = 10.f;
 	std::shared_ptr<sf::Text> finalScoreLabel = Engine::GetInstance()->InitText("Score");
-	std::shared_ptr<sf::Text> finalScoreText = Engine::GetInstance()->InitText(Engine::GetFormattedNumericString(std::to_string(GameData::Score), 3));
+	std::shared_ptr<sf::Text> finalScoreText = Engine::GetInstance()->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::Score), 3));
 	finalScoreLabel->setCharacterSize(50);
 	finalScoreText->setCharacterSize(50);
 	finalScoreLabel->setFillColor(_player->GetScoreColor());
