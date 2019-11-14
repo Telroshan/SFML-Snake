@@ -3,7 +3,7 @@
 #include "InputManager.h"
 #include "MenuScene.h"
 
-Engine* Engine::_instance{};
+Engine* Engine::_instance{ nullptr };
 
 Engine* Engine::GetInstance()
 {
