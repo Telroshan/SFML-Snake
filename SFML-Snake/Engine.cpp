@@ -2,7 +2,6 @@
 #include <iostream>
 #include "InputManager.h"
 #include "MenuScene.h"
-#include "GameData.h"
 
 Engine* Engine::_instance{};
 
@@ -21,8 +20,6 @@ Engine::Engine()
 	{
 		std::cerr << "Couldn't load font" << std::endl;
 	}
-
-	GameData::ReadHighScore();
 }
 
 Engine::~Engine()

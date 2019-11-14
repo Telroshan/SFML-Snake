@@ -23,6 +23,7 @@ void MenuScene::Init()
 	exitText->setCharacterSize(20);
 	exitText->setPosition(windowSize.x / 2 - exitText->getLocalBounds().width / 2.f, windowSize.y - 60.f);
 
+	GameData::ReadHighScore();
 	float space = 10.f;
 	std::shared_ptr<sf::Text> highScoreLabel = engine->InitText("High score");
 	std::shared_ptr<sf::Text> highScoreText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(GameData::HighScore), 3));
