@@ -1,8 +1,5 @@
 #include "Engine.h"
 #include <iostream>
-#include <fstream>
-#include <stdlib.h>
-#include <time.h>
 #include "InputManager.h"
 #include "MenuScene.h"
 #include "GameData.h"
@@ -25,7 +22,7 @@ Engine::Engine()
 		std::cerr << "Couldn't load font" << std::endl;
 	}
 
-	ReadHighScore();
+	GameData::ReadHighScore();
 }
 
 Engine::~Engine()
@@ -150,36 +147,6 @@ void Engine::RegisterUpdatable(std::shared_ptr<Updatable> updatable)
 void Engine::RegisterCollidable(std::shared_ptr<Collidable> collidable)
 {
 	_collidables.push_back(collidable);
-}
-
-void Engine::ReadHighScore()
-{
-	std::ifstream stream;
-	stream.open(scoresFilename);
-	if (!stream.is_open())
-	{
-		GameData::HighScore = 0;
-		return;
-	}
-
-	stream >> GameData::HighScore;
-
-	stream.close();
-}
-
-void Engine::SaveHighScore()
-{
-	std::ofstream stream;
-	stream.open(scoresFilename);
-	if (!stream.is_open())
-	{
-		std::cerr << "Couldn't save high score" << std::endl;
-		return;
-	}
-
-	stream << GameData::HighScore;
-
-	stream.close();
 }
 
 float Engine::GetCellSize() const

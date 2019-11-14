@@ -46,7 +46,7 @@ void EndscreenScene::Init()
 		beatHighscoreText->setPosition(windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
 			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + spaceBeathHighScore);
 		GameData::HighScore = GameData::Score;
-		engine->SaveHighScore();
+		GameData::SaveHighScore();
 	}
 }
 

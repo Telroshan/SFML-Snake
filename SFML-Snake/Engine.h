@@ -1,9 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Snake.h"
-#include "Fruit.h"
-#include "Border.h"
+#include "Updatable.h"
+#include "Collidable.h"
 #include "Scene.h"
 
 class Engine
@@ -46,11 +45,6 @@ public:
 	void RegisterUpdatable(std::shared_ptr<Updatable> updatable);
 	void RegisterCollidable(std::shared_ptr<Collidable> collidable);
 
-	void SaveHighScore();
-
-private:
-	void ReadHighScore();
-
 public:
 	float GetCellSize() const;
 	const sf::Vector2i GetWindowSize() const;
@@ -69,8 +63,6 @@ private:
 	std::vector<std::shared_ptr<Collidable>> _collidables;
 
 	float _cellSize = 20.f;
-
-	const char* scoresFilename = "scores.data";
 
 	sf::Font _font;
 };
