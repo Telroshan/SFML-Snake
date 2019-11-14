@@ -1,12 +1,10 @@
 #include "Border.h"
 #include "Engine.h"
 
-Border::Border(sf::Vector2i gridSize)
+Border::Border(sf::Vector2i gridSize, sf::Vector2i gameArea)
 {
 	Engine* engine = Engine::GetInstance();
 	float cellSize = engine->GetCellSize();
-	sf::Vector2i windowSize = engine->GetWindowSize();
-	int gameUiHeight = engine->GetGameUiHeight();
 
 	_gridSize = gridSize;
 
@@ -31,7 +29,7 @@ Border::Border(sf::Vector2i gridSize)
 	{
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(windowSize.x - cellSize, y * cellSize);
+		cell->setPosition(gameArea.x - cellSize, y * cellSize);
 		_cells.push_back(cell);
 
 		++colorIndex;
@@ -43,7 +41,7 @@ Border::Border(sf::Vector2i gridSize)
 	{
 		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
 		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * cellSize, (windowSize.y - gameUiHeight) - cellSize);
+		cell->setPosition(x * cellSize, gameArea.y - cellSize);
 		_cells.push_back(cell);
 
 		++colorIndex;

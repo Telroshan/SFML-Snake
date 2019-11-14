@@ -6,7 +6,7 @@
 class Border : public sf::Drawable, public Collidable
 {
 public:
-	Border(sf::Vector2i gridSize);
+	Border(sf::Vector2i gridSize, sf::Vector2i gameArea);
 
 public:
 	virtual bool Collides(sf::Vector2i gridPosition) const;

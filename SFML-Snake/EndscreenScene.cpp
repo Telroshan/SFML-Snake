@@ -1,0 +1,66 @@
+#include "EndscreenScene.h"
+#include "InputManager.h"
+#include "Engine.h"
+#include "MenuScene.h"
+#include "GameData.h"
+
+void EndscreenScene::Init()
+{
+	sf::Vector2i windowSize = Engine::GetInstance()->GetWindowSize();
+
+	std::shared_ptr<sf::Text> gameOverText = Engine::GetInstance()->InitText("GAME OVER");
+	gameOverText->setCharacterSize(60);
+	gameOverText->setPosition(windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, 30.f);
+
+	float space = 10.f;
+	std::shared_ptr<sf::Text> finalScoreLabel = Engine::GetInstance()->InitText("Score");
+	std::shared_ptr<sf::Text> finalScoreText = Engine::GetInstance()->InitText(Engine::GetFormattedNumericString(std::to_string(GameData::Score), 3));
+	finalScoreLabel->setCharacterSize(50);
+	finalScoreText->setCharacterSize(50);
+	finalScoreLabel->setFillColor(_player->GetScoreColor());
+	finalScoreText->setFillColor(_player->GetScoreColor());
+	finalScoreLabel->setPosition(windowSize.x / 2 - finalScoreLabel->getLocalBounds().width / 2.f,
+		windowSize.y / 2 - (finalScoreLabel->getLocalBounds().height + finalScoreText->getLocalBounds().height + space) / 2.f);
+	finalScoreText->setPosition(windowSize.x / 2 - finalScoreText->getLocalBounds().width / 2.f,
+		finalScoreLabel->getPosition().y + finalScoreLabel->getLocalBounds().height + space);
+
+	std::shared_ptr<sf::Text> playText = Engine::GetInstance()->InitText("Press space to return to menu");
+	playText->setCharacterSize(20);
+	playText->setPosition(windowSize.x / 2 - playText->getLocalBounds().width / 2, windowSize.y - 120.f);
+
+	std::shared_ptr<sf::Text> exitText = Engine::GetInstance()->InitText("Press escape to exit");
+	exitText->setCharacterSize(20);
+	exitText->setPosition(windowSize.x / 2 - exitText->getLocalBounds().width / 2, windowSize.y - 60.f);
+
+	if (GameData::Score > GameData::HighScore)
+	{
+		std::shared_ptr<sf::Text> beatHighscoreText = Engine::GetInstance()->InitText("You beat the high score !");
+		beatHighscoreText->setCharacterSize(20);
+		beatHighscoreText->setFillColor(sf::Color::Green);
+		float spaceBeathHighScore = space * 2.5f;
+		float offset = (beatHighscoreText->getLocalBounds().height + spaceBeathHighScore) / 2.f;
+		finalScoreLabel->setPosition(finalScoreLabel->getPosition().x, finalScoreLabel->getPosition().y - offset);
+		finalScoreText->setPosition(finalScoreText->getPosition().x, finalScoreText->getPosition().y - offset);
+		beatHighscoreText->setPosition(windowSize.x / 2 - beatHighscoreText->getLocalBounds().width / 2.f,
+			finalScoreText->getPosition().y + finalScoreText->getLocalBounds().height + spaceBeathHighScore);
+		GameData::HighScore = GameData::Score;
+		Engine::GetInstance()->SaveHighScore();
+	}
+}
+
+void EndscreenScene::UpdateInput()
+{
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Space))
+	{
+		Engine::GetInstance()->LoadScene<MenuScene>();
+	}
+
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Escape))
+	{
+		Engine::GetInstance()->Quit();
+	}
+}
+
+void EndscreenScene::Update(float deltaTime)
+{
+}

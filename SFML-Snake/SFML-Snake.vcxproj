@@ -141,19 +141,28 @@
   <ItemGroup>
     <ClCompile Include="Border.cpp" />
     <ClCompile Include="Collidable.cpp" />
+    <ClCompile Include="EndscreenScene.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Fruit.cpp" />
+    <ClCompile Include="GameData.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuScene.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Updatable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Border.h" />
     <ClInclude Include="Collidable.h" />
+    <ClInclude Include="EndscreenScene.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Fruit.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="MenuScene.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="Updatable.h" />
   </ItemGroup>

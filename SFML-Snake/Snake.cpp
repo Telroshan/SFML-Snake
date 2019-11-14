@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Engine.h"
 #include "Border.h"
+#include "GameData.h"
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
 	_body(1),
@@ -40,7 +41,7 @@ void Snake::Update(float deltaTime)
 		if (_fruit && _fruit->Collides(nextHeadGridPosition))
 		{
 			Grow();
-			++score;
+			++GameData::Score;
 			_fruit->Spawn();
 		}
 
@@ -154,6 +155,11 @@ void Snake::SetFruit(std::shared_ptr<Fruit> fruit)
 bool Snake::ReachedMaxSpeed() const
 {
 	return _moveInterval <= _minMoveInterval;
+}
+
+sf::Color Snake::GetScoreColor() const
+{
+	return GameData::Score > GameData::HighScore ? sf::Color::Green : sf::Color::Yellow;
 }
 
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const

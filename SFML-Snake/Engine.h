@@ -4,13 +4,7 @@
 #include "Snake.h"
 #include "Fruit.h"
 #include "Border.h"
-
-enum class Scene
-{
-	Menu,
-	Game,
-	Endscreen,
-};
+#include "Scene.h"
 
 class Engine
 {
@@ -35,19 +29,18 @@ public:
 
 	bool Collides(sf::Vector2i gridPosition) const;
 
-private:
-	void UpdateInputMenu();
-	void UpdateInputGame();
-	void UpdateInputEndscreen();
+	template<class T> void LoadScene()
+	{
+		_drawables.clear();
+		_updatables.clear();
+		_collidables.clear();
+		_scene = std::make_shared<T>();
+		_scene->Init();
+	}
 
-	void UpdateMenu(float deltaTime);
-	void UpdateGame(float deltaTime);
+	void Quit();
 
-	void InitMenu();
-	void InitGame();
-	void InitEndscreen();
-
-	void SetScene(Scene scene);
+	static std::string GetFormattedNumericString(const std::string& string, int textLength);
 
 	std::shared_ptr<sf::Text> InitText(const std::string& content);
 
@@ -55,19 +48,14 @@ private:
 	void RegisterUpdatable(std::shared_ptr<Updatable> updatable);
 	void RegisterCollidable(std::shared_ptr<Collidable> collidable);
 
-	std::string GetFormattedNumericString(const std::string& string, int textLength) const;
-
-	void ReadHighScore();
 	void SaveHighScore();
 
-	sf::Color GetScoreColor() const;
+private:
+	void ReadHighScore();
 
 public:
-	void SetCellSize(float cellSize);
 	float GetCellSize() const;
 	const sf::Vector2i GetWindowSize() const;
-	const sf::Vector2i GetGridSize() const;
-	const int GetGameUiHeight() const;
 
 private:
 	static Engine* _instance;
@@ -75,35 +63,16 @@ private:
 	std::shared_ptr<sf::RenderWindow> _window;
 	sf::Vector2i _windowSize;
 
-	Scene _scene = Scene::Menu;
+	std::map<std::string, Scene*> _scenes;
+	std::shared_ptr<Scene> _scene = nullptr;
 
 	std::vector<std::shared_ptr<sf::Drawable>> _drawables;
 	std::vector<std::shared_ptr<Updatable>> _updatables;
 	std::vector<std::shared_ptr<Collidable>> _collidables;
 
-	int _gameUiHeight = 0;
-
 	float _cellSize = 20.f;
-	sf::Vector2i _gridSize;
-
-	std::shared_ptr<Border> _border;
-	std::shared_ptr<Snake> _player;
-	std::shared_ptr<Fruit> _fruit;
 
 	const char* scoresFilename = "scores.data";
-	int _highScore = 0;
 
 	sf::Font _font;
-	std::shared_ptr<sf::Text> _timeText;
-	std::shared_ptr<sf::Text> _scoreLabel;
-	std::shared_ptr<sf::Text> _scoreText;
-	std::shared_ptr<sf::Text> _speedLabel;
-	std::shared_ptr<sf::Text> _speedText;
-
-	float _gameOverDelay = 1.f;
-	float _gameOverTimer = 0.f;
-
-	float _timeElapsed = 0.f;
-
-	sf::FloatRect _menuSnakePatrolBounds;
 };
