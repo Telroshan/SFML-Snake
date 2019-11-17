@@ -44,6 +44,8 @@ void MenuScene::Init()
 
 	engine->RegisterDrawable(_player);
 	engine->RegisterUpdatable(_player);
+
+	SetMusic("Menu");
 }
 
 void MenuScene::UpdateInput()

@@ -22,6 +22,12 @@
     <Filter Include="Fichiers sources\Scenes">
       <UniqueIdentifier>{c677dcfb-10cc-47c4-985a-b3133e116fbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Images">
+      <UniqueIdentifier>{680477c9-4dbb-4c19-a3c8-54a66a51986d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{bdb18b17-5d93-4235-bd90-62c99ada9efc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -55,6 +61,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,5 +112,26 @@
     <Font Include="Fonts\PressStart2P.ttf">
       <Filter>Fonts</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\icon.png">
+      <Filter>Images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Images\Credits.txt">
+      <Filter>Images</Filter>
+    </Text>
+    <Text Include="Audio\Credits.txt">
+      <Filter>Audio</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Audio\Game.mp3">
+      <Filter>Audio</Filter>
+    </Media>
+    <Media Include="Audio\Menu.mp3">
+      <Filter>Audio</Filter>
+    </Media>
   </ItemGroup>
 </Project>

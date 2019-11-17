@@ -68,6 +68,8 @@ void GameScene::Init()
 		windowSize.y - _gameUiHeight / 2.f - (_speedLabel->getLocalBounds().height + _speedText->getLocalBounds().height + space) / 2.f);
 	_speedText->setPosition(_speedLabel->getPosition().x + (_speedLabel->getLocalBounds().width - _speedText->getLocalBounds().width) / 2.f,
 		_speedLabel->getPosition().y + _speedLabel->getLocalBounds().height + space);
+
+	SetMusic("Game");
 }
 
 void GameScene::UpdateInput()
