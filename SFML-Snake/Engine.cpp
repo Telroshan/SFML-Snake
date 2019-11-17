@@ -79,6 +79,10 @@ void Engine::Init(std::string title, sf::Vector2i windowSize, float cellSize)
 
 	_window->setFramerateLimit(60);
 
+	sf::Image icon;
+	icon.loadFromFile("Images\\icon.png");
+	_window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
 	_cellSize = cellSize;
 
 	LoadScene<MenuScene>();
