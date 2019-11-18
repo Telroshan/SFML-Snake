@@ -13,7 +13,7 @@ void EndscreenScene::Init()
 
 	std::shared_ptr<sf::Text> gameOverText = engine->InitText("GAME OVER");
 	gameOverText->setCharacterSize(60);
-	gameOverText->setPosition(windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, 30.f);
+	gameOverText->setPosition(windowSize.x / 2 - gameOverText->getLocalBounds().width / 2, 60.f);
 
 	float space = 10.f;
 	std::shared_ptr<sf::Text> finalScoreLabel = engine->InitText("Score");
