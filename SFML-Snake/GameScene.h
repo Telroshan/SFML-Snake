@@ -21,7 +21,7 @@ private:
 	std::shared_ptr<Fruit> _fruit;
 
 	float _timeElapsed = 0.f;
-	float _gameOverDelay = 1.f;
+	float _gameOverDelay = 2.f;
 	float _gameOverTimer = 0.f;
 
 	std::shared_ptr<sf::Text> _timeText;

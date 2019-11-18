@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "GameData.h"
 #include "Utils.h"
+#include "AudioManager.h"
 
 void EndscreenScene::Init()
 {
@@ -36,6 +37,8 @@ void EndscreenScene::Init()
 
 	if (GameData::Score > GameData::HighScore)
 	{
+		AudioManager::PlaySound("NewHighScore");
+
 		std::shared_ptr<sf::Text> beatHighscoreText = engine->InitText("You beat the high score !");
 		beatHighscoreText->setCharacterSize(20);
 		beatHighscoreText->setFillColor(sf::Color::Green);

@@ -1,6 +1,7 @@
 #include "Snake.h"
 #include "Engine.h"
 #include "GameData.h"
+#include "AudioManager.h"
 
 Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direction) :
 	_body(1),
@@ -42,6 +43,7 @@ void Snake::Update(float deltaTime)
 			Grow();
 			++GameData::Score;
 			_fruit->Spawn();
+			AudioManager::PlaySound("Eat");
 		}
 
 		if (!IsDead())
@@ -134,6 +136,7 @@ void Snake::Die()
 	{
 		_body[i].setFillColor(sf::Color::Red);
 	}
+	AudioManager::PlaySound(GameData::Score > GameData::HighScore ? "GameOverNewHighScore" : "GameOver");
 }
 
 bool Snake::IsDead() const
