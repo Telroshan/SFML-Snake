@@ -10,7 +10,7 @@ Snake::Snake(int length, float radius, sf::Vector2f position, sf::Vector2i direc
 {
 	_body[0] = sf::CircleShape(radius);
 	_body[0].setPosition(position);
-	_body[0].setFillColor(sf::Color::White);
+	_body[0].setFillColor(sf::Color(56, 255, 125));
 	while (_body.size() < length)
 	{
 		Grow();

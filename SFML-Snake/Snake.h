@@ -49,7 +49,7 @@ private:
 
 	bool _dead;
 
-	std::vector<sf::Color> _colors = { sf::Color::Green, sf::Color::Cyan };
+	std::vector<sf::Color> _colors = { sf::Color(242, 136, 43), sf::Color(59, 142, 165) };
 
 	float _initialMoveInterval = .2f;
 	float _moveInterval = _initialMoveInterval;

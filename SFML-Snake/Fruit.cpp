@@ -5,7 +5,7 @@ Fruit::Fruit(sf::Vector2f size, sf::Vector2i gridSize) :
 	sf::RectangleShape(size),
 	_gridSize(gridSize)
 {
-	setFillColor(sf::Color::White);
+	setFillColor(sf::Color(56, 255, 125));
 }
 
 bool Fruit::Collides(sf::Vector2i gridPosition) const
