@@ -140,4 +140,18 @@
       <Filter>Audio</Filter>
     </Media>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Audio\Eat.ogg">
+      <Filter>Audio</Filter>
+    </None>
+    <None Include="Audio\GameOver.ogg">
+      <Filter>Audio</Filter>
+    </None>
+    <None Include="Audio\GameOverNewHighScore.ogg">
+      <Filter>Audio</Filter>
+    </None>
+    <None Include="Audio\NewHighScore.ogg">
+      <Filter>Audio</Filter>
+    </None>
+  </ItemGroup>
 </Project>

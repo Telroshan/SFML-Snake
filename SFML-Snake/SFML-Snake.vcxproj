@@ -183,6 +183,12 @@
     <Media Include="Audio\Game.mp3" />
     <Media Include="Audio\Menu.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Audio\Eat.ogg" />
+    <None Include="Audio\GameOver.ogg" />
+    <None Include="Audio\GameOverNewHighScore.ogg" />
+    <None Include="Audio\NewHighScore.ogg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
