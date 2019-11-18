@@ -4,6 +4,7 @@ InputManager InputManager::_instance{};
 
 InputManager::InputManager()
 {
+	// Registers every key to the map
 	for (int i = 0; i < sf::Keyboard::KeyCount; ++i)
 	{
 		_inputsPressed.insert({ (sf::Keyboard::Key) i, false });

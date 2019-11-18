@@ -10,6 +10,7 @@ public:
 
 public:
 	virtual bool Collides(sf::Vector2i gridPosition) const;
+	// Spawns or respawns the fruit on a random free position on the grid
 	void Spawn();
 
 private:

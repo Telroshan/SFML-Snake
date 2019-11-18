@@ -36,3 +36,8 @@ void GameData::SaveHighScore()
 
 	stream.close();
 }
+
+sf::Color GameData::GetScoreColor()
+{
+	return Score > HighScore ? sf::Color::Green : sf::Color::Yellow;
+}

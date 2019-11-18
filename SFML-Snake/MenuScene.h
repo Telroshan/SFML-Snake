@@ -11,6 +11,8 @@ public:
 	virtual void Update(float deltaTime);
 
 private:
-	std::shared_ptr<Snake> _player;
+	std::shared_ptr<Snake> _snake;
+
+	// The bounds in which the snake should animate
 	sf::FloatRect _menuSnakePatrolBounds;
 };

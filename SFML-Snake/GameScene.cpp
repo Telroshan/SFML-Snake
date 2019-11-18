@@ -8,6 +8,7 @@
 
 void GameScene::Init()
 {
+	// Reset the random's state (used to spawn the fruit in a random position for example)
 	srand((unsigned int)time(NULL));
 
 	Engine* engine = Engine::GetInstance();
@@ -16,14 +17,17 @@ void GameScene::Init()
 	float cellSize = engine->GetCellSize();
 	_gridSize = sf::Vector2i(windowSize.x / (int)cellSize, (windowSize.y - _gameUiHeight) / (int)cellSize);
 
+	// Reset game data
 	GameData::Score = 0;
 	_timeElapsed = 0.f;
 	_gameOverTimer = 0;
 
+	// Map border
 	_border = std::make_shared<Border>(_gridSize, sf::Vector2i(windowSize.x, windowSize.y - _gameUiHeight));
 	engine->RegisterDrawable(_border);
 	engine->RegisterCollidable(_border);
 
+	// Player
 	_player = std::make_shared<Snake>(Snake(3,
 		cellSize / 2.f,
 		sf::Vector2f((_gridSize.x / 2) * cellSize, (_gridSize.y / 2) * cellSize),
@@ -32,14 +36,18 @@ void GameScene::Init()
 	engine->RegisterUpdatable(_player);
 	engine->RegisterCollidable(_player);
 
+	// Fruit
 	_fruit = std::make_shared<Fruit>(sf::Vector2f(cellSize, cellSize), _gridSize);
 	engine->RegisterDrawable(_fruit);
 	_fruit->Spawn();
 	_player->SetFruit(_fruit);
 
+
+	// Game UI
 	float horizontalPadding = 20.f;
 	float space = 10.f;
 
+	// Time
 	std::shared_ptr<sf::Text> timeLabel = engine->InitText("Time");
 	_timeText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
 	timeLabel->setCharacterSize(24);
@@ -49,17 +57,19 @@ void GameScene::Init()
 	_timeText->setPosition(timeLabel->getPosition().x + (timeLabel->getLocalBounds().width - _timeText->getLocalBounds().width) / 2.f,
 		timeLabel->getPosition().y + timeLabel->getLocalBounds().height + space);
 
+	// Score
 	_scoreLabel = engine->InitText("Score");
 	_scoreText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(0), 3));
 	_scoreLabel->setCharacterSize(35);
 	_scoreText->setCharacterSize(35);
-	_scoreLabel->setFillColor(_player->GetScoreColor());
-	_scoreText->setFillColor(_player->GetScoreColor());
+	_scoreLabel->setFillColor(GameData::GetScoreColor());
+	_scoreText->setFillColor(GameData::GetScoreColor());
 	_scoreLabel->setPosition(windowSize.x / 2.f - _scoreLabel->getLocalBounds().width / 2.f,
 		windowSize.y - _gameUiHeight / 2.f - (_scoreLabel->getLocalBounds().height + _scoreText->getLocalBounds().height + space) / 2.f);
 	_scoreText->setPosition(windowSize.x / 2.f - _scoreText->getLocalBounds().width / 2.f,
 		_scoreLabel->getPosition().y + _scoreLabel->getLocalBounds().height + space);
 
+	// Speed
 	_speedLabel = engine->InitText("Speed");
 	_speedText = engine->InitText(Utils::GetFormattedNumericString(std::to_string(1.f), 3));
 	_speedLabel->setCharacterSize(24);
@@ -101,14 +111,18 @@ void GameScene::Update(float deltaTime)
 {
 	if (!_player->IsDead())
 	{
+		// Update time text
 		_timeElapsed += deltaTime;
 		_timeText->setString(Utils::GetFormattedNumericString(std::to_string((int)_timeElapsed), 3));
 
+		// Update score text
 		_scoreText->setString(Utils::GetFormattedNumericString(std::to_string(GameData::Score), 3));
-		_scoreLabel->setFillColor(_player->GetScoreColor());
-		_scoreText->setFillColor(_player->GetScoreColor());
+		_scoreLabel->setFillColor(GameData::GetScoreColor());
+		_scoreText->setFillColor(GameData::GetScoreColor());
 
+		// Update speed text
 		_speedText->setString(Utils::GetFormattedNumericString(std::to_string(_player->GetMoveSpeed()), 3));
+		// (Different color once the player reached the max speed)
 		sf::Color speedColor = _player->ReachedMaxSpeed() ? sf::Color(185, 45, 185) : sf::Color::White;
 		_speedText->setFillColor(speedColor);
 		_speedLabel->setFillColor(speedColor);
@@ -116,8 +130,10 @@ void GameScene::Update(float deltaTime)
 	else
 	{
 		_gameOverTimer += deltaTime;
+
 		// Fade out music
 		music.setVolume(100.f * _gameOverTimer / _gameOverDelay);
+
 		if (_gameOverTimer >= _gameOverDelay)
 		{
 			Engine::GetInstance()->LoadScene<EndscreenScene>();

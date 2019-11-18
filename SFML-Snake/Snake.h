@@ -16,12 +16,13 @@ public:
 	virtual bool Collides(sf::Vector2i gridPosition) const;
 
 	const sf::Vector2f& GetHeadPosition() const;
+	// Moves the snake's entire body to the specified direction
 	void Move(sf::Vector2f movement);
 	const sf::Vector2i& GetDirection() const;
 
 	void SetDirection(const sf::Vector2i& direction);
-	void InvertDirection();
 
+	// Grows the snake's body from 1 cell
 	void Grow();
 
 	void Die();
@@ -34,13 +35,11 @@ public:
 
 	bool ReachedMaxSpeed() const;
 
-	sf::Color GetScoreColor() const;
-
 protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
-	bool IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const;
+	// Checks if the player can move in the specified direction (to prevent it from going backwards)
 	bool CanMoveTowards(sf::Vector2i direction) const;
 
 private:
@@ -52,9 +51,12 @@ private:
 	std::vector<sf::Color> _colors = { sf::Color(242, 136, 43), sf::Color(59, 142, 165) };
 
 	float _initialMoveInterval = .2f;
+	// The used value to control the speed is the reverse of the human-friendly speed value => the lower the interval, the higher the speed
 	float _moveInterval = _initialMoveInterval;
 	float _moveTimer = 0.f;
+	// The multiplier that should be applied to the current moveInterval each time the player eats a fruit
 	float _moveIntervalMultiplier = .95f;
+	// The minimum interval (ie the maximum speed) the player can reach
 	float _minMoveInterval = _initialMoveInterval / 2.f;
 
 	std::shared_ptr<Fruit> _fruit;

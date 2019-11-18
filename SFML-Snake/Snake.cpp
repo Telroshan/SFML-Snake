@@ -25,13 +25,16 @@ void Snake::Update(float deltaTime)
 	_moveTimer += deltaTime;
 	Engine* engine = Engine::GetInstance();
 	float cellSize = engine->GetCellSize();
-	if (_moveTimer > _moveInterval) {
-		sf::Vector2i direction = _direction;
-		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(direction.x * cellSize, direction.y * cellSize);
+
+	if (_moveTimer > _moveInterval)
+	{
+		// Collision check in preview (thus before actually moving)
+		sf::Vector2f nextHeadPosition = GetHeadPosition() + sf::Vector2f(_direction.x * cellSize, _direction.y * cellSize);
 		sf::Vector2i nextHeadGridPosition = engine->WorldPositionToGridPosition(nextHeadPosition);
 
 		sf::Vector2i lastPartGridPosition = engine->WorldPositionToGridPosition(_body[_body.size() - 1].getPosition());
 
+		// Exclude the last part from collisions (as it will be moving forward)
 		if (engine->Collides(nextHeadGridPosition) && nextHeadGridPosition != lastPartGridPosition)
 		{
 			Die();
@@ -46,18 +49,24 @@ void Snake::Update(float deltaTime)
 			AudioManager::PlaySound("Eat");
 		}
 
-		if (!IsDead())
-		{
-			direction = _direction;
-			Move(sf::Vector2f(direction.x * cellSize, direction.y * cellSize));
-			_moveTimer = 0.f;
-		}
+		Move(sf::Vector2f(_direction.x * cellSize, _direction.y * cellSize));
+		_moveTimer = 0.f;
 	}
 }
 
 bool Snake::Collides(sf::Vector2i gridPosition) const
 {
-	return IsPositionInSnake(gridPosition, false);
+	int max = (int)_body.size();
+	for (int i = 0; i < max; ++i)
+	{
+		sf::Vector2i bodyPartPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[i].getPosition());
+		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 const sf::Vector2f& Snake::GetHeadPosition() const
@@ -69,13 +78,15 @@ void Snake::Move(sf::Vector2f movement)
 {
 	for (int i = (int)_body.size() - 1; i >= 0; --i)
 	{
-		if (i > 0)
+		if (i == 0)
 		{
-			_body[i].setPosition(_body[(size_t)i - 1].getPosition());
+			// Only move the head in the specified direction
+			_body[i].move(movement);
 		}
 		else
 		{
-			_body[i].move(movement);
+			// The rest of the body just follows the ahead bodypart's direction
+			_body[i].setPosition(_body[(size_t)i - 1].getPosition());
 		}
 	}
 }
@@ -92,11 +103,6 @@ void Snake::SetDirection(const sf::Vector2i& direction)
 		return;
 	}
 	_direction = direction;
-}
-
-void Snake::InvertDirection()
-{
-	_direction *= -1;
 }
 
 void Snake::Grow()
@@ -159,11 +165,6 @@ bool Snake::ReachedMaxSpeed() const
 	return _moveInterval <= _minMoveInterval;
 }
 
-sf::Color Snake::GetScoreColor() const
-{
-	return GameData::Score > GameData::HighScore ? sf::Color::Green : sf::Color::Yellow;
-}
-
 void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for (int i = (int)_body.size() - 1; i >= 0; --i)
@@ -172,25 +173,9 @@ void Snake::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	}
 }
 
-bool Snake::IsPositionInSnake(sf::Vector2i gridPosition, bool ignoreLastPart) const
-{
-	int max = (int)_body.size();
-	if (ignoreLastPart) --max;
-	for (int i = 0; i < max; ++i)
-	{
-		sf::Vector2i bodyPartPosition = Engine::GetInstance()->WorldPositionToGridPosition(_body[i].getPosition());
-		if (bodyPartPosition.x == gridPosition.x && bodyPartPosition.y == gridPosition.y)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 bool Snake::CanMoveTowards(sf::Vector2i direction) const
 {
-	if (_body.size() == 0)
+	if (_body.size() <= 1)
 	{
 		return true;
 	}

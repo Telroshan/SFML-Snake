@@ -3,11 +3,9 @@
 
 int main()
 {
-	sf::Vector2i windowSize(600, 500);
-
 	Engine* snakeGame = Engine::GetInstance();
 
-	snakeGame->Init("Snake", windowSize, 20.f);
+	snakeGame->Init();
 
 	sf::Clock clock;
 	while (snakeGame->IsRunning())

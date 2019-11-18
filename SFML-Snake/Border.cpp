@@ -8,56 +8,28 @@ Border::Border(sf::Vector2i gridSize, sf::Vector2i gameArea)
 
 	_gridSize = gridSize;
 
-	const int colorsLength = 2;
-	sf::Color colors[colorsLength] = { sf::Color::Color(30, 30, 30), sf::Color::Color(60, 60, 60) };
-	int colorIndex = 0;
-
 	// Top left => top right
 	for (int x = 0; x < _gridSize.x - 1; ++x)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * cellSize, 0);
-		_cells.push_back(cell);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
+		AddCell(cellSize, x * cellSize, 0);
 	}
 
 	// Top right => bottom right
 	for (int y = 0; y < _gridSize.y - 1; ++y)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(gameArea.x - cellSize, y * cellSize);
-		_cells.push_back(cell);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
+		AddCell(cellSize, gameArea.x - cellSize, y * cellSize);
 	}
 
 	// Bottom right => bottom left
 	for (int x = _gridSize.x - 1; x > 0; --x)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(x * cellSize, gameArea.y - cellSize);
-		_cells.push_back(cell);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
+		AddCell(cellSize, x * cellSize, gameArea.y - cellSize);
 	}
 
 	// Bottom left => top left
 	for (int y = 1; y < _gridSize.y; ++y)
 	{
-		std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
-		cell->setFillColor(colors[colorIndex]);
-		cell->setPosition(0, y * cellSize);
-		_cells.push_back(cell);
-
-		++colorIndex;
-		if (colorIndex >= colorsLength) colorIndex = 0;
+		AddCell(cellSize, 0, y * cellSize);
 	}
 }
 
@@ -73,4 +45,13 @@ void Border::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(*_cells[i]);
 	}
+}
+
+void Border::AddCell(float cellSize, float posX, float posY)
+{
+	std::shared_ptr<sf::RectangleShape> cell = std::make_shared<sf::RectangleShape>(sf::Vector2f(cellSize, cellSize));
+	// Alternate cells colors
+	cell->setFillColor(_colors[_cells.size() % _colors.size()]);
+	cell->setPosition(posX, posY);
+	_cells.push_back(cell);
 }

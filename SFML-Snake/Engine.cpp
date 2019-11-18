@@ -71,19 +71,15 @@ void Engine::Render()
 	_window->display();
 }
 
-void Engine::Init(std::string title, sf::Vector2i windowSize, float cellSize)
+void Engine::Init()
 {
-	_windowSize = windowSize;
-
-	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(windowSize.x, windowSize.y), title, sf::Style::Titlebar | sf::Style::Close);
+	_window = std::make_shared<sf::RenderWindow>(sf::VideoMode(_windowSize.x, _windowSize.y), "Snake", sf::Style::Titlebar | sf::Style::Close);
 
 	_window->setFramerateLimit(60);
 
 	sf::Image icon;
 	icon.loadFromFile("Images\\icon.png");
 	_window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-	_cellSize = cellSize;
 
 	LoadScene<MenuScene>();
 }

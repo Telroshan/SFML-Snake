@@ -19,8 +19,9 @@ void Fruit::Spawn()
 	sf::Vector2i gridPosition;
 	do
 	{
-		// Random between borders
+		// Random between borders ...
 		gridPosition = sf::Vector2i(rand() % (_gridSize.x - 1) + 1, rand() % (_gridSize.y - 1) + 1);
+		// ... Until a free position is found
 	} while (Engine::GetInstance()->Collides(gridPosition));
 
 	setPosition(Engine::GetInstance()->GridPositionToWorldPosition(gridPosition));
