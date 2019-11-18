@@ -138,7 +138,7 @@ void GameScene::Update(float deltaTime)
 		_gameOverTimer += deltaTime;
 
 		// Fade out music
-		music.setVolume(100.f * _gameOverTimer / _gameOverDelay);
+		music.setVolume(std::max(0.f, 100.f - 100.f * _gameOverTimer / _gameOverDelay));
 
 		if (_gameOverTimer >= _gameOverDelay)
 		{
