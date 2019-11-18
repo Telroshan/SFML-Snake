@@ -28,6 +28,7 @@ public:
 	void Init();
 
 	bool IsRunning() const;
+	bool HasFocus() const;
 
 	sf::Vector2i WorldPositionToGridPosition(sf::Vector2f position) const;
 	sf::Vector2f GridPositionToWorldPosition(sf::Vector2i position) const;

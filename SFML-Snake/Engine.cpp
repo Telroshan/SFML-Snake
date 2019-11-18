@@ -89,6 +89,11 @@ bool Engine::IsRunning() const
 	return _window->isOpen();
 }
 
+bool Engine::HasFocus() const
+{
+	return _window->hasFocus();
+}
+
 bool Engine::Collides(sf::Vector2i gridPosition) const
 {
 	for (size_t i = 0; i < _collidables.size(); ++i)
