@@ -84,25 +84,25 @@ void GameScene::Init()
 
 void GameScene::UpdateInput()
 {
-	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Z) ||
-		InputManager::WasKeyPressedThisFrame(sf::Keyboard::W) ||
-		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Up))
+	if (InputManager::IsKeyPressed(sf::Keyboard::Z) ||
+		InputManager::IsKeyPressed(sf::Keyboard::W) ||
+		InputManager::IsKeyPressed(sf::Keyboard::Up))
 	{
 		_player->SetDirection(sf::Vector2i(0, -1));
 	}
-	else if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::S) ||
-		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Down))
+	else if (InputManager::IsKeyPressed(sf::Keyboard::S) ||
+		InputManager::IsKeyPressed(sf::Keyboard::Down))
 	{
 		_player->SetDirection(sf::Vector2i(0, 1));
 	}
-	else if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::D) ||
-		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Right))
+	else if (InputManager::IsKeyPressed(sf::Keyboard::D) ||
+		InputManager::IsKeyPressed(sf::Keyboard::Right))
 	{
 		_player->SetDirection(sf::Vector2i(1, 0));
 	}
-	else if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Q) ||
-		InputManager::WasKeyPressedThisFrame(sf::Keyboard::A) ||
-		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Left))
+	else if (InputManager::IsKeyPressed(sf::Keyboard::Q) ||
+		InputManager::IsKeyPressed(sf::Keyboard::A) ||
+		InputManager::IsKeyPressed(sf::Keyboard::Left))
 	{
 		_player->SetDirection(sf::Vector2i(-1, 0));
 	}
