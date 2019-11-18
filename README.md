@@ -4,6 +4,9 @@ A simple snake game made using the [SFML library](https://www.sfml-dev.org/).
 
 [![Video](http://img.youtube.com/vi/dlaFbrp34R8/0.jpg)](http://www.youtube.com/watch?v=dlaFbrp34R8 "SFML Snake video")
 
+## Download
+You can download the built game from the [releases](https://github.com/Telroshan/SFML-Snake/releases/tag/1.0.0)
+
 # The game
 Eat and grow until your inevitable death, and try to beat the high score !
 
