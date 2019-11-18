@@ -12,6 +12,6 @@ public:
 protected:
 	void SetMusic(const std::string& musicName);
 
-private:
-	sf::Music _music;
+protected:
+	sf::Music music;
 };

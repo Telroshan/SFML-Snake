@@ -116,6 +116,8 @@ void GameScene::Update(float deltaTime)
 	else
 	{
 		_gameOverTimer += deltaTime;
+		// Fade out music
+		music.setVolume(100.f * _gameOverTimer / _gameOverDelay);
 		if (_gameOverTimer >= _gameOverDelay)
 		{
 			Engine::GetInstance()->LoadScene<EndscreenScene>();

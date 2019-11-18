@@ -4,12 +4,12 @@
 
 void Scene::SetMusic(const std::string& musicName)
 {
-	if (!_music.openFromFile(AudioManager::GetAudioPath(musicName)))
+	if (!music.openFromFile(AudioManager::GetAudioPath(musicName)))
 	{
 		std::cerr << "Couldn't load music" << std::endl;
 	}
 
-	_music.setLoop(true);
+	music.setLoop(true);
 
-	_music.play();
+	music.play();
 }
