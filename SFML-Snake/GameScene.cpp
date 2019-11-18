@@ -84,19 +84,25 @@ void GameScene::Init()
 
 void GameScene::UpdateInput()
 {
-	if (InputManager::IsKeyPressed(sf::Keyboard::Z))
+	if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Z) ||
+		InputManager::WasKeyPressedThisFrame(sf::Keyboard::W) ||
+		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Up))
 	{
 		_player->SetDirection(sf::Vector2i(0, -1));
 	}
-	else if (InputManager::IsKeyPressed(sf::Keyboard::S))
+	else if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::S) ||
+		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Down))
 	{
 		_player->SetDirection(sf::Vector2i(0, 1));
 	}
-	else if (InputManager::IsKeyPressed(sf::Keyboard::D))
+	else if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::D) ||
+		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Right))
 	{
 		_player->SetDirection(sf::Vector2i(1, 0));
 	}
-	else if (InputManager::IsKeyPressed(sf::Keyboard::Q))
+	else if (InputManager::WasKeyPressedThisFrame(sf::Keyboard::Q) ||
+		InputManager::WasKeyPressedThisFrame(sf::Keyboard::A) ||
+		InputManager::WasKeyPressedThisFrame(sf::Keyboard::Left))
 	{
 		_player->SetDirection(sf::Vector2i(-1, 0));
 	}
